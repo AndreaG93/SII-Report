@@ -1,0 +1,463 @@
+\documentclass[10pt,a4paper, titlepage]{report}
+
+% Pacchetti...
+% ----------------------------------------------------------------------------------------- %
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{sidecap}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{bmpsize}
+\usepackage{adjustbox}
+\usepackage{footnote}
+\usepackage{authblk}
+
+
+% Usato per personalizzare l'ambiente 'listings'...
+% ----------------------------------------------------------------------------------------- %
+\lstset{
+language=C,
+basicstyle=\small\ttfamily,			
+keywordstyle=\color{blue},
+commentstyle=\color{gray},			
+stringstyle=\color{black},			
+numbers=left,						
+numberstyle=\tiny,					
+stepnumber=1,						
+breaklines=true						
+}
+
+% Usato per aggiugnere la numerazione alle sezioni di tipo 'subsubsection' e inserirle nell'indice...%
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% Frontespizio...
+% ----------------------------------------------------------------------------------------- %
+\title{Progetto del corso di Sicurezza informatica e Internet A.A. 2017-2018}
+
+\author[1]{Andrea Graziani (0273395)}
+\author[1]{Alessandro Boccini (0277414)}
+\author[1]{Ricardo Gamucci (0274716)}
+\affil[1]{Università degli Studi di Roma Tor Vergata}
+
+
+\date{27 marzo 2019}
+
+% Inzio documento...
+% ----------------------------------------------------------------------------------------- %
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\chapter{Analisi tecnica del malware}
+
+\section{Analisi dei file}
+
+\begin{table}[h!]
+  \begin{center}
+    \caption{Lista dei file facentiff parte del malware FASTCash}
+    \centering
+    \label{tab:FilesList}
+    
+    \begin{adjustbox}{width=1.5\textwidth,center=\textwidth}
+ 
+    \begin{tabular}{l|c|r}
+      \toprule
+      \textbf{Nome} & \textbf{SHA256} \\
+      \midrule
+      
+      Lost\_File.so & \texttt{10ac312c8dd02e417dd24d53c99525c29d74dcbc84730351ad7a4e0a4b1a0eba} \\
+      
+      Unpacked\_dump\_4a740227eeb82c20... & \texttt{10ac312c8dd02e417dd24d53c99525c29d74dcbc84730351ad7a4e0a4b1a0eba} \\
+  
+  Lost\_File1\_so\_file & \texttt{3a5ba44f140821849de2d82d5a137c3bb5a736130dddb86b296d94e6b421594c} \\
+    
+      4f67f3e4a7509af1b2b1c6180a03b3... & \texttt{4a740227eeb82c20286d9c112ef95f0c1380d0e90ffb39fc75c8456db4f60756} \\ 
+      
+      5cfa1c2cb430bec721063e3e2d144f... & \texttt{820ca1903a30516263d630c7c08f2b95f7b65dffceb21129c51c9e21cf9551c6} \\
+      
+      Unpacked\_dump\_820ca1903a305162... & \texttt{9ddacbcd0700dc4b9babcd09ac1cebe23a0035099cb612e6c85ff4dffd087a26} \\
+      
+      8efaabb7b1700686efedadb7949eba... & \texttt{a9bc09a17d55fc790568ac864e3885434a43c33834551e027adb1896a463aafc} \\
+      
+      d0a8e0b685c2ea775a74389973fc92... & \texttt{ab88f12f0a30b4601dc26dbae57646efb77d5c6382fb25522c529437e5428629} \\
+      
+      2.so & \texttt{ca9ab48d293cc84092e8db8f0ca99cb155b30c61d32a1da7cd3687de454fe86c} \\
+      
+      Injection\_API\_executable\_e & \texttt{d465637518024262c063f4a82d799a4e40ff3381014972f24ea18bc23c3b27ee}\\
+      
+      Injection\_API\_log\_generating\_s & \texttt{e03dc5f1447f243cf1f305c58d95000ef4e7dbcc5c4e91154daa5acd83fea9a8}\\
+      
+      inject\_api & \texttt{f3e521996c85c0cdb2bfb3a0fd91eb03e25ba6feef2ba3a1da844f1b17278dd2}\\
+      
+      \bottomrule
+    \end{tabular}
+    \end{adjustbox}
+  \end{center}
+\end{table}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\subsection{Analisi del file \texttt{2.so}}
+
+In base all'output ottenuto dal tool unix \texttt{file}, \texttt{2.so} è un file di tipo \textbf{eXtended COFF} (\textbf{XCOFF}) che rappresenta la versione migliorata ed estesa del formato \textbf{Common Object File Format} (\textbf{COFF}), il formato di file standard che ha definito la struttura dei file eseguibili e delle librerie nei sistemi operativi UNIX\footnote{Cfr. \texttt{https://it.wikipedia.org/wiki/COFF}} fino al 1999\footnote{Cfr. \texttt{https://en.wikipedia.org/wiki/Executable\_and\_Linkable\_Format}}, anno della definitiva adozione dello standard \textbf{Executable and Linkable Format} o \textbf{ELF}.
+XCOFF rappresenta tuttavia uno standard proprietario sviluppato da IBM\footnote{Cfr. IBM - \textit{XCOFF Object File Format} - \texttt{https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.files/XCOFF.htm} (data ultima consultazione 27-03-2019)} adottato nei sistemi operativi \textbf{Advanced Interactive eXecutive} o \textbf{AIX}, una famiglia di sistemi operativi proprietari basati su Unix sviluppati dalla stessa IBM.\footnote{Cfr. \texttt{https://www.ibm.com/it-infrastructure/power/os/aix}}
+
+In accordo alle nostre analisi, confermate anche dal report AR18-275A della NCCIC, il file \texttt{file 2.so} rappresenta una \textbf{shared library} che esporta una serie di metodi che consentono l'iterazione con i sistemi finanziari che utilizzano il protocollo \textbf{ISO8583}.\footnote{Cfr. The National Cybersecurity and Communications Integration Center’s (NCCIC), \textit{Malware Analysis Report (AR18-275A)} - 2 Ottobre 2018 - \texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A)}}
+
+\begin{table}[h!]
+  \begin{center}
+    \caption{Dettagli del file \texttt{2.s0}}
+    \centering
+    \label{tab:table1}
+    
+    \begin{adjustbox}{width=1.5\textwidth,center=\textwidth}
+ 
+    \begin{tabular}{l|c|r}
+      \toprule
+      \textbf{Descrizione} & \textbf{Valore} & \textbf{Comando Unix} \\
+      \midrule
+      
+      \textbf{Nome} & \texttt{2.so} & \texttt{stat -c "\%n" 2.so} \\
+      
+      \textbf{Dimensione (\textit{byte})} & \texttt{110592} & \texttt{stat -c "\%s" 2.so} \\
+   
+      \textbf{Data ultima modifca} & \texttt{2018-11-09 11:08:40.000000000 +0100} & \texttt{stat -c "\%y" 2.so} \\
+   
+      \textbf{Tipo di file} & \texttt{64-bit XCOFF executable or object module} & \texttt{file 2.so} \\
+    
+      \textbf{MD5} & \texttt{b66be2f7c046205b01453951c161e6cc} & \texttt{md5sum 2.so} \\ 
+ 
+      \textbf{SHA1} & \texttt{ec5784548ffb33055d224c184ab2393f47566c7a} & \texttt{sha1sum 2.so} \\ 
+     
+      \multirow{2}{*}{\textbf{SHA256}} & \texttt{ca9ab48d293cc84092e8db8f0ca99cb1} & \multirow{2}{*}{\texttt{sha256sum 2.so}} \\ 
+      & \texttt{55b30c61d32a1da7cd3687de454fe86c} & \\
+      
+      \multirow{2} {*}{\textbf{SHA512}} & \texttt{6890dcce36a87b4bb2d71e177f10ba27f517d1a53ab02500296f9b3aac021810} & \multirow{2}{*}{\texttt{sha512sum 2.so}} \\ 
+      & \texttt{7ced483d70d757a54a5f7489106efa1c1830ef12c93a7f6f240f112c3e90efb5} & \\
+      
+      \bottomrule
+    \end{tabular}
+    \end{adjustbox}
+  \end{center}
+\end{table}
+
+\subsubsection{Stringhe stampabili rilevanti}
+
+Per estrazione di tutte le stringhe stampabili contenute nel file \texttt{2.so} ci siamo serviti del tool \texttt{strings}\footnote{Cfr. \texttt{https://linux.die.net/man/1/strings}} di cui  riportiamo frammenti dell'output ottenuto nei listati \ref{code:strings2so-1} e \ref{code:strings2so-2}.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringe estratte dal file \texttt{2.so}}, 
+label={code:strings2so-1},
+firstnumber=465
+]
+...
+_GLOBAL__FI_eg64_so
+_GLOBAL__FD_eg64_so
+=s4m
+/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0/ppc64:/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0:/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0/../../..:/usr/lib:/lib
+libc.a
+shr_64.o
+libpthread.a
+shr_xpg5_64.o
+...
+\end{lstlisting}
+
+Poiché nei sistemi operativi AIX la directory all'interno del quale sono contenute tutte le librerie di GCC assume la forma mostrata nel listato \ref{code:example-1}\footnote{http://www.perzl.org/aix/index.php\%3Fn\%3DMain.GCCBinariesVersionNeutral}, possiamo dedurre dalla riga 496 del listato \ref{code:strings2so-1} che la versione di GCC utilizzata è stata la 4.2.0 (versione rilasciata il 13 Maggio 2007\footnote{http://www.gnu.org/software/gcc/gcc-4.2/}) mentre la versione del sistema operativo bersaglio fosse stata la V6.1, versione ormai obsoleta del sistema operativo AIX il cui supporto è terminato ufficialmente il 30 Aprile del 2017.\footnote{https://www-01.ibm.com/support/docview.wss?uid=swg21634678\#AIX}
+Dalla stessa riga osserviamo che l'architettura hardware del sistema bersaglio è equipaggiata con un processore PowerPC
+
+Ovviamente il riferimento alla libreria standard \texttt{libc.c} e di GCC suggeriscono che il malware è stato scritto in C/C++.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Formato del percorso di installazione delle librerie GCC nei sistemi operativi AIX}, 
+label={code:example-1},
+]
+/opt/freeware/lib/gcc/<architecture_AIX_level>/<GCC_Level>
+\end{lstlisting}
+
+Il listato \ref{code:strings2so-2} mostra ciò che dovrebbero essere i nomi delle procedure esportate dalla libreria il che dimostra in modo inequivocabile il fatto che il malware è in grado di interagire con i sistemi informatici che fanno uso del protocollo ISO8583.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{2.so}}, 
+label={code:strings2so-2},
+firstnumber=545
+]
+...
+DL_ISO8583_MSG_Init
+DL_ISO8583_MSG_Free
+DL_ISO8583_MSG_SetField_Str
+DL_ISO8583_MSG_SetField_Bin
+DL_ISO8583_MSG_RemoveField
+DL_ISO8583_MSG_HaveField
+DL_ISO8583_MSG_GetField_Str
+DL_ISO8583_MSG_GetField_Bin
+DL_ISO8583_MSG_Pack
+DL_ISO8583_MSG_Unpack
+DL_ISO8583_MSG_Dump
+_DL_ISO8583_MSG_AllocField
+DL_ISO8583_COMMON_SetHandler
+ DL_ISO8583_DEFS_1987_GetHandler
+ DL_ISO8583_DEFS_1993_GetHandler
+_DL_ISO8583_FIELD_Pack
+_DL_ISO8583_FIELD_Unpack
+...
+\end{lstlisting}
+
+\subsubsection{Analisi assembler}
+
+Non avendo a disposizione alcuna macchina equipaggiata con un processore 
+
+
+
+\newpage
+
+\subsection{Analisi del file \texttt{Injection\_API\_executable\_e}}
+
+Il file \texttt{Injection\_API\_executable\_e} rappresenta un file di tipo AIX-executable, ovvero un file seguitibile su sistemi oprativi UNIX svilupati da ibm il cui scopo è quello 
+
+This file is an AIX (Advanced Interactive Executive) executable, intended for a proprietary UNIX operating system developed by IBM. This application is designed to inject a library into a currently running process
+
+Dalle analisi effettuate dalla National Cybersecurity and Communications Integration Center’s (NCCIC), l'istituzione governativa dedicata agli attacchi infromatici, ha stabilito che l'eseguibile scopo di eseguire code injection all'interno di un processo in esecuzione. 
+
+Code injection is the exploitation of a computer bug that is caused by processing invalid data. Injection is used by an attacker to introduce (or "inject") code into a vulnerable computer program and change the course of execution. \footnote{das\texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}
+
+\begin{table}[h!]
+  \begin{center}
+    \caption{Dettagli tecnici del file \texttt{2.s0}}
+    \centering
+    \label{tab:table2}
+    
+    \begin{adjustbox}{width=1.5\textwidth,center=\textwidth}
+ 
+    \begin{tabular}{l|c|r}
+      \toprule
+      \textbf{Descrizione} & \textbf{Valore} & \textbf{Comando Unix} \\
+      \midrule
+      
+      \textbf{Nome} & \texttt{2.so} & \texttt{stat -c "\%n" 2.so} \\
+      
+      \textbf{Dimensione (\textit{byte})} & \texttt{89088} & \texttt{stat -c "\%s" 2.so} \\
+   
+      \textbf{Data ultima modifca} & \texttt{2018-11-09 11:08:40.000000000 +0100} & \texttt{stat -c "\%y" 2.so} \\
+   
+      \textbf{Tipo di file} & \texttt{64-bit XCOFF executable or object module} & \texttt{file 2.so} \\
+    
+      \textbf{MD5} & \texttt{b3efec620885e6cf5b60f72e66d908a9} & \texttt{md5sum 2.so} \\ 
+ 
+      \textbf{SHA1} & \texttt{274b0bccb1bfc2731d86782de7babdeece379cf4} & \texttt{sha1sum 2.so} \\ 
+     
+      \multirow{2}{*}{\textbf{SHA256}} & \texttt{d465637518024262c063f4a82d799a4e} & \multirow{2}{*}{\texttt{sha256sum 2.so}} \\ 
+      & \texttt{40ff3381014972f24ea18bc23c3b27ee} & \\
+      
+      \multirow{2} {*}{\textbf{SHA512}} & \texttt{a36dab1a1bc194b8acc220b23a6e36438d43fc7ac06840daa3d010fddcd9c316} & \multirow{2}{*}{\texttt{sha512sum 2.so}} \\ 
+      & \texttt{8a6bf314ee13b58163967ab97a91224bfc6ba482466a9515de537d5d1fa6c5f9} & \\
+      
+      \bottomrule
+    \end{tabular}
+    \end{adjustbox}
+  \end{center}
+\end{table}
+
+
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} usando il comando \texttt{strings -d ./2.so}}, 
+label={code:strings2so5},
+firstnumber=347]
+...
+../../../../gcc-4.8.5/libgcc/config/rs6000/cxa_atexit.c
+@(#)23  1.6  src/bos/usr/ccs/lib/libpthreads/init.c, libpth, bos610 6/21/07 15:28:59
+@(#)61	1.16  src/bos/usr/ccs/lib/libc/__threads_init.c, libcthrd, bos61B, b2007_33A0 8/2/07 13:09:21
+_GLOBAL__FI_eng64
+_GLOBAL__FD_eng64
+/opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5/ppc64:/opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5:/opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5/../../..:/usr/lib:/lib
+libc.a
+shr_64.o
+libpthread.a
+shr_xpg5_64.o
+\end{lstlisting}
+
+Estraendo tutte le stringhe stampabili attraverso il tool \texttt{strings} dal file \texttt{Injection\_API\_executable\_e}, 
+possiamo notare come quest'ultimo, 
+a differenza del file \texttt{2.so} visto precedentemente, sia stato realizzato utilizzando non solo una differente versione di GCC, la versione GCC 4.8.5 data 23 giugno 2015\footnote{http://www.gnu.org/software/gcc/gcc-4.8/}, ma anche è stato compilato per una diversa versione del sistema operativo AIX, AIX V7.1. 
+Sfortunatamente non è possibile risalire echnology Levels (TLs) \footnote{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/} del sistema operativo, una sorta di aggiornamento che introduce funzionalità. In ogni caso si tratta di un sistema operativo obsoleto: la prima versione è stata rilasciata a settembre 2010 e il supporto è terminato 30 Novembre 2013 tuttavia sono ancora supportate la versione V7.1 TL4 fino a dicembre 2019 mentre la versione V.7.1 TL5 fino ad aprile 2022. \footnote{Cfr: https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}
+
+CONGETTURA:
+Motlo interessanti sono le righe 357 a 359, sono due object file e librerie (/usr/lib/libpthreads.a) e due object file (shr\_64.o) (shr\_xpg5\_64.o),, curiosamente sono due librerie richieste da vmstat is a tool that collects and reports data about your system’s memory, swap, and processor resource utilization in real time. It can be used to determine the root cause of performance and issues related to memory use. \footnote{http://www-01.ibm.com/support/docview.wss?uid=isg3T1023954}
+
+\begin{lstlisting}
+$ ldd /usr/bin/vmstat
+/usr/bin/vmstat needs:
+         /usr/lib/libc.a(shr_64.o)
+         /usr/lib/libwlm.a(shr_64.o)
+         /usr/lib/libperfstat.a(shr_64.o)
+         /usr/lib/libcorcfg.a(shr_64.o)
+         /unix
+         /usr/lib/libcrypt.a(shr_64.o)
+         /usr/lib/libpthreads.a(shr_xpg5_64.o)
+         /usr/lib/libcfg.a(shr_64.o)
+         /usr/lib/libodm.a(shr_64.o)
+         /usr/lib/liblvm.a(shr_64.o)
+         /usr/lib/libsrc.a(shr_64.o)
+\end{lstlisting}
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} usando il comando \texttt{strings -d ./2.so}}, 
+firstnumber=944]
+...
+IBM XL C for AIX, Version 11.1.0.1
+...
+\end{lstlisting}
+
+Dalla riga 944 possiamo ricavare l'esatto compilatore utilizzato XL C for AIX, V11.1; Nativamente non supportato dal sistema operativo AIX V7.1\footnote{https://www-01.ibm.com/support/docview.wss?uid=swg21326972} ma il supporto è stat oaggiunto successivamente nel stemmbre 2010. \footnote{http://www-01.ibm.com/support/docview.wss?uid=swg1IZ84777}
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} usando il comando \texttt{strings -d ./2.so}}, 
+firstnumber=320]
+...
+[main] Inject Start
+[main] SAVE REGISTRY
+[main] proc_readmemory fail
+[main] toc=%llX
+[main] path::%s
+[main] data(%p)::%s
+[main] Exec func(%llX) OK
+[main] Exec func(%llX) fail ret=%X
+[main] Inject OK(%llX)
+[main] Inject fail ret=%llX
+[main] Eject OK
+[main] Eject fail ret=%llX
+Usage: injection pid dll_path mode [handle func toc]
+       mode = 0 => Injection
+       mode = 1 => Ejection
+[main] handle=%llX, func=%llX, toc=%llX
+[main] ERROR::g_pid(%X) <= 0
+[main] ERROR::load_config fail
+[main] ERROR::eject & argc != 7
+[main] ERROR::g_dl_handle(%llX) <= 0
+[main] WARNING::func_addr(%llX), toc_addr(%llX)
+...
+\end{lstlisting}
+
+D notiamo vari format specifiers \%llX usati ad esempio dalla funzione printf dove vengono stampati per lo più long long-sized integer argument.
+	Unsigned hexadecimal integer (uppercase)
+	
+\%[flags][width][.precision][length]specifier
+
+Inoltre pare evidente che queste stampe fanno riferimento alla funzione main.
+
+Tali indizi ci fanno supporre che l'eseguibile era munito di una quancleh meccanismo di logging che riportasse la funzione attuamlemten in esecuzion o un evento .comunicasse agli attaccanti quanto avvenivsse. curiosamente dalle righe ... c'è anche la descrizione dell'utilizzo del file che pare abbia due modalità, injection o ejection.
+
+\subsubsection{Disassemblaggio}
+
+La traduzione dal linguaggio macchina all'assembler del file è stato usufrendo del servizio web https://onlinedisassembler.com/ per motivi di semplicità con le seguenti impostazioni
+
+architettura powerpc620
+processore POWER 7
+64 bit
+
+Queste impostazioni ci hanno permesso di ottenere un output sostanzialmente identico a quello mostrato in vari screenshot dalla CISA
+
+
+
+
+ftp://public.dhe.ibm.com/systems/power/docs/aix/72/idalangref\_pdf.pdf
+
+\begin{table}[h!]
+  \begin{center}
+    \caption{Dettagli tecnici del file \texttt{2.s0}}
+    \centering
+    \label{tab:table55}
+    
+    \begin{tabular}{l|l|l}
+      \toprule
+        Comando & SIntassi & Descrizione \\
+    \midrule
+        \texttt{Brach Link (bl)} & bl target\_address & Branches to a specified target address. \\
+      
+      %\texttt{Condition Register (CR)} &  \\
+      
+      %\texttt{Link Register (LR)} &  \\
+      
+      %\texttt{Count Register (CTR)} &  \\
+    
+ 	
+      \bottomrule
+    \end{tabular}
+   
+  \end{center}
+\end{table}
+
+
+    LI
+    
+ 	Specifies a 24-bit signed two's-complement integer that is concatenated on the right with 0b00 and sign-extended to 64 bits (PowerPC®) or 32 bits (POWER® family). This is an immediate field.
+
+ 	https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.alangref/idalangref\_inst\_fields.htm
+ 	
+ 	mflr r0 \# move LR into GPR0
+ 	
+ 	 If a branch instruction has the Link bit set to 1, then the Link Register is altered to store thereturn address for use by an invoked subroutine. The return address is the address of the instructionimmediately following the branch instruction (pag 33)
+
+
+The following code transfers the execution of the program to here and sets the Link Register: 
+
+https://www.ibm.com/support/knowledgecenter/en/ssw\_aix\_71/com.ibm.aix.alangref/idalangref\_bbranchinst.htm
+
+
+\listoffigures
+\listoftables
+\lstlistoflistings
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+

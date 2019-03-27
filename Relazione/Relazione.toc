@@ -1,0 +1,8 @@
+\babel@toc {italian}{}
+\babel@toc {italian}{}
+\contentsline {chapter}{\numberline {1}Analisi tecnica del malware}{2}{chapter.1}% 
+\contentsline {section}{\numberline {1.1}Analisi dei file}{2}{section.1.1}% 
+\contentsline {subsection}{\numberline {1.1.1}Analisi del file \texttt {2.so}}{3}{subsection.1.1.1}% 
+\contentsline {subsection}{\numberline {1.1.2}Stringhe stampabili rilevanti}{3}{subsection.1.1.2}% 
+\contentsline {subsection}{\numberline {1.1.3}Analisi del file \texttt {Injection\_API\_executable\_e}}{6}{subsection.1.1.3}% 
+\contentsline {subsubsection}{\numberline {1.1.3.1}Disassemblaggio}{8}{subsubsection.1.1.3.1}% 
