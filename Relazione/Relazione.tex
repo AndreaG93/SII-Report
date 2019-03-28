@@ -316,7 +316,7 @@ IBM XL C for AIX, Version 11.1.0.1
 \end{lstlisting}
 
 Analizziamo ora in dettaglio le varie operazioni compiute dal malware durante la sua esecuzione.
-Innanzitutto, osservando la particolare configurazione dei listati successivi come la numero \ref{code:stringsInjectionAPIexecutablee3}, notiamo quello che dovrebbe essere un insieme di stampe nella forma \texttt{[FUNCTION_NAME] [...]} eseguito probabilmente da un meccanismo di log, il che è stato confermato dalla già citata analisi della NCCIC; infatti, notiamo un gran numero di stringhe contenenti i ben noti \textit{conversion specifier} utilizzati nelle stringhe che specificano il formato delle stampe eseguite dalla funzione \texttt{fprintf} di cui molti sono nella forma \%llX, usata per stampare numeri interi senza segno in forma esadecimale\footnote{Cfr. http://man7.org/linux/man-pages/man3/printf.3.html}. 
+Innanzitutto, osservando la particolare configurazione dei listati successivi come la numero \ref{code:stringsInjectionAPIexecutablee3}, notiamo quello che dovrebbe essere un insieme di stampe nella forma \texttt{[FUNCTION NAME] [...]} eseguito probabilmente da un meccanismo di log, il che è stato confermato dalla già citata analisi della NCCIC; infatti, notiamo un gran numero di stringhe contenenti i ben noti \textit{conversion specifier} utilizzati nelle stringhe che specificano il formato delle stampe eseguite dalla funzione \texttt{fprintf} di cui molti sono nella forma \%llX, usata per stampare numeri interi senza segno in forma esadecimale\footnote{Cfr. http://man7.org/linux/man-pages/man3/printf.3.html}. 
 Come è stato confermato da altre analisi, le stringhe riportate nelle righe 333, 334 e 335 suggeriscono come l'applicazione è stata progettata per essere una command-line utility interattiva e di come il meccanismo di log sia stato utilizzato per ottenere informazioni e consentire agli attaccanti un attacco mirato.
 
 \begin{lstlisting}[
@@ -349,59 +349,61 @@ Usage: injection pid dll_path mode [handle func toc]
 ...
 \end{lstlisting}
 
-
-
-
-
-
-Dalle stringhe riportate nel listato \ref{code:stringsInjectionAPIexecutablee4} possiamo intuire la presenza di una ipotetica funzione \texttt{out\_regs} utilizzata dagli attaccanti per stampare forse su un file di log il contenuto dei seguenti registri del processore:
-\begin{itemize}
-\item GPRs (General Purpose Registers)
-\item IAR (Instruction Address Register)
-\item MSR (Machine State Register)
-\item LR (Link Register)
-\item CR (Condition Register)
-\item CTR (Control Register)
-\item GPRs (General Purpose Registers)
-\end{itemize}
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
-label={code:stringsInjectionAPIexecutablee4},
-firstnumber=320]
-[out_regs] IAR=%llX
-[out_regs] MSR=%llX
-[out_regs] CR=%llX
-[out_regs] LR=%llX
-[out_regs] CTR=%llX
-[out_regs] GPR%d=%llX
-\end{lstlisting}
-
-Come si può apprendere dalla documentazione ufficiale fornita dalla IBM, ogni informazione riguardante un processo con identificatore \texttt{pid} è rappresentata da un grande insieme di file contenuti nella directory \texttt{/proc/pid}\footnote{pag 244} tra cui ricordiamo:
+Prima di descrivere le varie fasi dell'attacco, è indispensabile comprendere come vengono rappresentati e gestiti i \textbf{processi} nei sistemi operativi AIX versione 6.1 e 7.1. 
+Ogni processo del sistema viene opportunamente rappresentato da un insieme di file ognuno dei descrive un particolare aspetto di un processo come ad esempio il suo stato, le informazioni sui file descriptors, privilegi ecc.
+Tutti i processi sono raccolti all'interno della directory \texttt{/proc} mentre tutti i file di un dato processo con identificatore pari a \texttt{pid} sono raccolti all'interno della directory \texttt{/proc/pid}; ciò permette agli attaccanti di
+ricavare tutte le informazioni necessarie di tutto il sistema attraverso le system call standard per la lettura e scrittura sui file come \texttt{open()}, \texttt{close()}, \texttt{read()} e la \texttt{write()}. \footnote{Cfr. IBM - \textit{AIX Version 7.1: Files References} - pag. 232-246}
+Di tutti i file contenuti in una generica directory \texttt{/proc/pid}, di cui ne riportiamo una piccola frazione nella tabella \ref{tab:ProcessFiles}\footnote{Per una lista completa \textit{Cfr. ivi} pag. 246}, è importante ricordare:
 
 \begin{description}
-\item[/proc/pid/status] Questo file riporta lo \textbf{stato} del processo \texttt{pid}.
-\item[/proc/pid/ctl] Rappresenta il \textbf{Control File} del processo \texttt{pid} ed è usato per manipolare l'esecuzione del processo \texttt{pid}.
-\item[/proc/pid/as] Rappresenta l'Address space del processo \texttt{pid}.
+\item[/proc/pid/as] Contiene l'immagine dello spazio degli indirizzi del processo e può essere aperto sia per la lettura che per la scrittura e supporta la subroutine lseek per accedere all'indirizzo virtuale di interesse.\footnote{\textit{Cfr. ivi} pag. 232}
+
+\item[/proc/pid/ctl] Un file di sola scrittura in cui vengono scritti messaggi strutturati che consentono di modificare lo stato del processo e dunque il suo comportamento. I messaggi di controllo vengono scritti direttamente sul file ctl del processo e gli effetti sono visibili immediatamente attraverso i file di stato del processo.\footnote{\textit{Cfr. ivi} pag. 232}
+
+\item[/proc/pid/status] Contiene informazioni sullo stato del processo. \footnote{\textit{Cfr. ivi} pag. 232}
 \end{description}
 
-Nel listato ... si apprende come il malware ricostruisce tali percorsi con una chiamata sprintf (lo sappiamo perché è stata trovato un riferimento nel file) e quindi il malware è in grado di conoscere lo stato del processo attaccato, di manipolarne l'esecuzione e modificarne la memoria.
+\begin{table}[h!]
+  \begin{center}
+    \caption{Sottoinsieme dei file contenuti in \texttt{/proc/pid} }
+    \centering
+    \label{tab:ProcessFiles}
+    
+    \begin{tabular}{l|r}
+      \toprule
+      File & Descrizione \\
+      \midrule
+      \texttt{/proc/pid/status} & Status of process \texttt{pid} \\
+      
+      \texttt{/proc/pid/ctl} & Control file for process \texttt{pid} \\
+      
+      \texttt{/proc/pid/as} & Address space of process \texttt{pid} \\
+      
+      \texttt{/proc/pid/cred} & Credentials information for process \texttt{pid} \\
+      
+      \texttt{/proc/pid/sigact} & Signal actions for process \texttt{pid} \\
+      
+      \texttt{/proc/pid/sysent} & System call information for process \texttt{pid}\\
+       
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Dal momento che, come mostrato nel listato \ref{code:stringsInjectionAPIexecutablee4}, sono stati individuate tre stringhe che fanno riferimento ai suddetti file descrittori di processo, in particolare ai file \texttt{ctl}, \texttt{status} e \texttt{as}, si può affermare che il malware, ricostruendo probabilmente le directory attraverso una chiamata \texttt{sprintf} come dimostrano la presenza del \textit{conversion specifier} \texttt{\%d} e la presenza di varie stringhe \texttt{sprintf} (riga 372 e 824), è stato progettato per accedere a questi file con lo scopo di manipolare il normale flusso di esecuzione del processo bersaglio.  
 
 \begin{lstlisting}[
 frame=lines, 
 caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}},
+label={code:stringsInjectionAPIexecutablee4},
 firstnumber=320]
 /proc/%d/ctl
 /proc/%d/status
 /proc/%d/as
 \end{lstlisting}
 
-Il contenuto presente nel listato \ref{code:stringsInjectionAPIexecutablee5} indica come l'attacco preveda la sospensione del processo bersaglio contro il quale eseguire la code injection: dalla documentazione ufficiale AIX si apprende come l'esecuzione dei processi possa essere alterata scrivendo opportuni messaggi
- all'interno di particoali file chiamti \textbf{ctl} (\textit{control}) e \textbf{lwpctl} (\textit{thread control})\footnote{Cfr IBM - \textit{AIX Version 6.1:Reference File} - pp. 230}. Tutti i messaggi di controllo sono descritti da un numero intero che ne identifica l'operazione seguita da altri operandi numerici se previsti 
- \footnote{Cfr IBM - \textit{AIX Version 6.1:Reference File} - pp. 239}. In particolare esiste il comando PCSTOP che permette di arrestare i thread di un particolare processo. Presumibilmente nel listato viene stampato l'identificatore del processo a cui è stato inviato il messaggio PCWSTOP.
- 
-%ftp://public.dhe.ibm.com/systems/power/docs/aix/61/aixfiles\_pdf.pdf
+Come abbiamo detto in precedenza, il flusso di esecuzione di un processo può essere modificato eseguendo la scrittura di appositi messaggi nel file \texttt{ctl} i quali da un codice operativo rappresentato da un int che identifica la specifica operazione seguita da ulteriori argomenti (se presenti).\footnote{\textit{Cfr. ivi} pag. 242}
+Il listato \ref{code:stringsInjectionAPIexecutablee5} dimostra che il malware interrompe esplicitamente l'esecuzione del processo bersaglio attraverso l'uso del messaggio \textbf{PCWSTOP} il cui scopo è quello di arrestare l'esecuzione di un processo \texttt{pid} passato come argomento.\footnote{\textit{Ibidem}}
 
 \begin{lstlisting}[
 frame=lines, 
@@ -414,38 +416,22 @@ firstnumber=319]
 ...
 \end{lstlisting}
 
-Dalla documentazione ufficiale si può facilmente apprendere come l'operatore PCRUN, di cui possiamo notarne il riferimento nel  listato \ref{code:stringsInjectionAPIexecutablee6}, possa essere utilizzato per riavviare l'esecuzione di un processo dopo essere stato arrestato. Ciò indica come l'attacco preveda il riavvio del processo dopo aver eseguito la \textit{code injection}.
+Il listato \ref{code:stringsInjectionAPIexecutablee5} mostra invece l'uso di vari messaggi tra cui:
+\begin{description}
+
+\item[PCSET] Serve per impostare una serie di flag ad un processo (PR\_ASYNC, PR\_FORK, PR\_KLC ecc.).\footnote{\textit{Cfr. ivi} pag. 234} 
+\item[PCRUN] Riesegue un thread dopo essere stato arrestato.
+\item[PCSENTRY] Indica al thread di interrompere la sua esecuzione nel momento in cui richiama una specifica system call. 
+\item[PCSFAULT] Definisce un insieme di \textit{hardware faults} tracciabili nel processo. Il thread si interrompe quando si verifica una fault.
+
+\end{description}
 
 \begin{lstlisting}[
 frame=lines, 
 caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
-label={code:stringsInjectionAPIexecutablee6},
-firstnumber=308]
-[proc_continue] PCRUN pid=%d, arg=%d, ret=%d, err=%d(%s)
-\end{lstlisting}
-
-Infatti come dimostra in modo inequivocabile il listato, il malware è in grado di leggere la memoria allocata dal sistema operativo di un processo e di modificarla per effettuare la code injection vera e propria.
-
-\begin{lstlisting}
-[proc_readmemory] ret=%d, err=%d(%s), addr=%p, len=%d, data=%p
-[proc_readmemory] (%X~%X) %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X
-[proc_writememory] ret=%d, err=%d(%s), addr=%p, len=%d, data=%p
-\end{lstlisting}
-
-La manipolazione del processo bersaglio avviene per mezzo di una serie di segnali tra cui:
-
-
-\begin{description}
-
-\item[PCSET] sets one or more modes of operation for the traced process. 
-\item[PCRUN] Riesegue un thread dopo essere stato arrestato; l'operando è un set di flag contenuto in un int.
-\item[PCSENTRY] Instructs the process's threads to stop on entry to specified system calls. T
-\item[PCSFAULT]Defines a set of hardware faults to be traced in the process. When incurring one of these faults, a thread stops.
-
-\end{description}
-
-
-\begin{lstlisting}
+label={code:stringsInjectionAPIexecutablee5},
+firstnumber=299]
+...
 [proc_attach] PCSET pid=%d, ret=%d, err=%d(%s)
 [proc_attach] PCSTOP pid=%d, ret=%d, err=%d(%s)
 [proc_attach] PCSTRACE pid=%d, ret=%d, err=%d(%s)
@@ -455,8 +441,91 @@ La manipolazione del processo bersaglio avviene per mezzo di una serie di segnal
 [proc_detach] PCSFAULT pid=%d, ret=%d, err=%d(%s)
 [proc_detach] PCSENTRY pid=%d, ret=%d, err=%d(%s)
 [proc_detach] PCRUN pid=%d, ret=%d, err=%d(%s)
+...
 \end{lstlisting}
 
+I listati \ref{code:stringsInjectionAPIexecutablee6} e \ref{code:stringsInjectionAPIexecutablee7} dimostrano come il malware raccolga le informazioni necessarie al suo scopo attraverso l'accesso in lettura alle informazioni di stato del processo e al contenuto dei registri. Abbiamo riportato nella tabella \ref{tab:assembly1} una descrizione dei registri ispezionati dal malware\footnote{Cfr. IBM - \textit{AIX Version 7.1: Assembler Language Reference}}. del processore tra cui risultano
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:stringsInjectionAPIexecutablee6},
+firstnumber=299]
+...
+[proc_getregs] GETREG pid=%d, ret=%d, err=%d(%s)
+[proc_getregs] GETSTATUS pr_syscall=%d, pr_why=%d, pr_what=%d, pr_flags=%d, pr_cursig=%d
+[proc_setregs] SETREG pid=%d, ret=%d, err=%d(%s)
+...
+\end{lstlisting}
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:stringsInjectionAPIexecutablee7},
+firstnumber=320]
+[out_regs] IAR=%llX
+[out_regs] MSR=%llX
+[out_regs] CR=%llX
+[out_regs] LR=%llX
+[out_regs] CTR=%llX
+[out_regs] GPR%d=%llX
+\end{lstlisting}
+
+\begin{table}[h!]
+  \begin{center}
+    \caption{Breve descrizione dei registri ispezionati dal malware}
+    \centering
+    \begin{adjustbox}{width=1.5\textwidth,center=\textwidth}
+    \label{tab:assembly1}
+    
+    \begin{tabular}{l|l|p{8cm}}
+      \toprule
+      Registro & Nome esteso & Descrizione \\
+      \midrule
+      \texttt{LR} & Link Register & E' usato per ospitare l'indirizzo dell'istruzione successiva ad una operazione di salto. \\
+      
+      \texttt{CR} & Condition Register & Un registro da 32 bit usato per specificare varie classi di operazioni.\\
+      
+      \texttt{CTR} & Control Register & Un registro da 32 bit usato per specificare varie classi di operazioni.\\
+      
+      \texttt{IAR} & Instruction Address Register & Usato per contenere l'indirizzo dell'istruzione successiva.\\
+      
+      \texttt{GPRs} & General Purpose Registers & Un registro da 32 bit per usi generici. E' spesso usato spesso come storage momentaneo per varie classi di operazioni.\\
+      
+      \texttt{MSR} & Machine State Register & Registro da 32 bit usato per specificare varie classi di operazioni.\\
+     
+      \bottomrule
+    \end{tabular}
+    \end{adjustbox}
+  \end{center}
+\end{table}
+
+
+
+
+Infine nei listati \ref{code:stringsInjectionAPIexecutablee8} e \ref{code:stringsInjectionAPIexecutablee9} viene mostrato l'accesso in lettura e in scrittura allo spazio di indirizzamento del processo bersaglio e di come riavvi l'esecuzione del processo dopo la code injection.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:stringsInjectionAPIexecutablee9},
+firstnumber=308]
+...
+[proc_readmemory] ret=%d, err=%d(%s), addr=%p, len=%d, data=%p
+[proc_readmemory] (%X~%X) %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X
+[proc_writememory] ret=%d, err=%d(%s), addr=%p, len=%d, data=%p
+...
+\end{lstlisting}
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:stringsInjectionAPIexecutablee8},
+firstnumber=308]
+...
+[proc_continue] PCRUN pid=%d, arg=%d, ret=%d, err=%d(%s)
+...
+\end{lstlisting}
 
 \subsubsection{Disassemblaggio}
 
