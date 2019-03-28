@@ -174,7 +174,7 @@ In accordo alle nostre analisi, confermate anche dal report AR18-275A della NCCI
   \end{center}
 \end{table}
 
-\subsubsection{Stringhe stampabili rilevanti}
+\subsubsection{Stringhe stampabili rilevanti}\label{strings2so}
 
 Per estrazione di tutte le stringhe stampabili contenute nel file \texttt{2.so} ci siamo serviti del tool \texttt{strings}\footnote{Cfr. \texttt{https://linux.die.net/man/1/strings}} di cui  riportiamo frammenti dell'output ottenuto nei listati \ref{code:strings2so-1} e \ref{code:strings2so-2}.
 
@@ -248,13 +248,7 @@ Non avendo a disposizione alcuna macchina equipaggiata con un processore
 
 \subsection{Analisi del file \texttt{Injection\_API\_executable\_e}}
 
-Il file \texttt{Injection\_API\_executable\_e} rappresenta un file di tipo AIX-executable, ovvero un file seguitibile su sistemi oprativi UNIX svilupati da ibm il cui scopo è quello 
-
-This file is an AIX (Advanced Interactive Executive) executable, intended for a proprietary UNIX operating system developed by IBM. This application is designed to inject a library into a currently running process
-
-Dalle analisi effettuate dalla National Cybersecurity and Communications Integration Center’s (NCCIC), l'istituzione governativa dedicata agli attacchi infromatici, ha stabilito che l'eseguibile scopo di eseguire code injection all'interno di un processo in esecuzione. 
-
-Code injection is the exploitation of a computer bug that is caused by processing invalid data. Injection is used by an attacker to introduce (or "inject") code into a vulnerable computer program and change the course of execution. \footnote{das\texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}
+In questa sezione dimostreremo come il file di tipo \textbf{eXtended COFF} denominato \texttt{Injection\_API\_executable\_e} sia in grado di eseguire un attacco di \textbf{code injection} a danno di un processo in esecuzione in modo tale da modificarne il comportamento a favore degli attaccanti. 
 
 \begin{table}[h!]
   \begin{center}
@@ -293,12 +287,21 @@ Code injection is the exploitation of a computer bug that is caused by processin
   \end{center}
 \end{table}
 
+\subsubsection{Stringhe stampabili rilevanti}
+
+Seguendo lo stesso ragionamento descritto nella sezione \ref{strings2so}, possiamo osservare dal listato \ref{code:stringsInjectionAPIexecutablee1} come la versione di GCC utilizzata è stata la 4.8.5 (versione rilasciata il 23 giugno 2015\footnote{Cfr. https://gcc.gnu.org/gcc-4.8/}) mentre la versione del sistema operativo target sia stato la V 7.1. 
+Non abbiamo dati sufficienti per Quest'ultima informazione non è tuttavia sufficiente per risalire  
+
+
+Sfortunatamente non è possibile risalire echnology Levels (TLs) \footnote{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/} del sistema operativo, una sorta di aggiornamento che introduce funzionalità. In ogni caso si tratta di un sistema operativo obsoleto: la prima versione è stata rilasciata a settembre 2010 e il supporto è terminato 30 Novembre 2013 tuttavia sono ancora supportate la versione V7.1 TL4 fino a dicembre 2019 mentre la versione V.7.1 TL5 fino ad aprile 2022. \footnote{Cfr: https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}
+
+
 
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} usando il comando \texttt{strings -d ./2.so}}, 
-label={code:strings2so5},
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:stringsInjectionAPIexecutablee1},
 firstnumber=347]
 ...
 ../../../../gcc-4.8.5/libgcc/config/rs6000/cxa_atexit.c
@@ -313,44 +316,28 @@ libpthread.a
 shr_xpg5_64.o
 \end{lstlisting}
 
-Estraendo tutte le stringhe stampabili attraverso il tool \texttt{strings} dal file \texttt{Injection\_API\_executable\_e}, 
-possiamo notare come quest'ultimo, 
-a differenza del file \texttt{2.so} visto precedentemente, sia stato realizzato utilizzando non solo una differente versione di GCC, la versione GCC 4.8.5 data 23 giugno 2015\footnote{http://www.gnu.org/software/gcc/gcc-4.8/}, ma anche è stato compilato per una diversa versione del sistema operativo AIX, AIX V7.1. 
-Sfortunatamente non è possibile risalire echnology Levels (TLs) \footnote{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/} del sistema operativo, una sorta di aggiornamento che introduce funzionalità. In ogni caso si tratta di un sistema operativo obsoleto: la prima versione è stata rilasciata a settembre 2010 e il supporto è terminato 30 Novembre 2013 tuttavia sono ancora supportate la versione V7.1 TL4 fino a dicembre 2019 mentre la versione V.7.1 TL5 fino ad aprile 2022. \footnote{Cfr: https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}
+Dalla riga 944 riportata nel listato \ref{code:stringsInjectionAPIexecutablee2} possiamo ricavare il nome e la versione del compilatore usato, lo XL C/C++ for AIX versione 11.1.0.1. 
 
-CONGETTURA:
-Motlo interessanti sono le righe 357 a 359, sono due object file e librerie (/usr/lib/libpthreads.a) e due object file (shr\_64.o) (shr\_xpg5\_64.o),, curiosamente sono due librerie richieste da vmstat is a tool that collects and reports data about your system’s memory, swap, and processor resource utilization in real time. It can be used to determine the root cause of performance and issues related to memory use. \footnote{http://www-01.ibm.com/support/docview.wss?uid=isg3T1023954}
-
-\begin{lstlisting}
-$ ldd /usr/bin/vmstat
-/usr/bin/vmstat needs:
-         /usr/lib/libc.a(shr_64.o)
-         /usr/lib/libwlm.a(shr_64.o)
-         /usr/lib/libperfstat.a(shr_64.o)
-         /usr/lib/libcorcfg.a(shr_64.o)
-         /unix
-         /usr/lib/libcrypt.a(shr_64.o)
-         /usr/lib/libpthreads.a(shr_xpg5_64.o)
-         /usr/lib/libcfg.a(shr_64.o)
-         /usr/lib/libodm.a(shr_64.o)
-         /usr/lib/liblvm.a(shr_64.o)
-         /usr/lib/libsrc.a(shr_64.o)
-\end{lstlisting}
+possiamo ricavare l'esatto compilatore utilizzato XL C for AIX, V11.1; Nativamente non supportato dal sistema operativo AIX V7.1\footnote{https://www-01.ibm.com/support/docview.wss?uid=swg21326972} ma il supporto è stat oaggiunto successivamente nel stemmbre 2010. \footnote{http://www-01.ibm.com/support/docview.wss?uid=swg1IZ84777}
 
 \begin{lstlisting}[
 frame=lines, 
 caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} usando il comando \texttt{strings -d ./2.so}}, 
+label={code:stringsInjectionAPIexecutablee2},
 firstnumber=944]
 ...
 IBM XL C for AIX, Version 11.1.0.1
 ...
 \end{lstlisting}
 
-Dalla riga 944 possiamo ricavare l'esatto compilatore utilizzato XL C for AIX, V11.1; Nativamente non supportato dal sistema operativo AIX V7.1\footnote{https://www-01.ibm.com/support/docview.wss?uid=swg21326972} ma il supporto è stat oaggiunto successivamente nel stemmbre 2010. \footnote{http://www-01.ibm.com/support/docview.wss?uid=swg1IZ84777}
+Nei listati successivi, come la \ref{code:stringsInjectionAPIexecutablee3}, possiamo notare numerose stringhe contenenti i ben noti \textit{conversion specifier} utilizzati nella stringa format passata come input alla ben nota funzione \texttt{fprintf}; molti dei conversion specifier utilizzati sono nella forma \%llX che permette di stampare dati interi senza segno in esadecimale. La copiosa presenza di stampe suggerisce che il malware fosse munito di un meccanismo di log, intuizione confermata anche dall'analisi della NCCIC.
+
+Le stringhe riportate nelle righe 333, 334 e 335 suggeriscono che l'applicazione fosse una command-line utility tale da permettere agli attaccanti ci condurre l'attacco di code injection sui sistemi IBM AIX
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} usando il comando \texttt{strings -d ./2.so}}, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:stringsInjectionAPIexecutablee3},
 firstnumber=320]
 ...
 [main] Inject Start
@@ -377,14 +364,112 @@ Usage: injection pid dll_path mode [handle func toc]
 ...
 \end{lstlisting}
 
-D notiamo vari format specifiers \%llX usati ad esempio dalla funzione printf dove vengono stampati per lo più long long-sized integer argument.
-	Unsigned hexadecimal integer (uppercase)
-	
-\%[flags][width][.precision][length]specifier
+Dalle stringhe riportate nel listato \ref{code:stringsInjectionAPIexecutablee4} possiamo intuire la presenza di una ipotetica funzione \texttt{out\_regs} utilizzata dagli attaccanti per stampare forse su un file di log il contenuto dei seguenti registri del processore:
+\begin{itemize}
+\item GPRs (General Purpose Registers)
+\item IAR (Instruction Address Register)
+\item MSR (Machine State Register)
+\item LR (Link Register)
+\item CR (Condition Register)
+\item CTR (Control Register)
+\item GPRs (General Purpose Registers)
+\end{itemize}
 
-Inoltre pare evidente che queste stampe fanno riferimento alla funzione main.
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:stringsInjectionAPIexecutablee4},
+firstnumber=320]
+[out_regs] IAR=%llX
+[out_regs] MSR=%llX
+[out_regs] CR=%llX
+[out_regs] LR=%llX
+[out_regs] CTR=%llX
+[out_regs] GPR%d=%llX
+\end{lstlisting}
 
-Tali indizi ci fanno supporre che l'eseguibile era munito di una quancleh meccanismo di logging che riportasse la funzione attuamlemten in esecuzion o un evento .comunicasse agli attaccanti quanto avvenivsse. curiosamente dalle righe ... c'è anche la descrizione dell'utilizzo del file che pare abbia due modalità, injection o ejection.
+Come si può apprendere dalla documentazione ufficiale fornita dalla IBM, ogni informazione riguardante un processo con identificatore \texttt{pid} è rappresentata da un grande insieme di file contenuti nella directory \texttt{/proc/pid}\footnote{pag 244} tra cui ricordiamo:
+
+\begin{description}
+\item[/proc/pid/status] Questo file riporta lo \textbf{stato} del processo \texttt{pid}.
+\item[/proc/pid/ctl] Rappresenta il \textbf{Control File} del processo \texttt{pid} ed è usato per manipolare l'esecuzione del processo \texttt{pid}.
+\item[/proc/pid/as] Rappresenta l'Address space del processo \texttt{pid}.
+\end{description}
+
+Nel listato ... si apprende come il malware ricostruisce tali percorsi con una chiamata sprintf (lo sappiamo perché è stata trovato un riferimento nel file) e quindi il malware è in grado di conoscere lo stato del processo attaccato, di manipolarne l'esecuzione e modificarne la memoria.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}},
+firstnumber=320]
+/proc/%d/ctl
+/proc/%d/status
+/proc/%d/as
+\end{lstlisting}
+
+Il contenuto presente nel listato \ref{code:stringsInjectionAPIexecutablee5} indica come l'attacco preveda la sospensione del processo bersaglio contro il quale eseguire la code injection: dalla documentazione ufficiale AIX si apprende come l'esecuzione dei processi possa essere alterata scrivendo opportuni messaggi
+ all'interno di particoali file chiamti \textbf{ctl} (\textit{control}) e \textbf{lwpctl} (\textit{thread control})\footnote{Cfr IBM - \textit{AIX Version 6.1:Reference File} - pp. 230}. Tutti i messaggi di controllo sono descritti da un numero intero che ne identifica l'operazione seguita da altri operandi numerici se previsti 
+ \footnote{Cfr IBM - \textit{AIX Version 6.1:Reference File} - pp. 239}. In particolare esiste il comando PCSTOP che permette di arrestare i thread di un particolare processo. Presumibilmente nel listato viene stampato l'identificatore del processo a cui è stato inviato il messaggio PCWSTOP.
+ 
+%ftp://public.dhe.ibm.com/systems/power/docs/aix/61/aixfiles\_pdf.pdf
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:stringsInjectionAPIexecutablee5},
+firstnumber=319]
+...
+[proc_wait] PCWSTOP pid=%d, ret=%d, err=%d(%s)
+[proc_wait] tid=%d, why=%d, what=%d, flag=%d, sig=%d
+...
+\end{lstlisting}
+
+Dalla documentazione ufficiale si può facilmente apprendere come l'operatore PCRUN, di cui possiamo notarne il riferimento nel  listato \ref{code:stringsInjectionAPIexecutablee6}, possa essere utilizzato per riavviare l'esecuzione di un processo dopo essere stato arrestato. Ciò indica come l'attacco preveda il riavvio del processo dopo aver eseguito la \textit{code injection}.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:stringsInjectionAPIexecutablee6},
+firstnumber=308]
+[proc_continue] PCRUN pid=%d, arg=%d, ret=%d, err=%d(%s)
+\end{lstlisting}
+
+Infatti come dimostra in modo inequivocabile il listato, il malware è in grado di leggere la memoria allocata dal sistema operativo di un processo e di modificarla per effettuare la code injection vera e propria.
+
+\begin{lstlisting}
+[proc_readmemory] ret=%d, err=%d(%s), addr=%p, len=%d, data=%p
+[proc_readmemory] (%X~%X) %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X
+[proc_writememory] ret=%d, err=%d(%s), addr=%p, len=%d, data=%p
+\end{lstlisting}
+
+La manipolazione del processo bersaglio avviene per mezzo di una serie di segnali tra cui:
+
+
+\begin{description}
+
+\item[PCSET] sets one or more modes of operation for the traced process. 
+\item[PCRUN] Riesegue un thread dopo essere stato arrestato; l'operando è un set di flag contenuto in un int.
+\item[PCSENTRY] Instructs the process's threads to stop on entry to specified system calls. T
+\item[PCSFAULT]Defines a set of hardware faults to be traced in the process. When incurring one of these faults, a thread stops.
+
+\end{description}
+
+
+\begin{lstlisting}
+[proc_attach] PCSET pid=%d, ret=%d, err=%d(%s)
+[proc_attach] PCSTOP pid=%d, ret=%d, err=%d(%s)
+[proc_attach] PCSTRACE pid=%d, ret=%d, err=%d(%s)
+[proc_attach] PCSFAULT pid=%d, ret=%d, err=%d(%s)
+[proc_attach] PCSENTRY pid=%d, ret=%d, err=%d(%s)
+[proc_detach] PCSTRACE pid=%d, ret=%d, err=%d(%s)
+[proc_detach] PCSFAULT pid=%d, ret=%d, err=%d(%s)
+[proc_detach] PCSENTRY pid=%d, ret=%d, err=%d(%s)
+[proc_detach] PCRUN pid=%d, ret=%d, err=%d(%s)
+\end{lstlisting}
+
+
+
+
 
 \subsubsection{Disassemblaggio}
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.3.22)  27 MAR 2019 17:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.3.22)  28 MAR 2019 16:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -888,83 +888,72 @@ Underfull \hbox (badness 10000) in paragraph at lines 138--138
 275A) \T1/cmr/m/n/8 - 2 Ot-to-bre 2018 -
  []
 
-[3] [4] [5] [6]
-Overfull \hbox (12.80151pt too wide) in paragraph at lines 314--316
-\T1/cmr/m/n/10 fi-le e li-bre-rie (/u-sr/-li-b/-libp-th-reads.a) e due ob-ject 
-fi-le (shr_64.o) (shr_xpg5_64.o),,
- []
+[3] [4] [5] [6] [7]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 369.
 
-[7]
-Overfull \hbox (16.91508pt too wide) in paragraph at lines 403--418
+ (/usr/share/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 369.
+ [8]
+[9]
+Overfull \hbox (16.91508pt too wide) in paragraph at lines 495--510
  [] 
  []
 
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 425.
-
-(/usr/share/texmf-dist/tex/latex/base/omscmr.fd
-File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 425.
-
-Overfull \hbox (15.58353pt too wide) in paragraph at lines 425--426
+Overfull \hbox (15.58353pt too wide) in paragraph at lines 517--518
 \T1/cmr/m/n/10 the right with 0b00 and sign-extended to 64 bi-ts (PowerPC[]) or
  32 bi-ts (POWER[]
  []
 
 
-Overfull \hbox (158.65845pt too wide) in paragraph at lines 427--428
+Overfull \hbox (158.65845pt too wide) in paragraph at lines 519--520
 []\T1/cmr/m/n/10 https://www.ibm.com/support/knowledgecenter/ssw_aix_72/com.ibm
 .aix.alangref/idalangref_inst_fields.htm 
  []
 
-[8]
-Overfull \hbox (178.9035pt too wide) in paragraph at lines 436--437
+
+Overfull \hbox (178.9035pt too wide) in paragraph at lines 528--529
 []\T1/cmr/m/n/10 https://www.ibm.com/support/knowledgecenter/en/ssw_aix_71/com.
 ibm.aix.alangref/idalangref_bbranchinst.htm 
  []
 
-[9] (./Relazione.lof)
+[10] (./Relazione.lof)
 \tf@lof=\write5
 \openout5 = `Relazione.lof'.
 
- [10
+ [11
 
 ] (./Relazione.lot)
 \tf@lot=\write6
 \openout6 = `Relazione.lot'.
 
- [11
+ [12
 
 ] (./Relazione.lol)
 \tf@lol=\write7
 \openout7 = `Relazione.lol'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 443.
- [12
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 535.
+ [13
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 443.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 535.
 
 (./Relazione.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 443.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 443.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 535.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 535.
 Package rerunfilecheck Info: File `Relazione.out' has not changed.
-(rerunfilecheck)             Checksum: 18FAB2D40C5DA5705FB172E171E8EED9;463.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
+(rerunfilecheck)             Checksum: 62424A39CFAF0487C822C22249EF5057;645.
  ) 
 Here is how much of TeX's memory you used:
- 22861 strings out of 492616
- 405501 string characters out of 6135177
- 707897 words of memory out of 5000000
- 26388 multiletter control sequences out of 15000+600000
- 556457 words of font info for 84 fonts, out of 8000000 for 9000
+ 22932 strings out of 492616
+ 406552 string characters out of 6135177
+ 714897 words of memory out of 5000000
+ 26436 multiletter control sequences out of 15000+600000
+ 557143 words of font info for 85 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  40i,11n,72p,795b,2388s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/t
@@ -980,14 +969,15 @@ r/share/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf-d
 ist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1
 /public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-supe
 r/sfrm1728.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfti0800.pfb>
-</usr/share/texmf-dist/fonts/type1/public/cm-super/sftt0800.pfb></usr/share/tex
-mf-dist/fonts/type1/public/cm-super/sftt0900.pfb></usr/share/texmf-dist/fonts/t
-ype1/public/cm-super/sftt1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-
-super/sftt1200.pfb>
-Output written on Relazione.pdf (13 pages, 439733 bytes).
+</usr/share/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb></usr/share/tex
+mf-dist/fonts/type1/public/cm-super/sftt0800.pfb></usr/share/texmf-dist/fonts/t
+ype1/public/cm-super/sftt0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-
+super/sftt1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt1200.
+pfb>
+Output written on Relazione.pdf (14 pages, 459732 bytes).
 PDF statistics:
- 346 PDF objects out of 1000 (max. 8388607)
- 308 compressed objects within 4 object streams
- 130 named destinations out of 1000 (max. 500000)
- 49 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 398 PDF objects out of 1000 (max. 8388607)
+ 358 compressed objects within 4 object streams
+ 152 named destinations out of 1000 (max. 500000)
+ 65 words of extra memory for PDF output out of 10000 (max. 10000000)
 
