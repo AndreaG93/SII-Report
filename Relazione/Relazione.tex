@@ -289,14 +289,9 @@ In questa sezione dimostreremo come il file di tipo \textbf{eXtended COFF} denom
 
 \subsubsection{Stringhe stampabili rilevanti}
 
-Seguendo lo stesso ragionamento descritto nella sezione \ref{strings2so}, possiamo osservare dal listato \ref{code:stringsInjectionAPIexecutablee1} come la versione di GCC utilizzata è stata la 4.8.5 (versione rilasciata il 23 giugno 2015\footnote{Cfr. https://gcc.gnu.org/gcc-4.8/}) mentre la versione del sistema operativo target sia stato la V 7.1. 
-Non abbiamo dati sufficienti per Quest'ultima informazione non è tuttavia sufficiente per risalire  
-
-
-Sfortunatamente non è possibile risalire echnology Levels (TLs) \footnote{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/} del sistema operativo, una sorta di aggiornamento che introduce funzionalità. In ogni caso si tratta di un sistema operativo obsoleto: la prima versione è stata rilasciata a settembre 2010 e il supporto è terminato 30 Novembre 2013 tuttavia sono ancora supportate la versione V7.1 TL4 fino a dicembre 2019 mentre la versione V.7.1 TL5 fino ad aprile 2022. \footnote{Cfr: https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}
-
-
-
+Cominciamo lo studio del file \texttt{Injection\_API\_executable\_e} partendo dall'analisi delle stringhe stampabili estratte attraverso il tool \texttt{strings}.
+Seguendo lo stesso ragionamento precedentemente descritto nella sezione \ref{strings2so}, possiamo osservare dal listato \ref{code:stringsInjectionAPIexecutablee1} la versione di GCC e del sistema operativo AIX utilizzati per eseguire la \textit{build} del malware, che risultano essere rispettivamente pari a 4.8.5 (la data pubblicazione risale al 23 giugno 2015\footnote{Cfr. https://gcc.gnu.org/gcc-4.8/}), e 7.1 (commercializzata a partire da settembre 2010).\footnote{Cfr: https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}
+Sfortunatamente non è stato possibile risalire alla versione degli aggiornamenti, che IBM identifica con il nome di \textit{Technology Levels} (TLs) \footnote{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/}, installati sul sistema operativo bersaglio al momento dell'attacco in modo tale da conoscere l'entità del rischio a cui si sottoponeva il sistema bancario. In ogni caso il supporto ufficiale per la versione 7.1, sostituita dalla ben più moderna versione 7.2 rilasciato nel dicembre 2015, è già terminato il 30 Novembre 2013 benché la versione 7.1 TL5 riceverà supporto fino ad aprile 2022.\footnote{Cfr: https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}
 
 \begin{lstlisting}[
 frame=lines, 
@@ -304,25 +299,15 @@ caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}},
 label={code:stringsInjectionAPIexecutablee1},
 firstnumber=347]
 ...
-../../../../gcc-4.8.5/libgcc/config/rs6000/cxa_atexit.c
-@(#)23  1.6  src/bos/usr/ccs/lib/libpthreads/init.c, libpth, bos610 6/21/07 15:28:59
-@(#)61	1.16  src/bos/usr/ccs/lib/libc/__threads_init.c, libcthrd, bos61B, b2007_33A0 8/2/07 13:09:21
-_GLOBAL__FI_eng64
-_GLOBAL__FD_eng64
 /opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5/ppc64:/opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5:/opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5/../../..:/usr/lib:/lib
-libc.a
-shr_64.o
-libpthread.a
-shr_xpg5_64.o
+...
 \end{lstlisting}
 
-Dalla riga 944 riportata nel listato \ref{code:stringsInjectionAPIexecutablee2} possiamo ricavare il nome e la versione del compilatore usato, lo XL C/C++ for AIX versione 11.1.0.1. 
-
-possiamo ricavare l'esatto compilatore utilizzato XL C for AIX, V11.1; Nativamente non supportato dal sistema operativo AIX V7.1\footnote{https://www-01.ibm.com/support/docview.wss?uid=swg21326972} ma il supporto è stat oaggiunto successivamente nel stemmbre 2010. \footnote{http://www-01.ibm.com/support/docview.wss?uid=swg1IZ84777}
+Un altro riferimento ai tool utilizzati dagli attaccanti lo possiamo ricavare dalla riga 944 riportata nel listato \ref{code:stringsInjectionAPIexecutablee2} dove apprendiamo l'utilizzo del compilatore lo \textbf{XL C/C++ for AIX} versione 11.1.0.1, quest'ultimo appositamente ottimizzato dalla IBM per i propri sistemi operativi. Ci risulta che tale versione del compilatore non fosse disponibile per AIX 7.1 al momento del rilascio e che sia divenuto disponibile in seguito ad un aggiornamento. \footnote{https://www-01.ibm.com/support/docview.wss?uid=swg21326972}
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} usando il comando \texttt{strings -d ./2.so}}, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
 label={code:stringsInjectionAPIexecutablee2},
 firstnumber=944]
 ...
@@ -330,9 +315,9 @@ IBM XL C for AIX, Version 11.1.0.1
 ...
 \end{lstlisting}
 
-Nei listati successivi, come la \ref{code:stringsInjectionAPIexecutablee3}, possiamo notare numerose stringhe contenenti i ben noti \textit{conversion specifier} utilizzati nella stringa format passata come input alla ben nota funzione \texttt{fprintf}; molti dei conversion specifier utilizzati sono nella forma \%llX che permette di stampare dati interi senza segno in esadecimale. La copiosa presenza di stampe suggerisce che il malware fosse munito di un meccanismo di log, intuizione confermata anche dall'analisi della NCCIC.
-
-Le stringhe riportate nelle righe 333, 334 e 335 suggeriscono che l'applicazione fosse una command-line utility tale da permettere agli attaccanti ci condurre l'attacco di code injection sui sistemi IBM AIX
+Analizziamo ora in dettaglio le varie operazioni compiute dal malware durante la sua esecuzione.
+Innanzitutto, osservando la particolare configurazione dei listati successivi come la numero \ref{code:stringsInjectionAPIexecutablee3}, notiamo quello che dovrebbe essere un insieme di stampe nella forma \texttt{[FUNCTION_NAME] [...]} eseguito probabilmente da un meccanismo di log, il che è stato confermato dalla già citata analisi della NCCIC; infatti, notiamo un gran numero di stringhe contenenti i ben noti \textit{conversion specifier} utilizzati nelle stringhe che specificano il formato delle stampe eseguite dalla funzione \texttt{fprintf} di cui molti sono nella forma \%llX, usata per stampare numeri interi senza segno in forma esadecimale\footnote{Cfr. http://man7.org/linux/man-pages/man3/printf.3.html}. 
+Come è stato confermato da altre analisi, le stringhe riportate nelle righe 333, 334 e 335 suggeriscono come l'applicazione è stata progettata per essere una command-line utility interattiva e di come il meccanismo di log sia stato utilizzato per ottenere informazioni e consentire agli attaccanti un attacco mirato.
 
 \begin{lstlisting}[
 frame=lines, 
@@ -363,6 +348,11 @@ Usage: injection pid dll_path mode [handle func toc]
 [main] WARNING::func_addr(%llX), toc_addr(%llX)
 ...
 \end{lstlisting}
+
+
+
+
+
 
 Dalle stringhe riportate nel listato \ref{code:stringsInjectionAPIexecutablee4} possiamo intuire la presenza di una ipotetica funzione \texttt{out\_regs} utilizzata dagli attaccanti per stampare forse su un file di log il contenuto dei seguenti registri del processore:
 \begin{itemize}
@@ -468,10 +458,49 @@ La manipolazione del processo bersaglio avviene per mezzo di una serie di segnal
 \end{lstlisting}
 
 
-
-
-
 \subsubsection{Disassemblaggio}
+
+\begin{lstlisting}
+bl      0x10000674 <.out_log>
+bl      0x10001220 <.proc_attach>
+li      r3,0
+bl      0x10001a28 <.proc_continue>
+li      r3,0
+li      r4,0
+bl      0x10001b44 <.proc_wait>
+ld      r3,728(r2)
+bl      0x10000674 <.out_log>
+addi    r9,r31,152
+mr      r3,r9
+bl      0x10001ee4 <.proc_getregs>
+addi    r9,r31,152
+mr      r3,r9
+bl      0x10000c80 <.out_regs>
+addi    r8,r31,536
+addi    r10,r31,152
+li      r9,384
+mr      r3,r8
+mr      r4,r10
+mr      r5,r9
+bl      0x1000324c <.memmove>
+nop
+ld      r9,536(r31)
+addi    r9,r9,-16
+mr      r3,r9
+li      r4,16384
+bl      0x10000b48 <.file_dump>
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+
 
 La traduzione dal linguaggio macchina all'assembler del file è stato usufrendo del servizio web https://onlinedisassembler.com/ per motivi di semplicità con le seguenti impostazioni
 
