@@ -22,6 +22,9 @@
 \usepackage{footnote}
 \usepackage{authblk}
 
+\usepackage{tabularx}
+\usepackage[skip=0.5\baselineskip]{caption}
+
 
 % Usato per personalizzare l'ambiente 'listings'...
 % ----------------------------------------------------------------------------------------- %
@@ -63,19 +66,38 @@ breaklines=true
 
 \chapter{Analisi tecnica del malware}
 
-\section{Analisi dei file}
+Secondo il rapporto stilato dalla NCCIC\footnote{Cfr. \texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}, il malware denominato \textbf{FASTCash} è composto da una serie \textbf{12 file} i quali, attraverso tecniche di \textbf{code injection} tali da alterare il normale comportamento di uno o più processi legittimi, che hanno consentito l'ispezione e alterazione dei dati trasmessi durante transazioni basate su \textbf{protocollo ISO 8583}, hanno permesso agli attaccanti di eseguire operazioni di prelievo fraudolento di denaro dagli ATM.
+Tra questi file, di cui riportiamo una lista completa in \ref{tab:MalwareFileList}, spiccano per importanza:
+
+\begin{itemize}
+\item Tre file progettati per essere eseguibili su sistemi operativi AIX, uno dei quali responsabile dell'esecuzione della code injection contro i processi operanti sul server bersaglio. Due di essi sono stati analizzati nelle sezioni \ref{sec:2.so} e \ref{sec:InjectionAPIExecutableE}
+
+\item Due versioni di un malware capace di modificare le impostazioni del firewall.
+
+\item Un \textbf{trojan} capace di consentire \textbf{accesso remoto completo} al sistema bersaglio.
+\end{itemize}
+
+Prima di procedere con la descrizione dettagliata di alcuni dei file che compongono il malware, riportiamo di seguito i vari tool utilizzati durante le nostre analisi:
+
+\begin{description}
+\item[\texttt{strings}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/strings}} Usato per l'estrazione di tutte le stringhe stampabili contenuti in un file.
+\item[\texttt{stat}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/stat}} Utilizzato per ottenere alcune informazioni di base dei file tra cui nome, dimensione, data di ultima modifica, ecc.
+\item[\texttt{file}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/file}} Usato per determinare la tipologia di appartenenza di uno specifico file.
+\item[\texttt{onlinedisassembler}]\footnote{Cfr. \texttt{https://onlinedisassembler.com/}} Il de-assemblaggio dei file è stato eseguito utilizzando il servizio cloud \textbf{onlinedisassembler} che ci ha permesso di ricavare facilmente i listati di codice assembly dei file scritti per le architetture PowerPC\texttrademark.
+\end{description}
 
 \begin{table}[h!]
-  \begin{center}
-    \caption{Lista dei file facentiff parte del malware FASTCash}
+ 
+    \caption{Lista dei file del malware FASTCash}
     \centering
-    \label{tab:FilesList}
+    \small
+    \label{tab:MalwareFileList}
     
     \begin{adjustbox}{width=1.5\textwidth,center=\textwidth}
  
-    \begin{tabular}{l|c|r}
+     \begin{tabular}{l|r}
       \toprule
-      \textbf{Nome} & \textbf{SHA256} \\
+      \textbf{Nome file} & \textbf{SHA256 digest} \\
       \midrule
       
       Lost\_File.so & \texttt{10ac312c8dd02e417dd24d53c99525c29d74dcbc84730351ad7a4e0a4b1a0eba} \\
@@ -105,32 +127,10 @@ breaklines=true
       \bottomrule
     \end{tabular}
     \end{adjustbox}
-  \end{center}
+  
 \end{table}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\newpage
-\subsection{Analisi del file \texttt{2.so}}
+\section{Analisi del file \texttt{2.so}}\label{sec:2.so}
 
 In base all'output ottenuto dal tool unix \texttt{file}, \texttt{2.so} è un file di tipo \textbf{eXtended COFF} (\textbf{XCOFF}) che rappresenta la versione migliorata ed estesa del formato \textbf{Common Object File Format} (\textbf{COFF}), il formato di file standard che ha definito la struttura dei file eseguibili e delle librerie nei sistemi operativi UNIX\footnote{Cfr. \texttt{https://it.wikipedia.org/wiki/COFF}} fino al 1999\footnote{Cfr. \texttt{https://en.wikipedia.org/wiki/Executable\_and\_Linkable\_Format}}, anno della definitiva adozione dello standard \textbf{Executable and Linkable Format} o \textbf{ELF}.
 XCOFF rappresenta tuttavia uno standard proprietario sviluppato da IBM\footnote{Cfr. IBM - \textit{XCOFF Object File Format} - \texttt{https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.files/XCOFF.htm} (data ultima consultazione 27-03-2019)} adottato nei sistemi operativi \textbf{Advanced Interactive eXecutive} o \textbf{AIX}, una famiglia di sistemi operativi proprietari basati su Unix sviluppati dalla stessa IBM.\footnote{Cfr. \texttt{https://www.ibm.com/it-infrastructure/power/os/aix}}
@@ -174,7 +174,7 @@ In accordo alle nostre analisi, confermate anche dal report AR18-275A della NCCI
   \end{center}
 \end{table}
 
-\subsubsection{Stringhe stampabili rilevanti}\label{strings2so}
+\subsection{Analisi delle stringhe di rilievo}\label{strings2so}
 
 Per estrazione di tutte le stringhe stampabili contenute nel file \texttt{2.so} ci siamo serviti del tool \texttt{strings}\footnote{Cfr. \texttt{https://linux.die.net/man/1/strings}} di cui  riportiamo frammenti dell'output ottenuto nei listati \ref{code:strings2so-1} e \ref{code:strings2so-2}.
 
@@ -413,7 +413,7 @@ bl      0x100007c0 <.localtime>
 
 \newpage
 
-\subsection{Analisi del file \texttt{Injection\_API\_executable\_e}}
+\section{Analisi del file \texttt{Injection\_API\_executable\_e}}\label{sec:InjectionAPIExecutableE}
 
 In questa sezione dimostreremo come il file di tipo \textbf{eXtended COFF} denominato \texttt{Injection\_API\_executable\_e} sia in grado di eseguire un attacco di \textbf{code injection} a danno di un processo in esecuzione in modo tale da modificarne il comportamento a favore degli attaccanti. 
 

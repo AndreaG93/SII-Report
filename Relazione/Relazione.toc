@@ -1,18 +1,17 @@
 \babel@toc {italian}{}
 \babel@toc {italian}{}
 \contentsline {chapter}{\numberline {1}Analisi tecnica del malware}{2}{chapter.1}% 
-\contentsline {section}{\numberline {1.1}Analisi dei file}{2}{section.1.1}% 
-\contentsline {subsection}{\numberline {1.1.1}Analisi del file \texttt {2.so}}{3}{subsection.1.1.1}% 
-\contentsline {subsubsection}{\numberline {1.1.1.1}Stringhe stampabili rilevanti}{3}{subsubsection.1.1.1.1}% 
-\contentsline {subsubsection}{\numberline {1.1.1.2}Analisi del codice assembly}{5}{subsubsection.1.1.1.2}% 
-\contentsline {paragraph}{\numberline {1.1.1.2.1}La procedura \texttt {DL\_ISO8583\_MSG\_GetField\_Bin}}{5}{paragraph.1.1.1.2.1}% 
-\contentsline {paragraph}{\numberline {1.1.1.2.2}La procedura \texttt {DL\_ISO8583\_MSG\_GetField\_Str}}{6}{paragraph.1.1.1.2.2}% 
-\contentsline {paragraph}{\numberline {1.1.1.2.3}La procedura \texttt {DL\_ISO8583\_MSG\_SetField\_Bin}}{6}{paragraph.1.1.1.2.3}% 
-\contentsline {paragraph}{\numberline {1.1.1.2.4}La procedura \texttt {DL\_ISO8583\_MSG\_RemoveField}}{7}{paragraph.1.1.1.2.4}% 
-\contentsline {paragraph}{\numberline {1.1.1.2.5}La procedura \texttt {out\_dump\_log}}{7}{paragraph.1.1.1.2.5}% 
-\contentsline {subsection}{\numberline {1.1.2}Analisi del file \texttt {Injection\_API\_executable\_e}}{9}{subsection.1.1.2}% 
-\contentsline {subsubsection}{\numberline {1.1.2.1}Stringhe stampabili rilevanti}{9}{subsubsection.1.1.2.1}% 
-\contentsline {subsubsection}{\numberline {1.1.2.2}Disassemblaggio}{15}{subsubsection.1.1.2.2}% 
-\contentsline {paragraph}{\numberline {1.1.2.2.1}Analisi della procedura \texttt {main}}{15}{paragraph.1.1.2.2.1}% 
-\contentsline {paragraph}{\numberline {1.1.2.2.2}Analisi della procedura \texttt {inject}}{16}{paragraph.1.1.2.2.2}% 
-\contentsline {paragraph}{\numberline {1.1.2.2.3}Analisi della procedura \texttt {proc\_attach}}{18}{paragraph.1.1.2.2.3}% 
+\contentsline {section}{\numberline {1.1}Analisi del file \texttt {2.so}}{3}{section.1.1}% 
+\contentsline {subsection}{\numberline {1.1.1}Analisi delle stringhe di rilievo}{3}{subsection.1.1.1}% 
+\contentsline {subsubsection}{\numberline {1.1.1.1}Analisi del codice assembly}{5}{subsubsection.1.1.1.1}% 
+\contentsline {paragraph}{\numberline {1.1.1.1.1}La procedura \texttt {DL\_ISO8583\_MSG\_GetField\_Bin}}{5}{paragraph.1.1.1.1.1}% 
+\contentsline {paragraph}{\numberline {1.1.1.1.2}La procedura \texttt {DL\_ISO8583\_MSG\_GetField\_Str}}{6}{paragraph.1.1.1.1.2}% 
+\contentsline {paragraph}{\numberline {1.1.1.1.3}La procedura \texttt {DL\_ISO8583\_MSG\_SetField\_Bin}}{6}{paragraph.1.1.1.1.3}% 
+\contentsline {paragraph}{\numberline {1.1.1.1.4}La procedura \texttt {DL\_ISO8583\_MSG\_RemoveField}}{7}{paragraph.1.1.1.1.4}% 
+\contentsline {paragraph}{\numberline {1.1.1.1.5}La procedura \texttt {out\_dump\_log}}{7}{paragraph.1.1.1.1.5}% 
+\contentsline {section}{\numberline {1.2}Analisi del file \texttt {Injection\_API\_executable\_e}}{10}{section.1.2}% 
+\contentsline {subsubsection}{\numberline {1.2.0.1}Stringhe stampabili rilevanti}{10}{subsubsection.1.2.0.1}% 
+\contentsline {subsubsection}{\numberline {1.2.0.2}Disassemblaggio}{16}{subsubsection.1.2.0.2}% 
+\contentsline {paragraph}{\numberline {1.2.0.2.1}Analisi della procedura \texttt {main}}{16}{paragraph.1.2.0.2.1}% 
+\contentsline {paragraph}{\numberline {1.2.0.2.2}Analisi della procedura \texttt {inject}}{17}{paragraph.1.2.0.2.2}% 
+\contentsline {paragraph}{\numberline {1.2.0.2.3}Analisi della procedura \texttt {proc\_attach}}{19}{paragraph.1.2.0.2.3}% 

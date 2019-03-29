@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.3.22)  29 MAR 2019 15:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.3.22)  29 MAR 2019 19:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -654,6 +654,37 @@ Package: authblk 2001/02/27 1.3 (PWD)
 \c@authors=\count309
 \c@affil=\count310
 )
+(/usr/share/texmf-dist/tex/latex/tools/tabularx.sty
+Package: tabularx 2016/02/03 v2.11b `tabularx' package (DPC)
+\TX@col@width=\dimen258
+\TX@old@table=\dimen259
+\TX@old@col=\dimen260
+\TX@target=\dimen261
+\TX@delta=\dimen262
+\TX@cols=\count311
+\TX@ftn=\toks28
+)
+(/usr/share/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2018/10/06 v3.3-154 Customizing captions (AR)
+
+(/usr/share/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2018/09/12 v1.8c caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 64.
+\captionmargin=\dimen263
+\captionmargin@=\dimen264
+\captionwidth=\dimen265
+\caption@tempdima=\dimen266
+\caption@indent=\dimen267
+\caption@parindent=\dimen268
+\caption@hangindent=\dimen269
+)
+\c@caption@flags=\count312
+\c@ContinuedFloat=\count313
+Package caption Info: float package is loaded.
+Package caption Info: hyperref package is loaded.
+Package caption Info: listings package is loaded.
+Package caption Info: sidecap package is loaded.
+)
 (/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2018/09/02 1.7 listings language file
 )
@@ -669,36 +700,36 @@ LaTeX Warning: Label `code:stringsInjectionAPIexecutablee5' multiply defined.
 )
 \openout1 = `Relazione.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Info: Redefining \it@ocap on input line 58.
-LaTeX Info: Redefining \it@ccap on input line 58.
-\c@lstlisting=\count311
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Info: Redefining \it@ocap on input line 61.
+LaTeX Info: Redefining \it@ccap on input line 61.
+\c@lstlisting=\count314
  (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count312
-\scratchdimen=\dimen258
+\scratchcounter=\count315
+\scratchdimen=\dimen270
 \scratchbox=\box64
-\nofMPsegments=\count313
-\nofMParguments=\count314
-\everyMPshowfont=\toks28
-\MPscratchCnt=\count315
-\MPscratchDim=\dimen259
-\MPnumerator=\count316
-\makeMPintoPDFobject=\count317
-\everyMPtoPDFconversion=\toks29
+\nofMPsegments=\count316
+\nofMParguments=\count317
+\everyMPshowfont=\toks29
+\MPscratchCnt=\count318
+\MPscratchDim=\dimen271
+\MPnumerator=\count319
+\makeMPintoPDFobject=\count320
+\everyMPtoPDFconversion=\toks30
 ) (/usr/share/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -823,7 +854,7 @@ Dictionary: translator-basic-dictionary, Language: English
 File: siunitx-abbreviations.cfg 2017/11/26 v2.7k siunitx: Abbreviated units
 )
 \AtBeginShipoutBox=\box65
-Package hyperref Info: Link coloring OFF on input line 58.
+Package hyperref Info: Link coloring OFF on input line 61.
 
 (/usr/share/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -831,52 +862,54 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 (/usr/share/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count318
+\c@section@level=\count321
 )
-LaTeX Info: Redefining \ref on input line 58.
-LaTeX Info: Redefining \pageref on input line 58.
-LaTeX Info: Redefining \nameref on input line 58.
+LaTeX Info: Redefining \ref on input line 61.
+LaTeX Info: Redefining \pageref on input line 61.
+LaTeX Info: Redefining \nameref on input line 61.
 
 (./Relazione.out) (./Relazione.out)
 \@outlinefile=\write3
 \openout3 = `Relazione.out'.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 58.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+LaTeX Font Info:    Try loading font information for U+msa on input line 61.
 
 (/usr/share/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 58.
+LaTeX Font Info:    Try loading font information for U+msb on input line 61.
 
 (/usr/share/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./Relazione.toc
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 5.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 4.
 
 (/usr/share/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-Overfull \hbox (21.52162pt too wide) in paragraph at lines 8--8
+Overfull \hbox (21.52162pt too wide) in paragraph at lines 7--7
  [][] [][]\T1/cmr/m/n/10 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_GetFiel
 d_Bin[] [][]  
  []
 
 
-Overfull \hbox (21.52162pt too wide) in paragraph at lines 9--9
+Overfull \hbox (21.52162pt too wide) in paragraph at lines 8--8
  [][] [][]\T1/cmr/m/n/10 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_GetFiel
 d_Str[] [][]  
  []
 
 
-Overfull \hbox (21.52162pt too wide) in paragraph at lines 10--10
+Overfull \hbox (21.52162pt too wide) in paragraph at lines 9--9
  [][] [][]\T1/cmr/m/n/10 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_SetFiel
 d_Bin[] [][]  
  []
 
 
-Overfull \hbox (16.2729pt too wide) in paragraph at lines 11--11
+Overfull \hbox (16.2729pt too wide) in paragraph at lines 10--10
  [][] [][]\T1/cmr/m/n/10 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_RemoveF
 ield[] [][]  
  []
@@ -889,15 +922,23 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.62 \newpage
+l.65 \newpage
               [1
 
 ]
 Capitolo 1.
-[2
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 73.
+(/usr/share/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 73.
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 83.
+ [2
 
 ]
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/cmtt/m/n' tried instead on input line 133.
 
 Overfull \hbox (169.11827pt too wide) in paragraph at lines 136--136
@@ -917,6 +958,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 138--138
 \T1/cmr/m/n/8 ter's (NC-CIC), \T1/cmr/m/it/8 Mal-ware Ana-ly-sis Re-port (AR18-
 275A) \T1/cmr/m/n/8 - 2 Ot-to-bre 2018 -
  []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
 LaTeX Warning: Reference `code:strings2so-1' on page 3 undefined on input line 
@@ -939,30 +983,32 @@ LaTeX Warning: Reference `code:strings2so-1' on page 4 undefined on input line
 LaTeX Warning: Reference `code:strings2so-2' on page 4 undefined on input line 
 212.
 
-[4]
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 249.
- [5]
+[4] [5]
 Overfull \hbox (121.79573pt too wide) in paragraph at lines 293--294
- \T1/cmr/bx/n/10 1.1.1.2.2 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_GetFi
+ \T1/cmr/bx/n/10 1.1.1.1.2 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_GetFi
 eld_Str[][] \T1/cmr/m/n/10 La fun-zio-ne \T1/cmtt/m/n/10 DL_ISO8583_MSG_GetFiel
 d_Str
  []
 
 
 Overfull \hbox (0.46425pt too wide) in paragraph at lines 297--300
- \T1/cmr/bx/n/10 1.1.1.2.3 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_SetFi
+ \T1/cmr/bx/n/10 1.1.1.1.3 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_SetFi
 eld_Bin[][] \T1/cmr/m/n/10 L'e-si-sten-za di ta-
  []
 
 [6]
 Overfull \hbox (118.5743pt too wide) in paragraph at lines 338--339
- \T1/cmr/bx/n/10 1.1.1.2.4 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_Remov
+ \T1/cmr/bx/n/10 1.1.1.1.4 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_Remov
 eField[][] \T1/cmr/m/n/10 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_Remove
 Field
  []
 
-[7] [8] [9] [10] [11] [12]
+[7] [8] [9]
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 457.
+
+[10] [11] [12] [13]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
@@ -972,16 +1018,7 @@ Overfull \hbox (118.66821pt too wide) in paragraph at lines 695--696
 ibm.aix.kdb/kdb_registers.htm 
  []
 
-[13] [14] [15]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 802.
-
- (/usr/share/texmf-dist/tex/latex/base/omscmr.fd
-File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 802.
- [16] [17]
-[18] [19] [20]
+[14] [15] [16] [17] [18] [19] [20] [21]
 Overfull \hbox (15.58353pt too wide) in paragraph at lines 1049--1050
 \T1/cmr/m/n/10 the right with 0b00 and sign-extended to 64 bi-ts (PowerPC[]) or
  32 bi-ts (POWER[]
@@ -999,24 +1036,24 @@ Overfull \hbox (178.9035pt too wide) in paragraph at lines 1060--1061
 ibm.aix.alangref/idalangref_bbranchinst.htm 
  []
 
-[21] (./Relazione.lof)
+[22] (./Relazione.lof)
 \tf@lof=\write5
 \openout5 = `Relazione.lof'.
 
- [22
+ [23
 
 ] (./Relazione.lot)
 \tf@lot=\write6
 \openout6 = `Relazione.lot'.
 
- [23
+ [24
 
 ] (./Relazione.lol)
 \tf@lol=\write7
 \openout7 = `Relazione.lol'.
 
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1067.
- [24
+ [25
 
 ]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 1067.
@@ -1025,9 +1062,15 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 1067.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1067.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1067.
 
-Package rerunfilecheck Info: File `Relazione.out' has not changed.
-(rerunfilecheck)             Checksum: 4A5B38024D3204593FE50D9A12BAD374;1521.
 
+
+Package rerunfilecheck Warning: File `Relazione.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `Relazione.out':
+(rerunfilecheck)             Before: 116CF751CC2122B08F28050DFCD8F56F;1444
+(rerunfilecheck)             After:  061452B649A76F527E2529FE3C8C2A5E;1438.
 
 LaTeX Warning: There were undefined references.
 
@@ -1036,35 +1079,58 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 23473 strings out of 492616
- 414502 string characters out of 6135177
- 732897 words of memory out of 5000000
- 26639 multiletter control sequences out of 15000+600000
- 557458 words of font info for 86 fonts, out of 8000000 for 9000
+ 24600 strings out of 492616
+ 434690 string characters out of 6135177
+ 755059 words of memory out of 5000000
+ 27738 multiletter control sequences out of 15000+600000
+ 560252 words of font info for 95 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 40i,11n,72p,939b,2388s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/font
-s/type1/public/cm-super/sfbi1000.pfb></usr/share/texmf-dist/fonts/type1/public/
-cm-super/sfbx1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx12
-00.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/sh
-are/texmf-dist/fonts/type1/public/cm-super/sfbx2074.pfb></usr/share/texmf-dist/
-fonts/type1/public/cm-super/sfbx2488.pfb></usr/share/texmf-dist/fonts/type1/pub
-lic/cm-super/sfit1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sf
-rm0500.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0600.pfb></us
-r/share/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb></usr/share/texmf-d
-ist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf-dist/fonts/type1
-/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-supe
-r/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb>
-</usr/share/texmf-dist/fonts/type1/public/cm-super/sfti0800.pfb></usr/share/tex
-mf-dist/fonts/type1/public/cm-super/sfti1000.pfb></usr/share/texmf-dist/fonts/t
-ype1/public/cm-super/sftt0800.pfb></usr/share/texmf-dist/fonts/type1/public/cm-
-super/sftt0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt1000.
-pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on Relazione.pdf (25 pages, 532408 bytes).
+ 53i,11n,92p,939b,2315s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{paragraph.1.1.0.2.5} has been referenced but does
+ not exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{paragraph.1.1.0.2.4} has been referenced but does n
+ot exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{paragraph.1.1.0.2.3} has been referenced but does n
+ot exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{paragraph.1.1.0.2.2} has been referenced but does n
+ot exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{paragraph.1.1.0.2.1} has been referenced but does n
+ot exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.1.1.0.2} has been referenced but does
+ not exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.1.1.0.1} has been referenced but does
+ not exist, replaced by a fixed one
+
+{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/
+type1/public/cm-super/sfbi1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm
+-super/sfbx0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1000
+.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/shar
+e/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fo
+nts/type1/public/cm-super/sfbx2074.pfb></usr/share/texmf-dist/fonts/type1/publi
+c/cm-super/sfbx2488.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfit
+1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0500.pfb></usr/
+share/texmf-dist/fonts/type1/public/cm-super/sfrm0600.pfb></usr/share/texmf-dis
+t/fonts/type1/public/cm-super/sfrm0700.pfb></usr/share/texmf-dist/fonts/type1/p
+ublic/cm-super/sfrm0800.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/
+sfrm0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></
+usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf
+-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf-dist/fonts/typ
+e1/public/cm-super/sfti0800.pfb></usr/share/texmf-dist/fonts/type1/public/cm-su
+per/sfti1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt0800.pf
+b></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb></usr/share/t
+exmf-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/share/texmf-dist/fonts
+/type1/public/cm-super/sftt1440.pfb>
+Output written on Relazione.pdf (26 pages, 573872 bytes).
 PDF statistics:
- 914 PDF objects out of 1000 (max. 8388607)
- 857 compressed objects within 9 object streams
- 489 named destinations out of 1000 (max. 500000)
- 129 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 943 PDF objects out of 1000 (max. 8388607)
+ 883 compressed objects within 9 object streams
+ 501 named destinations out of 1000 (max. 500000)
+ 121 words of extra memory for PDF output out of 10000 (max. 10000000)
 
