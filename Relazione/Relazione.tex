@@ -181,7 +181,7 @@ Per estrazione di tutte le stringhe stampabili contenute nel file \texttt{2.so} 
 \begin{lstlisting}[
 frame=lines, 
 caption={Stringe estratte dal file \texttt{2.so}}, 
-label={code:strings2so-1},
+label={code:2.so-1},
 firstnumber=465
 ]
 ...
@@ -204,7 +204,7 @@ Ovviamente il riferimento alla libreria standard \texttt{libc.c} e di GCC sugger
 \begin{lstlisting}[
 frame=lines, 
 caption={Formato del percorso di installazione delle librerie GCC nei sistemi operativi AIX}, 
-label={code:example-1},
+label={code:2.so-2},
 ]
 /opt/freeware/lib/gcc/<architecture_AIX_level>/<GCC_Level>
 \end{lstlisting}
@@ -214,7 +214,7 @@ Il listato \ref{code:strings2so-2} mostra ciò che dovrebbero essere i nomi dell
 \begin{lstlisting}[
 frame=lines, 
 caption={Stringhe estratte dal file \texttt{2.so}}, 
-label={code:strings2so-2},
+label={code:2.so-3},
 firstnumber=545
 ]
 ...
@@ -238,11 +238,178 @@ _DL_ISO8583_FIELD_Unpack
 ...
 \end{lstlisting}
 
-\subsubsection{Analisi assembler}
+\subsubsection{Analisi del codice assembly}
 
-Non avendo a disposizione alcuna macchina equipaggiata con un processore 
+Benché naturalmente sprovvista di una procedura \texttt{main}, trattandosi di una shared library, il file \texttt{2.so} assume un ruolo centrale per il corretto svolgimento dell'attacco poiché esporta tutte le procedure necessarie per manipolare le transazioni elettroniche dei sistemi finanziari attaccati.
+I metodi esportati dal file \texttt{so.2}, una parte dei quali sono mostrati nel listato \ref{code:2.so-3}, sono molto numerosi e riguardano principalmente l'ispezione e la manipolazione dei messaggi usati dal protocollo ISO8583 a cui si aggiungono altre procedure di supporto, tra cui quelle usate per implementare un meccanismo di logging (\texttt{out\_dump\_log}) e altre usate per gestire una tabella hash (\texttt{hashmap\_new}, \texttt{hashmap\_init}, \texttt{hashmap\_get} ecc.).
+Di seguito riportiamo l'analisi di alcune delle procedure principali presenti nel file.
 
+\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_GetField\_Bin}} 
 
+Analizzando le prime righe di codice della procedura, riportate in parte nel listato \ref{code:2.so-4}, troviamo molte istruzioni \texttt{std} e \texttt{mr} utilizzanti i registri \texttt{r0} e \texttt{r31} come sorgenti per popolare un altro insieme di registri; perciò si può supporre che i registri \texttt{r0} e \texttt{r31} siano stati usati per contenere i dati passati come argomento alla funzione, presumibilmente l'indirizzo dell'area di memoria del messaggio da ispezionare e un riferimento al campo da estrarre (probabilmente una stringa o un identificatore numerico).
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-4},
+firstnumber=347]
+std     r31,-8(r1)
+stdu    r1,-80(r1)
+mr      r31,r1
+mr      r0,r3
+std     r4,136(r31)
+std     r5,144(r31)
+std     r6,152(r31)
+stw     r0,128(r31)
+\end{lstlisting}
+
+Un altro frammento della stessa procedura, riportato nel listato \ref{code:2.so-5}, mostra come l'ispezione del campo di interesse appartenente al messaggio ISO8583 avvenga per mezzo di un ciclo; notiamo infatti diverse istruzioni di \texttt{beq} (\textit{Branch On Equal}) aventi come argomento uno stesso indirizzo target e altrettante istruzioni \texttt{cmpdi} (\textit{Compare Doubleword Immediate}). 
+E' probabile che tale ciclo sia stato usato per attraversare il flusso di byte che compone un certo messaggio fino al raggiungimento dell'indirizzo corrispondente al campo di intessere che pare venga restituito alla funzione chiamante per mezzo di un'apposita istruzione \texttt{mr} coinvolgendo il registro \texttt{r3} come output (riga 14010).
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-5},
+firstnumber=347]
+cmpdi   cr7,r0,0
+beq     cr7,0x10002048
+lwz     r0,128(r31)
+cmplwi  cr7,r0,128
+bgt     cr7,0x10002048
+lwz     r0,128(r31)
+clrldi  r9,r0,32
+ld      r11,136(r31)
+addi    r0,r9,1
+rldicr  r0,r0,4,59
+add     r9,r0,r11
+addi    r9,r9,8
+ld      r0,0(r9)
+cmpdi   cr7,r0,0
+beq     cr7,0x10002048
+\end{lstlisting}
+
+\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_GetField\_Str}}
+
+La funzione \texttt{DL\_ISO8583\_MSG\_GetField\_Str} è sostanzialmente identica a quella precedentemente descritta sebbene il nome suggerisca che tale funzione restituisca indubbiamente una stringa piuttosto che dati binari.
+
+\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_SetField\_Bin}}
+
+L'esistenza di tale procedura dimostra che il malware non si limita solo all'ispezione dei messaggi ma che è in grado di manipolarne i contenuti. 
+Come mostrato nel listato \ref{code:2.so-5}, in modo simile alle altre procedure, il messaggio viene dapprima ispezionato per mezzo di istruzioni di salto incondizionato (b) e condizionato (ble) insieme ad opportune istruzioni di comparazione (cmplwi) fino al raggiungimento dell'indirizzo corrispondente al campo da modificare.
+Una successiva istruzione di salto alla procedura \texttt{DL\_ISO8583\_MSG\_AllocField}, attraverso la quale viene presumibilmente allocata un'opportuna area di memoria atta ad ospitare il campo con i nuovi valori, è seguita infine dall'invocazione della procedura \texttt{memmove} completando così l'operazione di modifica del messaggio.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-6},
+firstnumber=347]
+cmplwi  cr7,r0,128
+ble     cr7,0x10001b84
+li      r0,1
+std     r0,128(r31)
+b       0x10001c08
+lwz     r0,208(r31)
+clrldi  r9,r0,32
+lwz     r0,224(r31)
+clrldi  r0,r0,32
+addi    r11,r31,120
+mr      r3,r9
+mr      r4,r0
+ld      r5,232(r31)
+mr      r6,r11
+bl      0x100026e0 <._DL_ISO8583_MSG_AllocField>
+nop
+mr      r0,r3
+std     r0,112(r31)
+ld      r0,112(r31)
+cmpdi   cr7,r0,0
+bne     cr7,0x10001c00
+ld      r9,120(r31)
+lwz     r0,224(r31)
+clrldi  r0,r0,32
+mr      r3,r9
+ld      r4,216(r31)
+mr      r5,r0
+bl      0x1000034c <.memmove>
+\end{lstlisting}
+
+\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_RemoveField}}
+
+La procedura \texttt{DL\_ISO8583\_MSG\_RemoveField} presenta a una struttura sostanzialmente identica a quelle viste finora. L'unica differenza degna di nota, come mostrato nel listato \ref{code:2.so-7}, riguarda l'eliminazione del campo specificato che avviene attraverso una chiamata alla procedura \texttt{free}.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-7},
+firstnumber=347]
+mr      r3,r0
+bl      0x100002dc <.free>
+ld      r2,40(r1)
+\end{lstlisting}
+
+\paragraph{La procedura \texttt{out\_dump\_log}}
+
+Tale procedura, richiamata molte volte nel codice, ha come scopo quello di scrivere messaggi di log opportunamente formattati in un file esterno, forse per motivi di debug o per tener traccia dello stato di avanzamento dell'attacco.
+La prima porzione del codice assembly, mostrata nel listato \ref{code:2.so-8}, è dominata da una grande quantità di istruzioni \texttt{std} usate per popolare tutti i registri dalla numero 3 alla 10 e dalla numero 23 alla 31, che probabilmente conterranno i dati da stampare nel file di log.
+Dal momento che la totalità di queste istruzioni usano i registri \texttt{r0} e \texttt{r31} come sorgenti quest'ultimi conterranno i dati passati come argomento alla funzione.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-8},
+firstnumber=347]
+mflr    r0
+std     r23,-72(r1)
+std     r24,-64(r1)
+std     r25,-56(r1)
+std     r26,-48(r1)
+std     r27,-40(r1)
+std     r28,-32(r1)
+std     r29,-24(r1)
+std     r31,-8(r1)
+std     r0,16(r1)
+stdu    r1,-4624(r1)
+mr      r31,r1
+std     r4,4680(r31)
+std     r5,4688(r31)
+std     r6,4696(r31)
+std     r7,4704(r31)
+std     r8,4712(r31)
+std     r9,4720(r31)
+std     r10,4728(r31)
+std     r3,4672(r31)
+\end{lstlisting}
+
+La parte centrale della procedura, mostrata invece nel listato \ref{code:2.so-9}, contiene un insieme di istruzione il cui scopo evidentemente è quello di scrivere tutti i dati precedentemente raccolti su un file.
+Come si può facilmente notare dal listato  \ref{code:2.so-9}, è facile intuire che ogni stringhe venga dapprima realizzata facendo ricorso alla funzione standard \texttt{snprintf} e poi, dopo l'apertura del file di log attraverso la chiamata di sistema \texttt{fopen}, vengano scritti aggiungendo ulteriori informazioni come data e ora locale, come dimostrano le istruzioni di salto verso le procedure \texttt{gettimeofday} e \texttt{localtime}. 
+La procedura si conclude con una chiamata alla procedura \texttt{close} per poi chiudersi definitivamente con l'istruzione \texttt{blr} che permette la ritornare alla procedura chiamante.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-9},
+firstnumber=347]
+bl      0x10000748 <.snprintf>
+ld      r2,40(r1)
+addi    r0,r31,4280
+mr      r3,r0
+ld      r4,856(r2)
+bl      0x10000770 <.fopen>
+ld      r2,40(r1)
+mr      r0,r3
+std     r0,152(r31)
+ld      r0,152(r31)
+cmpdi   cr7,r0,0
+beq     cr7,0x1000a0ec
+addi    r0,r31,4264
+mr      r3,r0
+li      r4,0
+bl      0x10000798 <.gettimeofday>
+ld      r2,40(r1)
+addi    r0,r31,4264
+mr      r3,r0
+bl      0x100007c0 <.localtime>
+\end{lstlisting}
 
 \newpage
 
@@ -588,6 +755,8 @@ EA (effective address)
 	       	\texttt{mtrl} & \textit{Move To Link Register} & \texttt{RS} & \textit{Copies the contents of RS register into Link Register.} \\
 
 \texttt{extsw} & \textit{Extend Sign Word} & \texttt{RT,RS} & \textit{Copy the low-order 32 bits of a general purpose register into another general purpose register, and signextend the fullword to a doubleword in size (64 bits).} \\
+	       	
+	       	\texttt{cmpdi} & \textit{CoMPare Doubleword Immediate} & \texttt{RS, \textit{Value}} \\
 	       	
 	      \bottomrule
 	    \end{tabular}

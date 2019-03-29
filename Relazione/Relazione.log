@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.3.22)  29 MAR 2019 12:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.3.22)  29 MAR 2019 15:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -857,7 +857,31 @@ LaTeX Font Info:    Try loading font information for T1+cmtt on input line 5.
 
 (/usr/share/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-))
+)
+Overfull \hbox (21.52162pt too wide) in paragraph at lines 8--8
+ [][] [][]\T1/cmr/m/n/10 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_GetFiel
+d_Bin[] [][]  
+ []
+
+
+Overfull \hbox (21.52162pt too wide) in paragraph at lines 9--9
+ [][] [][]\T1/cmr/m/n/10 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_GetFiel
+d_Str[] [][]  
+ []
+
+
+Overfull \hbox (21.52162pt too wide) in paragraph at lines 10--10
+ [][] [][]\T1/cmr/m/n/10 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_SetFiel
+d_Bin[] [][]  
+ []
+
+
+Overfull \hbox (16.2729pt too wide) in paragraph at lines 11--11
+ [][] [][]\T1/cmr/m/n/10 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_RemoveF
+ield[] [][]  
+ []
+
+)
 \tf@toc=\write4
 \openout4 = `Relazione.toc'.
 
@@ -894,83 +918,128 @@ Underfull \hbox (badness 10000) in paragraph at lines 138--138
 275A) \T1/cmr/m/n/8 - 2 Ot-to-bre 2018 -
  []
 
-[3] [4] [5] [6] [7] [8] [9]
+
+LaTeX Warning: Reference `code:strings2so-1' on page 3 undefined on input line 
+179.
+
+
+LaTeX Warning: Reference `code:strings2so-2' on page 3 undefined on input line 
+179.
+
+[3]
+
+LaTeX Warning: Reference `code:example-1' on page 4 undefined on input line 199
+.
+
+
+LaTeX Warning: Reference `code:strings2so-1' on page 4 undefined on input line 
+199.
+
+
+LaTeX Warning: Reference `code:strings2so-2' on page 4 undefined on input line 
+212.
+
+[4]
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 249.
+ [5]
+Overfull \hbox (121.79573pt too wide) in paragraph at lines 293--294
+ \T1/cmr/bx/n/10 1.1.1.2.2 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_GetFi
+eld_Str[][] \T1/cmr/m/n/10 La fun-zio-ne \T1/cmtt/m/n/10 DL_ISO8583_MSG_GetFiel
+d_Str
+ []
+
+
+Overfull \hbox (0.46425pt too wide) in paragraph at lines 297--300
+ \T1/cmr/bx/n/10 1.1.1.2.3 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_SetFi
+eld_Bin[][] \T1/cmr/m/n/10 L'e-si-sten-za di ta-
+ []
+
+[6]
+Overfull \hbox (118.5743pt too wide) in paragraph at lines 338--339
+ \T1/cmr/bx/n/10 1.1.1.2.4 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_Remov
+eField[][] \T1/cmr/m/n/10 La pro-ce-du-ra \T1/cmtt/m/n/10 DL_ISO8583_MSG_Remove
+Field
+ []
+
+[7] [8] [9] [10] [11] [12]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (118.66821pt too wide) in paragraph at lines 528--529
+Overfull \hbox (118.66821pt too wide) in paragraph at lines 695--696
 []\T1/cmr/m/n/10 https://www.ibm.com/support/knowledgecenter/en/ssw_aix_71/com.
 ibm.aix.kdb/kdb_registers.htm 
  []
 
-[10] [11]
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 600.
- [12]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 633.
+[13] [14] [15]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 802.
 
  (/usr/share/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 633.
- [13] [14]
-[15] [16] [17]
-Overfull \hbox (15.58353pt too wide) in paragraph at lines 880--881
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 802.
+ [16] [17]
+[18] [19] [20]
+Overfull \hbox (15.58353pt too wide) in paragraph at lines 1049--1050
 \T1/cmr/m/n/10 the right with 0b00 and sign-extended to 64 bi-ts (PowerPC[]) or
  32 bi-ts (POWER[]
  []
 
 
-Overfull \hbox (158.65845pt too wide) in paragraph at lines 882--883
+Overfull \hbox (158.65845pt too wide) in paragraph at lines 1051--1052
 []\T1/cmr/m/n/10 https://www.ibm.com/support/knowledgecenter/ssw_aix_72/com.ibm
 .aix.alangref/idalangref_inst_fields.htm 
  []
 
 
-Overfull \hbox (178.9035pt too wide) in paragraph at lines 891--892
+Overfull \hbox (178.9035pt too wide) in paragraph at lines 1060--1061
 []\T1/cmr/m/n/10 https://www.ibm.com/support/knowledgecenter/en/ssw_aix_71/com.
 ibm.aix.alangref/idalangref_bbranchinst.htm 
  []
 
-[18] (./Relazione.lof)
+[21] (./Relazione.lof)
 \tf@lof=\write5
 \openout5 = `Relazione.lof'.
 
- [19
+ [22
 
 ] (./Relazione.lot)
 \tf@lot=\write6
 \openout6 = `Relazione.lot'.
 
- [20
+ [23
 
 ] (./Relazione.lol)
 \tf@lol=\write7
 \openout7 = `Relazione.lol'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 898.
- [21
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1067.
+ [24
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 898.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1067.
 
 (./Relazione.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 898.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 898.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1067.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1067.
+
 Package rerunfilecheck Info: File `Relazione.out' has not changed.
-(rerunfilecheck)             Checksum: FAE01ED08F8FAE69773EBA70680EFD5D;941.
+(rerunfilecheck)             Checksum: 4A5B38024D3204593FE50D9A12BAD374;1521.
+
+
+LaTeX Warning: There were undefined references.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 23281 strings out of 492616
- 411657 string characters out of 6135177
+ 23473 strings out of 492616
+ 414502 string characters out of 6135177
  732897 words of memory out of 5000000
- 26555 multiletter control sequences out of 15000+600000
+ 26639 multiletter control sequences out of 15000+600000
  557458 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  40i,11n,72p,939b,2388s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -992,10 +1061,10 @@ mf-dist/fonts/type1/public/cm-super/sfti1000.pfb></usr/share/texmf-dist/fonts/t
 ype1/public/cm-super/sftt0800.pfb></usr/share/texmf-dist/fonts/type1/public/cm-
 super/sftt0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt1000.
 pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on Relazione.pdf (22 pages, 517594 bytes).
+Output written on Relazione.pdf (25 pages, 532408 bytes).
 PDF statistics:
- 743 PDF objects out of 1000 (max. 8388607)
- 691 compressed objects within 7 object streams
- 381 named destinations out of 1000 (max. 500000)
- 89 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 914 PDF objects out of 1000 (max. 8388607)
+ 857 compressed objects within 9 object streams
+ 489 named destinations out of 1000 (max. 500000)
+ 129 words of extra memory for PDF output out of 10000 (max. 10000000)
 
