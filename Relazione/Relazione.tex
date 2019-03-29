@@ -38,8 +38,8 @@ breaklines=true
 }
 
 % Usato per aggiugnere la numerazione alle sezioni di tipo 'subsubsection' e inserirle nell'indice...%
-\setcounter{secnumdepth}{3}
-\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
 
 % Frontespizio...
 % ----------------------------------------------------------------------------------------- %
@@ -555,11 +555,12 @@ firstnumber=308]
 PowerPC 601 RISC Microprocessor 
 EA (effective address)
 	
-	\subsubsection{Disassemblaggio}
+	\newpage
+\subsubsection{Disassemblaggio}
 	
 	\begin{table}[h!]
 	  \begin{center}
-	    \caption{Alcune istruzioni assembly disponibili nell'architettura PowerPC}
+	    \caption{Alcune istruzioni assembly disponibili nell'architettura PowerPC\texttrademark}
 	    \centering
 	    
 	    \label{tab:AssemblyIstrucions}
@@ -569,7 +570,7 @@ EA (effective address)
 	      Istruzione & Nome & Argomenti & Descrizione \\
 	   		\midrule
 	   		\texttt{bl} & \textit{Branch Link} & \texttt{\textit{target\_address}} & \textit{Branches to a specified target address.} \\
-	   		
+	   	
    	       \texttt{mfcr} & \textit{Move From Condition Register} & \texttt{RT} & \textit{Copies the contents of the Condition Register into a general-purpose register.} \\
  
 	       \texttt{std} & \textit{STore Doubleword} & \texttt{RS,\textit{Offset},RSML} & \textit{Store a doubleword of data from a general purpose register into a specified memory location.}\\
@@ -594,6 +595,144 @@ EA (effective address)
 	  \end{center}
 	\end{table}
 
+\paragraph{Analisi della procedura \texttt{main}} 
+
+La parte iniziale della procedura \texttt{main} è caratterizzata da una serie di operazioni che coinvolgono stringhe come dimostrano la serie di istruzioni di salto condizionato verso le funzioni \texttt{strlen} (riga 7028), \texttt{strncpy} (riga 7035) e \texttt{strtoull} (riga 6973, 6984 e 6995) che probabilmente sono state utilizzate per raccogliere informazioni. Sono presenti due istruzioni di salto vero le funzioni \texttt{atoi} (riga 7015 e 7041) usate per convertire i parametri passati dagli attaccanti attraverso la linea di comando il che dimostra la natura interattiva del malware.
+
+Dopo una serie di istruzioni di salto verso procedure varie procedure di inizilizzazione, tra cui spiccano \texttt{load\_config} e \texttt{get\_func\_addr}, viene raggiunta la porzione di codice mostrata nel listato \ref{code:AssemblyFunction-main-1} dove, dopo aver copiato i dati necessari in alcuni registri attraverso le apposite istruzioni mr, vengono eseguite a cascata due istruzioni di salto verso una procedura chiamata inject, che contiene il codice operativo per l'esecuzione della code injection. 
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:AssemblyFunction-main-1},
+firstnumber=308]
+mr      r3,r10
+mr      r4,r9
+addi    r5,r2,-728
+bl      0x1000256c <.inject>
+li      r3,120
+bl      0x10003468 <.sleep>
+ld      r2,40(r1)
+addi    r10,r31,120
+lwz     r9,116(r31)
+extsw   r9,r9
+mr      r3,r10
+mr      r4,r9
+li      r5,0
+bl      0x1000256c <.inject>
+bl      0x10001154 <.CloseHandle>
+\end{lstlisting}
+
+
+
+\paragraph{Analisi della procedura \texttt{inject}}
+
+In questo paragrafo descriveremo le operazioni eseguite dalla procedura chiamata \texttt{inject} a cui gli autori del malware hanno affidato il compito di eseguire l'attacco di code injection a danno del processo bersaglio.
+Nel listato \ref{code:AssemblyFunction-inject-01} viene mostrato il frammento corrispondente alla prima parte della suddetta funzione, all'interno del quale possiamo distinguere le seguenti operazioni:
+\begin{itemize}
+\item Copia nel \textit{link register} dell'indirizzo di ritorno dal registro \texttt{r0} attraverso l'istruzione \texttt{mflr}.
+\item Inizializzazione di vari registri necessari attraverso varie istruzioni \texttt{std} e \texttt{mr} che coinvolgono i registri \texttt{r4}, \texttt{r5},\texttt{r9} e  \texttt{r31}, quest'ultimo probabilmente adibito ad ospitare l'indirizzo di memoria di base da cui viene computato l'indirizzo da cui prelevare i dati dalla memoria. Si presupponi che i registri precedentemente menzionati ospiteranno gli indirizzi alle celle di memoria contenenti il codice malevolo che verrà poi scritto all'interno dello spazio di indirizzamento del processo bersaglio.
+\item Esecuzione della code injection vera e propria attraverso una serie di istruzioni di salto (\texttt{bl}) verso l'indirizzo \texttt{0x10002f00} corrispondente alla prima istruzione della funzione \texttt{memset} preceduta dalle necessarie inizializzazioni dei registri di input attraverso varie istruzioni \texttt{mr}.
+\end{itemize}
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:AssemblyFunction-inject-01},
+firstnumber=308]
+mflr    r0
+std     r0,16(r1)
+std     r31,-8(r1)
+stdu    r1,-1520(r1)
+mr      r31,r1
+std     r3,1568(r31)
+mr      r9,r4
+std     r5,1584(r31)
+stw     r9,1576(r31)
+li      r9,0
+stw     r9,120(r31)
+li      r9,0
+std     r9,144(r31)
+addi    r10,r31,152
+li      r9,384
+mr      r3,r10
+li      r4,0
+mr      r5,r9
+bl      0x10002f00 <.memset>
+nop
+addi    r10,r31,536
+li      r9,384
+mr      r3,r10
+li      r4,0
+mr      r5,r9
+bl      0x10002f00 <.memset>
+nop
+addi    r10,r31,920
+li      r9,256
+mr      r3,r10
+li      r4,0
+mr      r5,r9
+bl      0x10002f00 <.memset>
+\end{lstlisting}
+
+Dopo una serie di istruzioni di salto verso la funzione \texttt{memset}, ed aver dunque conclusa le operazioni di modifica della memoria del processo attaccato, possiamo osservare le successive operazioni eseguite dal listato \ref{code:AssemblyFunction-inject-02} in cui apprendiamo che:
+
+\begin{itemize}
+\item Vengono eseguite ben tre istruzioni \texttt{bl} per permettere l'esecuzione della procedura \texttt{out\_log} per effettuare la scrittura delle informazioni di interesse su un file esterno.
+\item Vengono diverse istruzioni di salto per eseguire varie procedure tra cui quella denominata \texttt{proc\_attach}, usata probabilmente per modificare alcune informazioni di stato del processo, la \texttt{proc\_wait}, usata probabilmente per arrestare l'esecuzione del processo bersaglio, \texttt{proc\_getregs} ed \texttt{out\_regs} usate rispettivamente per leggere i valori contenuti nei registri e successivamente scriverli in un file di log.
+
+\end{itemize}
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:AssemblyFunction-inject-02},
+firstnumber=308]
+bl      0x10000674 <.out_log>
+bl      0x10001220 <.proc_attach>
+li      r3,0
+bl      0x10001a28 <.proc_continue>
+li      r3,0
+li      r4,0
+bl      0x10001b44 <.proc_wait>
+ld      r3,728(r2)
+bl      0x10000674 <.out_log>
+addi    r9,r31,152
+mr      r3,r9
+bl      0x10001ee4 <.proc_getregs>
+addi    r9,r31,152
+mr      r3,r9
+bl      0x10000c80 <.out_regs>
+\end{lstlisting}
+
+Dopo una serie di istruzioni di salto verso altre funzioni, tra cui figura una denominata \texttt{proc\_readmemory}, avviene l'ultima fase della code injection durante la quale, come dimostrato dal listato \ref{code:AssemblyFunction-inject-03}, viene alterata la memoria del processo bersaglio attraverso istruzioni di salto verso le procedure \texttt{proc\_writememory}, usata probabilmente per indurre il processo bersaglio a eseguire il codice malevolo copiato in precedenza, e la \texttt{proc\_setregs} usata per alterare il contenuto dei registri e dunque modificare il futuro comportamento del processo. La procedura si conclude con il riavvio del processo e una lunga fase di log attraverso una grande quantità di istruzioni di salto verso la procedura \texttt{out\_log}.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:AssemblyFunction-inject-03},
+firstnumber=308]
+bl      0x10002460 <.proc_writememory>
+addi    r9,r31,536
+mr      r3,r9
+bl      0x10000c80 <.out_regs>
+addi    r9,r31,536
+mr      r3,r9
+bl      0x10002068 <.proc_setregs>
+li      r3,3
+bl      0x10001a28 <.proc_continue>
+li      r3,6
+li      r4,11
+bl      0x10001b44 <.proc_wait>
+addi    r9,r31,536
+mr      r3,r9
+bl      0x10001ee4 <.proc_getregs>
+addi    r9,r31,536
+mr      r3,r9
+bl      0x10000c80 <.out_regs>
+\end{lstlisting}
+
+\paragraph{Analisi della procedura \texttt{proc\_attach}}
 
 Analizziamo nel dettaglio l'attacco al processo la quale si compone in varie fare.
 Nel listato possiamo osservare come vengono dapprima eseguite delle operazioni di store ward con diversi offset con un registro comune come indirizzo sorgente; 
@@ -716,12 +855,6 @@ mr      r3,r9
 li      r4,16384
 bl      0x10000b48 <.file_dump>
 \end{lstlisting}
-
-
-
-
-
-
 
 
 

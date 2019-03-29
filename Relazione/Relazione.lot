@@ -6,4 +6,4 @@
 \contentsline {table}{\numberline {1.3}{\ignorespaces Dettagli tecnici del file \texttt {2.s0}}}{6}{table.1.3}% 
 \contentsline {table}{\numberline {1.4}{\ignorespaces Sottoinsieme dei file contenuti in \texttt {/proc/pid} }}{9}{table.1.4}% 
 \contentsline {table}{\numberline {1.5}{\ignorespaces Breve descrizione dei registri ispezionati dal malware}}{11}{table.1.5}% 
-\contentsline {table}{\numberline {1.6}{\ignorespaces Alcune istruzioni assembly disponibili nell'architettura PowerPC}}{12}{table.1.6}% 
+\contentsline {table}{\numberline {1.6}{\ignorespaces Alcune istruzioni assembly disponibili nell'architettura PowerPC\texttrademark }}{12}{table.1.6}% 

@@ -6,3 +6,6 @@
 \BOOKMARK [2][-]{subsection.1.1.2}{Analisi del file Injection\137API\137executable\137e}{section.1.1}% 6
 \BOOKMARK [3][-]{subsubsection.1.1.2.1}{Stringhe stampabili rilevanti}{subsection.1.1.2}% 7
 \BOOKMARK [3][-]{subsubsection.1.1.2.2}{Disassemblaggio}{subsection.1.1.2}% 8
+\BOOKMARK [4][-]{paragraph.1.1.2.2.1}{Analisi della procedura main}{subsubsection.1.1.2.2}% 9
+\BOOKMARK [4][-]{paragraph.1.1.2.2.2}{Analisi della procedura inject}{subsubsection.1.1.2.2}% 10
+\BOOKMARK [4][-]{paragraph.1.1.2.2.3}{Analisi della procedura proc\137attach}{subsubsection.1.1.2.2}% 11

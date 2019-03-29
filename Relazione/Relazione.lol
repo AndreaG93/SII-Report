@@ -12,3 +12,7 @@
 \contentsline {lstlisting}{\numberline {1.12}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{10}{lstlisting.1.12}% 
 \contentsline {lstlisting}{\numberline {1.13}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{11}{lstlisting.1.13}% 
 \contentsline {lstlisting}{\numberline {1.14}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{11}{lstlisting.1.14}% 
+\contentsline {lstlisting}{\numberline {1.15}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{13}{lstlisting.1.15}% 
+\contentsline {lstlisting}{\numberline {1.16}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{13}{lstlisting.1.16}% 
+\contentsline {lstlisting}{\numberline {1.17}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{14}{lstlisting.1.17}% 
+\contentsline {lstlisting}{\numberline {1.18}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{15}{lstlisting.1.18}% 

@@ -7,4 +7,7 @@
 \contentsline {subsubsection}{\numberline {1.1.1.2}Analisi assembler}{5}{subsubsection.1.1.1.2}% 
 \contentsline {subsection}{\numberline {1.1.2}Analisi del file \texttt {Injection\_API\_executable\_e}}{6}{subsection.1.1.2}% 
 \contentsline {subsubsection}{\numberline {1.1.2.1}Stringhe stampabili rilevanti}{6}{subsubsection.1.1.2.1}% 
-\contentsline {subsubsection}{\numberline {1.1.2.2}Disassemblaggio}{11}{subsubsection.1.1.2.2}% 
+\contentsline {subsubsection}{\numberline {1.1.2.2}Disassemblaggio}{12}{subsubsection.1.1.2.2}% 
+\contentsline {paragraph}{\numberline {1.1.2.2.1}Analisi della procedura \texttt {main}}{12}{paragraph.1.1.2.2.1}% 
+\contentsline {paragraph}{\numberline {1.1.2.2.2}Analisi della procedura \texttt {inject}}{13}{paragraph.1.1.2.2.2}% 
+\contentsline {paragraph}{\numberline {1.1.2.2.3}Analisi della procedura \texttt {proc\_attach}}{15}{paragraph.1.1.2.2.3}% 
