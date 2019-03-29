@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.3.22)  28 MAR 2019 22:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.3.22)  29 MAR 2019 10:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -661,6 +661,9 @@ File: lstlang1.sty 2018/09/02 1.7 listings language file
 File: lstmisc.sty 2018/09/02 1.7 (Carsten Heinz)
 ) (./Relazione.aux
 
+LaTeX Warning: Label `code:stringsInjectionAPIexecutablee3' multiply defined.
+
+
 LaTeX Warning: Label `code:stringsInjectionAPIexecutablee5' multiply defined.
 
 )
@@ -892,65 +895,70 @@ Underfull \hbox (badness 10000) in paragraph at lines 138--138
  []
 
 [3] [4] [5] [6] [7] [8] [9]
-Underfull \hbox (badness 2990) in paragraph at lines 485--486
-[]|\T1/cmr/m/n/10 E' usa-to per ospi-ta-re l'in-di-riz-zo del-l'i-stru-zio-ne
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (118.66821pt too wide) in paragraph at lines 528--529
+[]\T1/cmr/m/n/10 https://www.ibm.com/support/knowledgecenter/en/ssw_aix_71/com.
+ibm.aix.kdb/kdb_registers.htm 
  []
 
-[10] [11]
-Overfull \hbox (16.91508pt too wide) in paragraph at lines 593--608
- [] 
- []
+[10]
 
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 615.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-(/usr/share/texmf-dist/tex/latex/base/omscmr.fd
+[11] [12] [13] [14]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 747.
+
+ (/usr/share/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 615.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 747.
 
-Overfull \hbox (15.58353pt too wide) in paragraph at lines 615--616
+Overfull \hbox (15.58353pt too wide) in paragraph at lines 747--748
 \T1/cmr/m/n/10 the right with 0b00 and sign-extended to 64 bi-ts (PowerPC[]) or
  32 bi-ts (POWER[]
  []
 
 
-Overfull \hbox (158.65845pt too wide) in paragraph at lines 617--618
+Overfull \hbox (158.65845pt too wide) in paragraph at lines 749--750
 []\T1/cmr/m/n/10 https://www.ibm.com/support/knowledgecenter/ssw_aix_72/com.ibm
 .aix.alangref/idalangref_inst_fields.htm 
  []
 
 
-Overfull \hbox (178.9035pt too wide) in paragraph at lines 626--627
+Overfull \hbox (178.9035pt too wide) in paragraph at lines 758--759
 []\T1/cmr/m/n/10 https://www.ibm.com/support/knowledgecenter/en/ssw_aix_71/com.
 ibm.aix.alangref/idalangref_bbranchinst.htm 
  []
 
-[12] (./Relazione.lof)
+[15] (./Relazione.lof)
 \tf@lof=\write5
 \openout5 = `Relazione.lof'.
 
- [13
+ [16
 
 ] (./Relazione.lot)
 \tf@lot=\write6
 \openout6 = `Relazione.lot'.
 
- [14
+ [17
 
 ] (./Relazione.lol)
 \tf@lol=\write7
 \openout7 = `Relazione.lol'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 633.
- [15
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 765.
+ [18
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 633.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 765.
 
 (./Relazione.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 633.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 633.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 765.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 765.
 Package rerunfilecheck Info: File `Relazione.out' has not changed.
 (rerunfilecheck)             Checksum: 62424A39CFAF0487C822C22249EF5057;645.
 
@@ -959,35 +967,38 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 23012 strings out of 492616
- 407658 string characters out of 6135177
- 733897 words of memory out of 5000000
- 26472 multiletter control sequences out of 15000+600000
- 557143 words of font info for 85 fonts, out of 8000000 for 9000
+ 23166 strings out of 492616
+ 409633 string characters out of 6135177
+ 732897 words of memory out of 5000000
+ 26530 multiletter control sequences out of 15000+600000
+ 557458 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 40i,11n,72p,795b,2388s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/font
-s/type1/public/cm-super/sfbi1000.pfb></usr/share/texmf-dist/fonts/type1/public/
-cm-super/sfbx1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx12
-00.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/sh
-are/texmf-dist/fonts/type1/public/cm-super/sfbx2074.pfb></usr/share/texmf-dist/
-fonts/type1/public/cm-super/sfbx2488.pfb></usr/share/texmf-dist/fonts/type1/pub
-lic/cm-super/sfrm0500.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sf
-rm0600.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb></us
-r/share/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf-d
-ist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1
-/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-supe
-r/sfrm1728.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfti0800.pfb>
-</usr/share/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb></usr/share/tex
-mf-dist/fonts/type1/public/cm-super/sftt0800.pfb></usr/share/texmf-dist/fonts/t
-ype1/public/cm-super/sftt0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-
-super/sftt1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt1200.
-pfb>
-Output written on Relazione.pdf (16 pages, 475119 bytes).
+ 40i,11n,72p,939b,2388s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{table.1.7} has been referenced but does not exist
+, replaced by a fixed one
+
+{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/
+type1/public/cm-super/sfbi1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm
+-super/sfbx1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200
+.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/shar
+e/texmf-dist/fonts/type1/public/cm-super/sfbx2074.pfb></usr/share/texmf-dist/fo
+nts/type1/public/cm-super/sfbx2488.pfb></usr/share/texmf-dist/fonts/type1/publi
+c/cm-super/sfit1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm
+0500.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0600.pfb></usr/
+share/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb></usr/share/texmf-dis
+t/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf-dist/fonts/type1/p
+ublic/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/
+sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></
+usr/share/texmf-dist/fonts/type1/public/cm-super/sfti0800.pfb></usr/share/texmf
+-dist/fonts/type1/public/cm-super/sfti1000.pfb></usr/share/texmf-dist/fonts/typ
+e1/public/cm-super/sftt0800.pfb></usr/share/texmf-dist/fonts/type1/public/cm-su
+per/sftt0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt1000.pf
+b></usr/share/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
+Output written on Relazione.pdf (19 pages, 506786 bytes).
 PDF statistics:
- 474 PDF objects out of 1000 (max. 8388607)
- 431 compressed objects within 5 object streams
- 196 named destinations out of 1000 (max. 500000)
+ 607 PDF objects out of 1000 (max. 8388607)
+ 559 compressed objects within 6 object streams
+ 291 named destinations out of 1000 (max. 500000)
  65 words of extra memory for PDF output out of 10000 (max. 10000000)
 

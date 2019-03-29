@@ -4,6 +4,6 @@
 \contentsline {table}{\numberline {1.1}{\ignorespaces Lista dei file facentiff parte del malware FASTCash}}{2}{table.1.1}% 
 \contentsline {table}{\numberline {1.2}{\ignorespaces Dettagli del file \texttt {2.s0}}}{3}{table.1.2}% 
 \contentsline {table}{\numberline {1.3}{\ignorespaces Dettagli tecnici del file \texttt {2.s0}}}{6}{table.1.3}% 
-\contentsline {table}{\numberline {1.4}{\ignorespaces Sottoinsieme dei file contenuti in \texttt {/proc/pid} }}{8}{table.1.4}% 
-\contentsline {table}{\numberline {1.5}{\ignorespaces Breve descrizione dei registri ispezionati dal malware}}{10}{table.1.5}% 
-\contentsline {table}{\numberline {1.6}{\ignorespaces Dettagli tecnici del file \texttt {2.s0}}}{12}{table.1.6}% 
+\contentsline {table}{\numberline {1.4}{\ignorespaces Sottoinsieme dei file contenuti in \texttt {/proc/pid} }}{9}{table.1.4}% 
+\contentsline {table}{\numberline {1.5}{\ignorespaces Breve descrizione dei registri ispezionati dal malware}}{11}{table.1.5}% 
+\contentsline {table}{\numberline {1.6}{\ignorespaces Alcune istruzioni assembly disponibili nell'architettura PowerPC}}{12}{table.1.6}% 

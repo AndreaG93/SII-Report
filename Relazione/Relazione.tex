@@ -349,6 +349,31 @@ Usage: injection pid dll_path mode [handle func toc]
 ...
 \end{lstlisting}
 
+La presenza delle stringhe \texttt{out\_log}, \texttt{file\_dump} suggeriscono che l'output dei log venisse redirezionato verso file esterni. Forse è previsto un meccaniscmo di caricamento delle impostazioni.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:stringsInjectionAPIexecutablee3},
+firstnumber=320]
+x}8KxH
+out_log
+}CSx8
+...
+ }*J
+store_config
+}CSx8
+...
+}#Kx8?
+load_config
+}CSx8
+...
+ }*J
+file_dump
+@}$KxK
+\end{lstlisting}
+
+
 Prima di descrivere le varie fasi dell'attacco, è indispensabile comprendere come vengono rappresentati e gestiti i \textbf{processi} nei sistemi operativi AIX versione 6.1 e 7.1. 
 Ogni processo del sistema viene opportunamente rappresentato da un insieme di file ognuno dei descrive un particolare aspetto di un processo come ad esempio il suo stato, le informazioni sui file descriptors, privilegi ecc.
 Tutti i processi sono raccolti all'interno della directory \texttt{/proc} mentre tutti i file di un dato processo con identificatore pari a \texttt{pid} sono raccolti all'interno della directory \texttt{/proc/pid}; ciò permette agli attaccanti di
@@ -482,7 +507,7 @@ firstnumber=320]
       \toprule
       Registro & Nome esteso & Descrizione \\
       \midrule
-      \texttt{LR} & Link Register & E' usato per ospitare l'indirizzo dell'istruzione successiva ad una operazione di salto. \\
+      \texttt{LR} & Link Register & E' usato per ospitare l'indirizzo dell'istruzione successiva ad una operazione di salto. E' usata principalmente per ospitare l'indirizzo di ritorno al termine di una funzione. \\
       
       \texttt{CR} & Condition Register & Un registro da 32 bit usato per specificare varie classi di operazioni.\\
       
@@ -490,9 +515,9 @@ firstnumber=320]
       
       \texttt{IAR} & Instruction Address Register & Usato per contenere l'indirizzo dell'istruzione successiva.\\
       
-      \texttt{GPRs} & General Purpose Registers & Un registro da 32 bit per usi generici. E' spesso usato spesso come storage momentaneo per varie classi di operazioni.\\
-      
       \texttt{MSR} & Machine State Register & Registro da 32 bit usato per specificare varie classi di operazioni.\\
+     
+	\texttt{r0-r31} & General Purpose Registers (GPRs) from 0 through 31 & Registri per usi generici. \\   
      
       \bottomrule
     \end{tabular}
@@ -500,7 +525,7 @@ firstnumber=320]
   \end{center}
 \end{table}
 
-
+https://www.ibm.com/support/knowledgecenter/en/ssw\_aix\_71/com.ibm.aix.kdb/kdb\_registers.htm
 
 
 Infine nei listati \ref{code:stringsInjectionAPIexecutablee8} e \ref{code:stringsInjectionAPIexecutablee9} viene mostrato l'accesso in lettura e in scrittura allo spazio di indirizzamento del processo bersaglio e di come riavvi l'esecuzione del processo dopo la code injection.
@@ -527,7 +552,139 @@ firstnumber=308]
 ...
 \end{lstlisting}
 
-\subsubsection{Disassemblaggio}
+PowerPC 601 RISC Microprocessor 
+EA (effective address)
+	
+	\subsubsection{Disassemblaggio}
+	
+	\begin{table}[h!]
+	  \begin{center}
+	    \caption{Alcune istruzioni assembly disponibili nell'architettura PowerPC}
+	    \centering
+	    
+	    \label{tab:AssemblyIstrucions}
+	    \begin{adjustbox}{center=\textwidth}
+	    \begin{tabular}{l|l|l|p{6cm}}
+	      \toprule
+	      Istruzione & Nome & Argomenti & Descrizione \\
+	   		\midrule
+	   		\texttt{bl} & \textit{Branch Link} & \texttt{\textit{target\_address}} & \textit{Branches to a specified target address.} \\
+	   		
+   	       \texttt{mfcr} & \textit{Move From Condition Register} & \texttt{RT} & \textit{Copies the contents of the Condition Register into a general-purpose register.} \\
+ 
+	       \texttt{std} & \textit{STore Doubleword} & \texttt{RS,\textit{Offset},RSML} & \textit{Store a doubleword of data from a general purpose register into a specified memory location.}\\
+	       
+	       \texttt{stw} & \textit{STore Word} & \texttt{RS,\textit{Offset},RSML} & \textit{Stores a word of data from a general-purpose register into a specified location in memory.} \\
+	       
+	       \texttt{li} & \textit{Load Immediate} & \texttt{RT,\textit{Value}} & \textit{Copies specified value into a general-purpose register.} \\
+	       
+	       \texttt{ld} & \textit{Load Doubleword} & \texttt{RT,\textit{Offset},RS} & \textit{Load a doubleword of data into the specified general purpose register.} \\
+	       
+	       \texttt{mr} & \textit{Move Register} & \texttt{RT,RS} & \textit{Copies the contents of one register into another register.} \\
+	       
+	       \texttt{addi} & \textit{ADD Immediate} & \texttt{RT,RS,\textit{Value}} & \textit{Place the sum of the contents of RA and the 16-bit two's complement integer value, sign-extended to 32 bits, into the target RT.} \\
+	       	
+	       	\texttt{mtrl} & \textit{Move To Link Register} & \texttt{RS} & \textit{Copies the contents of RS register into Link Register.} \\
+
+\texttt{extsw} & \textit{Extend Sign Word} & \texttt{RT,RS} & \textit{Copy the low-order 32 bits of a general purpose register into another general purpose register, and signextend the fullword to a doubleword in size (64 bits).} \\
+	       	
+	      \bottomrule
+	    \end{tabular}
+	       \end{adjustbox}
+	  \end{center}
+	\end{table}
+
+
+Analizziamo nel dettaglio l'attacco al processo la quale si compone in varie fare.
+Nel listato possiamo osservare come vengono dapprima eseguite delle operazioni di store ward con diversi offset con un registro comune come indirizzo sorgente; 
+
+Successivamente gli attaccanti utilizzano quello che probabilmente si tratti dell'indirizzo dell'area di memoria del processo bersaglio e con ripetute operazioni si store word muove il puntatore a quell'area di memoria con step da 4 byte. Alla fine, raggiunta la posizione desiderata, sposta il risultato in vari registri e esegue un'operazione di salto (bl) che punta all'indirizzo per la funzione memset.
+
+\begin{lstlisting}
+<.proc_attach>:
+mflr    r0
+std     r0,16(r1)
+std     r29,-24(r1)
+std     r30,-16(r1)
+std     r31,-8(r1)
+stdu    r1,-352(r1)
+mr      r31,r1
+li      r9,0
+stw     r9,128(r31)
+li      r9,0
+stw     r9,132(r31)
+li      r9,0
+std     r9,136(r31)
+li      r9,0
+std     r9,144(r31)
+li      r9,0
+std     r9,152(r31)
+li      r9,0
+std     r9,160(r31)
+li      r9,0
+std     r9,168(r31)
+li      r9,0
+stw     r9,176(r31)
+addi    r10,r31,180
+li      r9,140
+mr      r3,r10
+li      r4,0
+mr      r5,r9
+bl      0x10002f00 <.memset>
+\end{lstlisting}
+
+Dopo aver richiamato la funzione \texttt{memset}, certamente utilizzata dagli attaccanti per eseguire la \textit{code injection} alterando il contenuto dello spazio di indirizzamento del processo bersaglio, la funzione \texttt{proc\_attach} incomincia una fase di logging durante la quale, attraverso ripetuti salti condizionati agli indirizzi \texttt{0x100031ec}, \texttt{0x1000319c} e \texttt{0x10000674}, corrispondenti agli indirizzi delle funzioni \texttt{write}, \texttt{sterror} (utilizzata certamente dagli attaccanti per verificare l'output della funzione \texttt{write}), \texttt{log\_out}, vengono archiviati in un file esterno il contenuto dei registri di interesse che paiono essere i registri r31, r30, r29 e r9 che vengono copiati con ripetute istruzioni \texttt{mr} in registri ausiliari (r4, r5, r6 e r7 rispettivamente) prima di essere inviati come input alla funzione \texttt{log\_out}.
+
+\begin{lstlisting}
+li      r9,14
+stw     r9,136(r31)
+li      r9,4
+stw     r9,140(r31)
+addi    r9,r2,-764
+lwz     r9,0(r9)
+extsw   r10,r9
+addi    r9,r31,136
+mr      r3,r10
+mr      r4,r9
+li      r5,8
+bl      0x100031ec <.write>
+ld      r2,40(r1)
+mr      r9,r3
+stw     r9,128(r31)
+addi    r9,r2,-768
+lwz     r9,0(r9)
+extsw   r29,r9
+ld      r9,128(r2)
+lwz     r9,0(r9)
+extsw   r30,r9
+ld      r9,128(r2)
+lwz     r9,0(r9)
+extsw   r9,r9
+mr      r3,r9
+bl      0x1000319c <.strerror>
+ld      r2,40(r1)
+mr      r9,r3
+lwz     r10,128(r31)
+extsw   r10,r10
+ld      r3,536(r2)
+mr      r4,r29
+mr      r5,r10
+mr      r6,r30
+mr      r7,r9
+bl      0x10000674 <.out_log>
+\end{lstlisting}
+
+La fase di code injection si conclude con il caricamento nel registro \texttt{r0} dell'indirizzo della funzione chiamante copiato successivamente nel link register attraverso l'istruzione \texttt{mtrl}; vengono in seguito eseguite una serie di istruzioni ld per popolare i registri r29, r30 e r31 che conterranno probabilmente i valori di ritorno della funzione per poi eseguire una istruzione \texttt{blr} (\textit{Branch Link Register}).
+
+\begin{lstlisting}
+ld      r0,16(r1)
+mtlr    r0
+ld      r29,-24(r1)
+ld      r30,-16(r1)
+ld      r31,-8(r1)
+blr
+\end{lstlisting}
+
 
 \begin{lstlisting}
 bl      0x10000674 <.out_log>
@@ -584,33 +741,8 @@ Queste impostazioni ci hanno permesso di ottenere un output sostanzialmente iden
 
 ftp://public.dhe.ibm.com/systems/power/docs/aix/72/idalangref\_pdf.pdf
 
-\begin{table}[h!]
-  \begin{center}
-    \caption{Dettagli tecnici del file \texttt{2.s0}}
-    \centering
-    \label{tab:table55}
-    
-    \begin{tabular}{l|l|l}
-      \toprule
-        Comando & SIntassi & Descrizione \\
-    \midrule
-        \texttt{Brach Link (bl)} & bl target\_address & Branches to a specified target address. \\
-      
-      %\texttt{Condition Register (CR)} &  \\
-      
-      %\texttt{Link Register (LR)} &  \\
-      
-      %\texttt{Count Register (CTR)} &  \\
-    
- 	
-      \bottomrule
-    \end{tabular}
-   
-  \end{center}
-\end{table}
 
 
-    LI
     
  	Specifies a 24-bit signed two's-complement integer that is concatenated on the right with 0b00 and sign-extended to 64 bits (PowerPC®) or 32 bits (POWER® family). This is an immediate field.
 
