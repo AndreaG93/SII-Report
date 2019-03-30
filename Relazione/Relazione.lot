@@ -2,8 +2,8 @@
 \babel@toc {italian}{}
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {1.1}{\ignorespaces Lista dei file del malware FASTCash\relax }}{3}{table.caption.2}% 
-\contentsline {table}{\numberline {1.2}{\ignorespaces Dettagli del file \texttt {2.s0}\relax }}{4}{table.caption.3}% 
-\contentsline {table}{\numberline {1.3}{\ignorespaces Dettagli tecnici del file \texttt {2.s0}\relax }}{10}{table.caption.4}% 
-\contentsline {table}{\numberline {1.4}{\ignorespaces Sottoinsieme dei file contenuti in \texttt {/proc/pid} \relax }}{13}{table.caption.5}% 
-\contentsline {table}{\numberline {1.5}{\ignorespaces Breve descrizione dei registri ispezionati dal malware\relax }}{15}{table.caption.6}% 
-\contentsline {table}{\numberline {1.6}{\ignorespaces Alcune istruzioni assembly disponibili nell'architettura PowerPC\texttrademark \relax }}{16}{table.caption.7}% 
+\contentsline {table}{\numberline {1.2}{\ignorespaces Dettagli del file \texttt {Injection\_API\_executable\_e}\relax }}{4}{table.caption.3}% 
+\contentsline {table}{\numberline {1.3}{\ignorespaces Sottoinsieme dei file contenuti in \texttt {/proc/pid} \relax }}{7}{table.caption.4}% 
+\contentsline {table}{\numberline {1.4}{\ignorespaces Breve descrizione dei registri ispezionati dal malware\relax }}{9}{table.caption.5}% 
+\contentsline {table}{\numberline {1.5}{\ignorespaces Alcune istruzioni assembly disponibili nell'architettura PowerPC\texttrademark \relax }}{10}{table.caption.6}% 
+\contentsline {table}{\numberline {1.6}{\ignorespaces Dettagli del file \texttt {2.s0}\relax }}{17}{table.caption.7}% 

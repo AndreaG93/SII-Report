@@ -93,7 +93,7 @@ Prima di procedere con la descrizione dettagliata di alcuni dei file che compong
     \small
     \label{tab:MalwareFileList}
     
-    \begin{adjustbox}{width=1.5\textwidth,center=\textwidth}
+    \begin{adjustbox}{center=\textwidth}
  
      \begin{tabular}{l|r}
       \toprule
@@ -101,27 +101,27 @@ Prima di procedere con la descrizione dettagliata di alcuni dei file che compong
       \midrule
       
       Lost\_File.so & \texttt{10ac312c8dd02e417dd24d53c99525c29d74dcbc84730351ad7a4e0a4b1a0eba} \\
-      
+      \hline
       Unpacked\_dump\_4a740227eeb82c20... & \texttt{10ac312c8dd02e417dd24d53c99525c29d74dcbc84730351ad7a4e0a4b1a0eba} \\
-  
+  \hline
   Lost\_File1\_so\_file & \texttt{3a5ba44f140821849de2d82d5a137c3bb5a736130dddb86b296d94e6b421594c} \\
-    
+    \hline
       4f67f3e4a7509af1b2b1c6180a03b3... & \texttt{4a740227eeb82c20286d9c112ef95f0c1380d0e90ffb39fc75c8456db4f60756} \\ 
-      
+      \hline
       5cfa1c2cb430bec721063e3e2d144f... & \texttt{820ca1903a30516263d630c7c08f2b95f7b65dffceb21129c51c9e21cf9551c6} \\
-      
+      \hline
       Unpacked\_dump\_820ca1903a305162... & \texttt{9ddacbcd0700dc4b9babcd09ac1cebe23a0035099cb612e6c85ff4dffd087a26} \\
-      
+      \hline
       8efaabb7b1700686efedadb7949eba... & \texttt{a9bc09a17d55fc790568ac864e3885434a43c33834551e027adb1896a463aafc} \\
-      
+      \hline
       d0a8e0b685c2ea775a74389973fc92... & \texttt{ab88f12f0a30b4601dc26dbae57646efb77d5c6382fb25522c529437e5428629} \\
-      
+      \hline
       2.so & \texttt{ca9ab48d293cc84092e8db8f0ca99cb155b30c61d32a1da7cd3687de454fe86c} \\
-      
+      \hline
       Injection\_API\_executable\_e & \texttt{d465637518024262c063f4a82d799a4e40ff3381014972f24ea18bc23c3b27ee}\\
-      
+      \hline
       Injection\_API\_log\_generating\_s & \texttt{e03dc5f1447f243cf1f305c58d95000ef4e7dbcc5c4e91154daa5acd83fea9a8}\\
-      
+      \hline
       inject\_api & \texttt{f3e521996c85c0cdb2bfb3a0fd91eb03e25ba6feef2ba3a1da844f1b17278dd2}\\
       
       \bottomrule
@@ -130,339 +130,67 @@ Prima di procedere con la descrizione dettagliata di alcuni dei file che compong
   
 \end{table}
 
-\section{Analisi del file \texttt{2.so}}\label{sec:2.so}
+\section{Il file \texttt{Injection\_API\_executable\_e}}\label{sec:InjectionAPIExecutableE}
 
-In base all'output ottenuto dal tool unix \texttt{file}, \texttt{2.so} è un file di tipo \textbf{eXtended COFF} (\textbf{XCOFF}) che rappresenta la versione migliorata ed estesa del formato \textbf{Common Object File Format} (\textbf{COFF}), il formato di file standard che ha definito la struttura dei file eseguibili e delle librerie nei sistemi operativi UNIX\footnote{Cfr. \texttt{https://it.wikipedia.org/wiki/COFF}} fino al 1999\footnote{Cfr. \texttt{https://en.wikipedia.org/wiki/Executable\_and\_Linkable\_Format}}, anno della definitiva adozione dello standard \textbf{Executable and Linkable Format} o \textbf{ELF}.
-XCOFF rappresenta tuttavia uno standard proprietario sviluppato da IBM\footnote{Cfr. IBM - \textit{XCOFF Object File Format} - \texttt{https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.files/XCOFF.htm} (data ultima consultazione 27-03-2019)} adottato nei sistemi operativi \textbf{Advanced Interactive eXecutive} o \textbf{AIX}, una famiglia di sistemi operativi proprietari basati su Unix sviluppati dalla stessa IBM.\footnote{Cfr. \texttt{https://www.ibm.com/it-infrastructure/power/os/aix}}
+L'output ottenuto dal tool \texttt{file} indica che il file \texttt{Injection\_API\_executable\_e}, di cui abbiamo riportato alcuni dettagli nella tabella \ref{tab:FileDetails-1}, è un \textbf{eseguibile} di tipo \textbf{eXtended COFF} (\textbf{XCOFF}), ovvero una versione migliorata ed estesa del formato \textbf{Common Object File Format} (\textbf{COFF}), il formato standard per la definizione dei file a livello strutturale nei sistemi operativi UNIX\footnote{Cfr. \texttt{https://it.wikipedia.org/wiki/COFF}} fino al 1999\footnote{Cfr. \texttt{https://en.wikipedia.org/wiki/Executable\_and\_Linkable\_Format}}, anno della definitiva adozione dello standard \textbf{Executable and Linkable Format} o \textbf{ELF}.
 
-In accordo alle nostre analisi, confermate anche dal report AR18-275A della NCCIC, il file \texttt{file 2.so} rappresenta una \textbf{shared library} che esporta una serie di metodi che consentono l'iterazione con i sistemi finanziari che utilizzano il protocollo \textbf{ISO8583}.\footnote{Cfr. The National Cybersecurity and Communications Integration Center’s (NCCIC), \textit{Malware Analysis Report (AR18-275A)} - 2 Ottobre 2018 - \texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A)}}
+Il formato XCOFF è uno standard proprietario sviluppato da IBM\footnote{Cfr. \texttt{https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.files/XCOFF.htm}} ed adottato nei sistemi operativi \textbf{Advanced Interactive eXecutive} o \textbf{AIX}, una famiglia di sistemi operativi proprietari basati su Unix sviluppati dalla stessa IBM.\footnote{Cfr. \texttt{https://www.ibm.com/it-infrastructure/power/os/aix}}
+
+In questa sezione cercheremo di descrivere le capacità di questo file tra cui, come già detto precedentemente, quella di eseguire tecniche di \textbf{code injection} a danno di un processo legittimo con l'intento di alterarne il comportamento a favore degli attaccanti. 
 
 \begin{table}[h!]
-  \begin{center}
-    \caption{Dettagli del file \texttt{2.s0}}
+  
+    \caption{Dettagli del file \texttt{Injection\_API\_executable\_e}}
     \centering
-    \label{tab:table1}
+    \label{tab:FileDetails-1}
     
-    \begin{adjustbox}{width=1.5\textwidth,center=\textwidth}
+    \begin{adjustbox}{center=\textwidth}
  
-    \begin{tabular}{l|c|r}
+    \begin{tabular}{l|r}
       \toprule
-      \textbf{Descrizione} & \textbf{Valore} & \textbf{Comando Unix} \\
+      \textbf{Descrizione} & \textbf{Valore} \\
       \midrule
       
-      \textbf{Nome} & \texttt{2.so} & \texttt{stat -c "\%n" 2.so} \\
-      
-      \textbf{Dimensione (\textit{byte})} & \texttt{110592} & \texttt{stat -c "\%s" 2.so} \\
-   
-      \textbf{Data ultima modifca} & \texttt{2018-11-09 11:08:40.000000000 +0100} & \texttt{stat -c "\%y" 2.so} \\
-   
-      \textbf{Tipo di file} & \texttt{64-bit XCOFF executable or object module} & \texttt{file 2.so} \\
-    
-      \textbf{MD5} & \texttt{b66be2f7c046205b01453951c161e6cc} & \texttt{md5sum 2.so} \\ 
- 
-      \textbf{SHA1} & \texttt{ec5784548ffb33055d224c184ab2393f47566c7a} & \texttt{sha1sum 2.so} \\ 
-     
-      \multirow{2}{*}{\textbf{SHA256}} & \texttt{ca9ab48d293cc84092e8db8f0ca99cb1} & \multirow{2}{*}{\texttt{sha256sum 2.so}} \\ 
-      & \texttt{55b30c61d32a1da7cd3687de454fe86c} & \\
-      
-      \multirow{2} {*}{\textbf{SHA512}} & \texttt{6890dcce36a87b4bb2d71e177f10ba27f517d1a53ab02500296f9b3aac021810} & \multirow{2}{*}{\texttt{sha512sum 2.so}} \\ 
-      & \texttt{7ced483d70d757a54a5f7489106efa1c1830ef12c93a7f6f240f112c3e90efb5} & \\
+      Nome & \texttt{\texttt{Injection\_API\_executable\_e}} \\
+      \hline
+      Dimensione (\textit{byte}) & \texttt{89088} \\
+   \hline
+      Data ultima modifca & \texttt{2018-11-09 11:08:40.000000000 +0100}\\
+   \hline
+      Tipo di file & \texttt{64-bit XCOFF executable or object module} \\
+    \hline
+      MD5 digest & \texttt{b3efec620885e6cf5b60f72e66d908a9}\\ 
+ \hline
+      SHA1 digest & \texttt{274b0bccb1bfc2731d86782de7babdeece379cf4} \\ 
+     \hline
+      SHA256 digest & \texttt{d465637518024262c063f4a82d799a4e40ff3381014972f24ea18bc23c3b27ee} \\ 
+\hline
+      \multirow{2} {*}{SHA512 digest} & \texttt{a36dab1a1bc194b8acc220b23a6e36438d43fc7ac06840daa3d010fddcd9c316}\\
+      & \texttt{8a6bf314ee13b58163967ab97a91224bfc6ba482466a9515de537d5d1fa6c5f9}  \\
       
       \bottomrule
     \end{tabular}
     \end{adjustbox}
-  \end{center}
+  
 \end{table}
 
-\subsection{Analisi delle stringhe di rilievo}\label{strings2so}
+\subsection{Analisi delle stringhe}
 
-Per estrazione di tutte le stringhe stampabili contenute nel file \texttt{2.so} ci siamo serviti del tool \texttt{strings}\footnote{Cfr. \texttt{https://linux.die.net/man/1/strings}} di cui  riportiamo frammenti dell'output ottenuto nei listati \ref{code:strings2so-1} e \ref{code:strings2so-2}.
+Cominciamo l'analisi studiando alcune delle stringhe più importanti che è possibile estrarre ricorrendo al tool \texttt{strings}.
 
-\begin{lstlisting}[
-frame=lines, 
-caption={Stringe estratte dal file \texttt{2.so}}, 
-label={code:2.so-1},
-firstnumber=465
-]
-...
-_GLOBAL__FI_eg64_so
-_GLOBAL__FD_eg64_so
-=s4m
-/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0/ppc64:/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0:/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0/../../..:/usr/lib:/lib
-libc.a
-shr_64.o
-libpthread.a
-shr_xpg5_64.o
-...
-\end{lstlisting}
-
-Poiché nei sistemi operativi AIX la directory all'interno del quale sono contenute tutte le librerie di GCC assume la forma mostrata nel listato \ref{code:example-1}\footnote{http://www.perzl.org/aix/index.php\%3Fn\%3DMain.GCCBinariesVersionNeutral}, possiamo dedurre dalla riga 496 del listato \ref{code:strings2so-1} che la versione di GCC utilizzata è stata la 4.2.0 (versione rilasciata il 13 Maggio 2007\footnote{http://www.gnu.org/software/gcc/gcc-4.2/}) mentre la versione del sistema operativo bersaglio fosse stata la V6.1, versione ormai obsoleta del sistema operativo AIX il cui supporto è terminato ufficialmente il 30 Aprile del 2017.\footnote{https://www-01.ibm.com/support/docview.wss?uid=swg21634678\#AIX}
-Dalla stessa riga osserviamo che l'architettura hardware del sistema bersaglio è equipaggiata con un processore PowerPC
-
-Ovviamente il riferimento alla libreria standard \texttt{libc.c} e di GCC suggeriscono che il malware è stato scritto in C/C++.
+Osservando innanzitutto il formato della directory di installazione predefinita delle librerie del compilatore \textbf{GCC} nei sistemi operativi AIX, riportato per comodità nel listato \ref{code:InjectionAPIExecutableE-1}\footnote{Cfr: \texttt{http://www.perzl.org/aix/index.php\%3Fn\%3DMain.GCCBinariesVersionNeutral}}, possiamo facilmente conoscere dal frammento mostrato nel listato \ref{code:InjectionAPIExecutableE-1} sia la versione di GCC che quella del sistema operativo AIX utilizzati per eseguire la \textit{build} del malware, le quali risultano essere pari a 4.8.5\footnote{Ulteriori dettagli su: \texttt{https://gcc.gnu.org/gcc-4.8/}} e 7.1\footnote{Ulteriori dettagli su: \texttt{https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}} rispettivamente. Dallo stesso listato si può apprendere inoltre l'architettura del sistema: la PowerPC\texttrademark.
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Formato del percorso di installazione delle librerie GCC nei sistemi operativi AIX}, 
-label={code:2.so-2},
-]
+caption={Formato della directory di installazione predefinita delle librerie GCC nei sistemi operativi AIX}, 
+label={code:InjectionAPIExecutableE-1},
+numbers=none]
 /opt/freeware/lib/gcc/<architecture_AIX_level>/<GCC_Level>
 \end{lstlisting}
 
-Il listato \ref{code:strings2so-2} mostra ciò che dovrebbero essere i nomi delle procedure esportate dalla libreria il che dimostra in modo inequivocabile il fatto che il malware è in grado di interagire con i sistemi informatici che fanno uso del protocollo ISO8583.
-
 \begin{lstlisting}[
 frame=lines, 
-caption={Stringhe estratte dal file \texttt{2.so}}, 
-label={code:2.so-3},
-firstnumber=545
-]
-...
-DL_ISO8583_MSG_Init
-DL_ISO8583_MSG_Free
-DL_ISO8583_MSG_SetField_Str
-DL_ISO8583_MSG_SetField_Bin
-DL_ISO8583_MSG_RemoveField
-DL_ISO8583_MSG_HaveField
-DL_ISO8583_MSG_GetField_Str
-DL_ISO8583_MSG_GetField_Bin
-DL_ISO8583_MSG_Pack
-DL_ISO8583_MSG_Unpack
-DL_ISO8583_MSG_Dump
-_DL_ISO8583_MSG_AllocField
-DL_ISO8583_COMMON_SetHandler
- DL_ISO8583_DEFS_1987_GetHandler
- DL_ISO8583_DEFS_1993_GetHandler
-_DL_ISO8583_FIELD_Pack
-_DL_ISO8583_FIELD_Unpack
-...
-\end{lstlisting}
-
-\subsubsection{Analisi del codice assembly}
-
-Benché naturalmente sprovvista di una procedura \texttt{main}, trattandosi di una shared library, il file \texttt{2.so} assume un ruolo centrale per il corretto svolgimento dell'attacco poiché esporta tutte le procedure necessarie per manipolare le transazioni elettroniche dei sistemi finanziari attaccati.
-I metodi esportati dal file \texttt{so.2}, una parte dei quali sono mostrati nel listato \ref{code:2.so-3}, sono molto numerosi e riguardano principalmente l'ispezione e la manipolazione dei messaggi usati dal protocollo ISO8583 a cui si aggiungono altre procedure di supporto, tra cui quelle usate per implementare un meccanismo di logging (\texttt{out\_dump\_log}) e altre usate per gestire una tabella hash (\texttt{hashmap\_new}, \texttt{hashmap\_init}, \texttt{hashmap\_get} ecc.).
-Di seguito riportiamo l'analisi di alcune delle procedure principali presenti nel file.
-
-\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_GetField\_Bin}} 
-
-Analizzando le prime righe di codice della procedura, riportate in parte nel listato \ref{code:2.so-4}, troviamo molte istruzioni \texttt{std} e \texttt{mr} utilizzanti i registri \texttt{r0} e \texttt{r31} come sorgenti per popolare un altro insieme di registri; perciò si può supporre che i registri \texttt{r0} e \texttt{r31} siano stati usati per contenere i dati passati come argomento alla funzione, presumibilmente l'indirizzo dell'area di memoria del messaggio da ispezionare e un riferimento al campo da estrarre (probabilmente una stringa o un identificatore numerico).
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
-label={code:2.so-4},
-firstnumber=347]
-std     r31,-8(r1)
-stdu    r1,-80(r1)
-mr      r31,r1
-mr      r0,r3
-std     r4,136(r31)
-std     r5,144(r31)
-std     r6,152(r31)
-stw     r0,128(r31)
-\end{lstlisting}
-
-Un altro frammento della stessa procedura, riportato nel listato \ref{code:2.so-5}, mostra come l'ispezione del campo di interesse appartenente al messaggio ISO8583 avvenga per mezzo di un ciclo; notiamo infatti diverse istruzioni di \texttt{beq} (\textit{Branch On Equal}) aventi come argomento uno stesso indirizzo target e altrettante istruzioni \texttt{cmpdi} (\textit{Compare Doubleword Immediate}). 
-E' probabile che tale ciclo sia stato usato per attraversare il flusso di byte che compone un certo messaggio fino al raggiungimento dell'indirizzo corrispondente al campo di intessere che pare venga restituito alla funzione chiamante per mezzo di un'apposita istruzione \texttt{mr} coinvolgendo il registro \texttt{r3} come output (riga 14010).
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
-label={code:2.so-5},
-firstnumber=347]
-cmpdi   cr7,r0,0
-beq     cr7,0x10002048
-lwz     r0,128(r31)
-cmplwi  cr7,r0,128
-bgt     cr7,0x10002048
-lwz     r0,128(r31)
-clrldi  r9,r0,32
-ld      r11,136(r31)
-addi    r0,r9,1
-rldicr  r0,r0,4,59
-add     r9,r0,r11
-addi    r9,r9,8
-ld      r0,0(r9)
-cmpdi   cr7,r0,0
-beq     cr7,0x10002048
-\end{lstlisting}
-
-\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_GetField\_Str}}
-
-La funzione \texttt{DL\_ISO8583\_MSG\_GetField\_Str} è sostanzialmente identica a quella precedentemente descritta sebbene il nome suggerisca che tale funzione restituisca indubbiamente una stringa piuttosto che dati binari.
-
-\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_SetField\_Bin}}
-
-L'esistenza di tale procedura dimostra che il malware non si limita solo all'ispezione dei messaggi ma che è in grado di manipolarne i contenuti. 
-Come mostrato nel listato \ref{code:2.so-5}, in modo simile alle altre procedure, il messaggio viene dapprima ispezionato per mezzo di istruzioni di salto incondizionato (b) e condizionato (ble) insieme ad opportune istruzioni di comparazione (cmplwi) fino al raggiungimento dell'indirizzo corrispondente al campo da modificare.
-Una successiva istruzione di salto alla procedura \texttt{DL\_ISO8583\_MSG\_AllocField}, attraverso la quale viene presumibilmente allocata un'opportuna area di memoria atta ad ospitare il campo con i nuovi valori, è seguita infine dall'invocazione della procedura \texttt{memmove} completando così l'operazione di modifica del messaggio.
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
-label={code:2.so-6},
-firstnumber=347]
-cmplwi  cr7,r0,128
-ble     cr7,0x10001b84
-li      r0,1
-std     r0,128(r31)
-b       0x10001c08
-lwz     r0,208(r31)
-clrldi  r9,r0,32
-lwz     r0,224(r31)
-clrldi  r0,r0,32
-addi    r11,r31,120
-mr      r3,r9
-mr      r4,r0
-ld      r5,232(r31)
-mr      r6,r11
-bl      0x100026e0 <._DL_ISO8583_MSG_AllocField>
-nop
-mr      r0,r3
-std     r0,112(r31)
-ld      r0,112(r31)
-cmpdi   cr7,r0,0
-bne     cr7,0x10001c00
-ld      r9,120(r31)
-lwz     r0,224(r31)
-clrldi  r0,r0,32
-mr      r3,r9
-ld      r4,216(r31)
-mr      r5,r0
-bl      0x1000034c <.memmove>
-\end{lstlisting}
-
-\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_RemoveField}}
-
-La procedura \texttt{DL\_ISO8583\_MSG\_RemoveField} presenta a una struttura sostanzialmente identica a quelle viste finora. L'unica differenza degna di nota, come mostrato nel listato \ref{code:2.so-7}, riguarda l'eliminazione del campo specificato che avviene attraverso una chiamata alla procedura \texttt{free}.
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
-label={code:2.so-7},
-firstnumber=347]
-mr      r3,r0
-bl      0x100002dc <.free>
-ld      r2,40(r1)
-\end{lstlisting}
-
-\paragraph{La procedura \texttt{out\_dump\_log}}
-
-Tale procedura, richiamata molte volte nel codice, ha come scopo quello di scrivere messaggi di log opportunamente formattati in un file esterno, forse per motivi di debug o per tener traccia dello stato di avanzamento dell'attacco.
-La prima porzione del codice assembly, mostrata nel listato \ref{code:2.so-8}, è dominata da una grande quantità di istruzioni \texttt{std} usate per popolare tutti i registri dalla numero 3 alla 10 e dalla numero 23 alla 31, che probabilmente conterranno i dati da stampare nel file di log.
-Dal momento che la totalità di queste istruzioni usano i registri \texttt{r0} e \texttt{r31} come sorgenti quest'ultimi conterranno i dati passati come argomento alla funzione.
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
-label={code:2.so-8},
-firstnumber=347]
-mflr    r0
-std     r23,-72(r1)
-std     r24,-64(r1)
-std     r25,-56(r1)
-std     r26,-48(r1)
-std     r27,-40(r1)
-std     r28,-32(r1)
-std     r29,-24(r1)
-std     r31,-8(r1)
-std     r0,16(r1)
-stdu    r1,-4624(r1)
-mr      r31,r1
-std     r4,4680(r31)
-std     r5,4688(r31)
-std     r6,4696(r31)
-std     r7,4704(r31)
-std     r8,4712(r31)
-std     r9,4720(r31)
-std     r10,4728(r31)
-std     r3,4672(r31)
-\end{lstlisting}
-
-La parte centrale della procedura, mostrata invece nel listato \ref{code:2.so-9}, contiene un insieme di istruzione il cui scopo evidentemente è quello di scrivere tutti i dati precedentemente raccolti su un file.
-Come si può facilmente notare dal listato  \ref{code:2.so-9}, è facile intuire che ogni stringhe venga dapprima realizzata facendo ricorso alla funzione standard \texttt{snprintf} e poi, dopo l'apertura del file di log attraverso la chiamata di sistema \texttt{fopen}, vengano scritti aggiungendo ulteriori informazioni come data e ora locale, come dimostrano le istruzioni di salto verso le procedure \texttt{gettimeofday} e \texttt{localtime}. 
-La procedura si conclude con una chiamata alla procedura \texttt{close} per poi chiudersi definitivamente con l'istruzione \texttt{blr} che permette la ritornare alla procedura chiamante.
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
-label={code:2.so-9},
-firstnumber=347]
-bl      0x10000748 <.snprintf>
-ld      r2,40(r1)
-addi    r0,r31,4280
-mr      r3,r0
-ld      r4,856(r2)
-bl      0x10000770 <.fopen>
-ld      r2,40(r1)
-mr      r0,r3
-std     r0,152(r31)
-ld      r0,152(r31)
-cmpdi   cr7,r0,0
-beq     cr7,0x1000a0ec
-addi    r0,r31,4264
-mr      r3,r0
-li      r4,0
-bl      0x10000798 <.gettimeofday>
-ld      r2,40(r1)
-addi    r0,r31,4264
-mr      r3,r0
-bl      0x100007c0 <.localtime>
-\end{lstlisting}
-
-\newpage
-
-\section{Analisi del file \texttt{Injection\_API\_executable\_e}}\label{sec:InjectionAPIExecutableE}
-
-In questa sezione dimostreremo come il file di tipo \textbf{eXtended COFF} denominato \texttt{Injection\_API\_executable\_e} sia in grado di eseguire un attacco di \textbf{code injection} a danno di un processo in esecuzione in modo tale da modificarne il comportamento a favore degli attaccanti. 
-
-\begin{table}[h!]
-  \begin{center}
-    \caption{Dettagli tecnici del file \texttt{2.s0}}
-    \centering
-    \label{tab:table2}
-    
-    \begin{adjustbox}{width=1.5\textwidth,center=\textwidth}
- 
-    \begin{tabular}{l|c|r}
-      \toprule
-      \textbf{Descrizione} & \textbf{Valore} & \textbf{Comando Unix} \\
-      \midrule
-      
-      \textbf{Nome} & \texttt{2.so} & \texttt{stat -c "\%n" 2.so} \\
-      
-      \textbf{Dimensione (\textit{byte})} & \texttt{89088} & \texttt{stat -c "\%s" 2.so} \\
-   
-      \textbf{Data ultima modifca} & \texttt{2018-11-09 11:08:40.000000000 +0100} & \texttt{stat -c "\%y" 2.so} \\
-   
-      \textbf{Tipo di file} & \texttt{64-bit XCOFF executable or object module} & \texttt{file 2.so} \\
-    
-      \textbf{MD5} & \texttt{b3efec620885e6cf5b60f72e66d908a9} & \texttt{md5sum 2.so} \\ 
- 
-      \textbf{SHA1} & \texttt{274b0bccb1bfc2731d86782de7babdeece379cf4} & \texttt{sha1sum 2.so} \\ 
-     
-      \multirow{2}{*}{\textbf{SHA256}} & \texttt{d465637518024262c063f4a82d799a4e} & \multirow{2}{*}{\texttt{sha256sum 2.so}} \\ 
-      & \texttt{40ff3381014972f24ea18bc23c3b27ee} & \\
-      
-      \multirow{2} {*}{\textbf{SHA512}} & \texttt{a36dab1a1bc194b8acc220b23a6e36438d43fc7ac06840daa3d010fddcd9c316} & \multirow{2}{*}{\texttt{sha512sum 2.so}} \\ 
-      & \texttt{8a6bf314ee13b58163967ab97a91224bfc6ba482466a9515de537d5d1fa6c5f9} & \\
-      
-      \bottomrule
-    \end{tabular}
-    \end{adjustbox}
-  \end{center}
-\end{table}
-
-\subsubsection{Stringhe stampabili rilevanti}
-
-Cominciamo lo studio del file \texttt{Injection\_API\_executable\_e} partendo dall'analisi delle stringhe stampabili estratte attraverso il tool \texttt{strings}.
-Seguendo lo stesso ragionamento precedentemente descritto nella sezione \ref{strings2so}, possiamo osservare dal listato \ref{code:stringsInjectionAPIexecutablee1} la versione di GCC e del sistema operativo AIX utilizzati per eseguire la \textit{build} del malware, che risultano essere rispettivamente pari a 4.8.5 (la data pubblicazione risale al 23 giugno 2015\footnote{Cfr. https://gcc.gnu.org/gcc-4.8/}), e 7.1 (commercializzata a partire da settembre 2010).\footnote{Cfr: https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}
-Sfortunatamente non è stato possibile risalire alla versione degli aggiornamenti, che IBM identifica con il nome di \textit{Technology Levels} (TLs) \footnote{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/}, installati sul sistema operativo bersaglio al momento dell'attacco in modo tale da conoscere l'entità del rischio a cui si sottoponeva il sistema bancario. In ogni caso il supporto ufficiale per la versione 7.1, sostituita dalla ben più moderna versione 7.2 rilasciato nel dicembre 2015, è già terminato il 30 Novembre 2013 benché la versione 7.1 TL5 riceverà supporto fino ad aprile 2022.\footnote{Cfr: https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} (1)}, 
 label={code:stringsInjectionAPIexecutablee1},
 firstnumber=347]
 ...
@@ -470,11 +198,11 @@ firstnumber=347]
 ...
 \end{lstlisting}
 
-Un altro riferimento ai tool utilizzati dagli attaccanti lo possiamo ricavare dalla riga 944 riportata nel listato \ref{code:stringsInjectionAPIexecutablee2} dove apprendiamo l'utilizzo del compilatore lo \textbf{XL C/C++ for AIX} versione 11.1.0.1, quest'ultimo appositamente ottimizzato dalla IBM per i propri sistemi operativi. Ci risulta che tale versione del compilatore non fosse disponibile per AIX 7.1 al momento del rilascio e che sia divenuto disponibile in seguito ad un aggiornamento. \footnote{https://www-01.ibm.com/support/docview.wss?uid=swg21326972}
+Sfortunatamente non è stato possibile risalire alla versione degli aggiornamenti, identificati dalla stessa IBM con il nome di \textit{Technology Levels} (TLs) \footnote{Cfr: \texttt{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/}}, installati sul sistema operativo bersaglio al momento dell'attacco, pertanto non possiamo escludere lo sfruttamento di una qualche vulnerabilità nota da parte degli attaccanti; in ogni caso, dal momento che il malware è stato compilato per la versione 7.1 di AIX, possiamo presupporre che la versione del sistema operativo attaccato fosse almeno pari alla 7.1. E' importante ricordare che   il supporto ufficiale da parte di IBM nei confronti della versione 7.1 di AIX TL0, sostituita dalla ben più moderna versione 7.2 rilasciata nel dicembre 2015, è stata già terminata nel novembre 2013, benché la versione 7.1 TL5 riceverà ancora aggiornamenti da parte di IBM fino ad aprile 2022.\footnote{Cfr: \texttt{https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}}
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} (2)}, 
 label={code:stringsInjectionAPIexecutablee2},
 firstnumber=944]
 ...
@@ -482,13 +210,19 @@ IBM XL C for AIX, Version 11.1.0.1
 ...
 \end{lstlisting}
 
-Analizziamo ora in dettaglio le varie operazioni compiute dal malware durante la sua esecuzione.
-Innanzitutto, osservando la particolare configurazione dei listati successivi come la numero \ref{code:stringsInjectionAPIexecutablee3}, notiamo quello che dovrebbe essere un insieme di stampe nella forma \texttt{[FUNCTION NAME] [...]} eseguito probabilmente da un meccanismo di log, il che è stato confermato dalla già citata analisi della NCCIC; infatti, notiamo un gran numero di stringhe contenenti i ben noti \textit{conversion specifier} utilizzati nelle stringhe che specificano il formato delle stampe eseguite dalla funzione \texttt{fprintf} di cui molti sono nella forma \%llX, usata per stampare numeri interi senza segno in forma esadecimale\footnote{Cfr. http://man7.org/linux/man-pages/man3/printf.3.html}. 
-Come è stato confermato da altre analisi, le stringhe riportate nelle righe 333, 334 e 335 suggeriscono come l'applicazione è stata progettata per essere una command-line utility interattiva e di come il meccanismo di log sia stato utilizzato per ottenere informazioni e consentire agli attaccanti un attacco mirato.
+Il particolare mostrato nel listato \ref{code:stringsInjectionAPIexecutablee2} dimostra l'uso da parte degli attaccanti del software \textbf{XL C/C++ for AIX} versione 11.1.0.1, un compilatore C/C++ appositamente ottimizzato dalla IBM per i propri sistemi operativi\footnote{Cfr. \texttt{https://www.ibm.com/it-it/marketplace/xl-cpp-aix-compiler-power}}, confermando, insieme ai numerosi riferimenti alle ben note librerie standard di C, come il C/C++ sia stato il linguaggio di programmazione scelto per implementare il malware.
+
+Osservando il frammento mostrato nel listato \ref{code:stringsInjectionAPIexecutablee3}, è possibile notare un insieme di stringhe, aventi formato \texttt{([FUNCTION\_NAME] \textit{info})}, le quali, come avremo modo di notare durante l'analisi del codice assembly, fanno parte certamente di un meccanismo di logging sfruttato dagli attaccanti; tale aspetto è stato confermato dalla già citata analisi della NCCIC
+
+Con ogni probabilità, le suddette stampe sono state realizzate per mezzo della funzione della libreria standard \texttt{snprintf}, come dimostrato dal codice assembly e dai numerosi riferimenti alla suddetta funzione presenti nel file. E' interessante notare come molte delle stampe coinvolgano numeri interi senza segno in forma esadecimale, come dimostrato dall'uso dei \textit{conversion specifier} (le speciali sequenze di caratteri usati abitualmente nella definizione del formato di output nelle funzioni \texttt{printf}) nella forma \texttt{\%llX}\footnote{Cfr. \texttt{http://man7.org/linux/man-pages/man3/printf.3.html}}.
+
+Queste stampe di log coinvolgono gran parte delle funzioni implementate nel file e presumibilmente sono state utilizzate dagli attaccanti per motivi di debug e racconta di informazioni arricchite anche da indicazioni temporali, come dimostrano l'uso delle funzioni \texttt{gettimeofday} e \texttt{localtime}.
+
+Infine le righe le righe 333, 334 e 335 del listato \ref{code:stringsInjectionAPIexecutablee3} indicano che il malware sia stato implementato sotto forma di una \textbf{command-line utility interattiva}; tale supposizione è stata confermata anche dall'analisi NCCIC.
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} (3)}, 
 label={code:stringsInjectionAPIexecutablee3},
 firstnumber=320]
 ...
@@ -1030,34 +764,297 @@ bl      0x10000b48 <.file_dump>
 
 
 
-La traduzione dal linguaggio macchina all'assembler del file è stato usufrendo del servizio web https://onlinedisassembler.com/ per motivi di semplicità con le seguenti impostazioni
-
-architettura powerpc620
-processore POWER 7
-64 bit
-
-Queste impostazioni ci hanno permesso di ottenere un output sostanzialmente identico a quello mostrato in vari screenshot dalla CISA
 
 
 
 
-ftp://public.dhe.ibm.com/systems/power/docs/aix/72/idalangref\_pdf.pdf
 
 
 
+
+
+
+\section{Analisi del file \texttt{2.so}}\label{sec:2.so}
+
+In base all'output ottenuto dal tool unix \texttt{file}, \texttt{2.so} è un file di tipo \textbf{eXtended COFF} (\textbf{XCOFF}) che rappresenta la versione migliorata ed estesa del formato \textbf{Common Object File Format} (\textbf{COFF}), il formato di file standard che ha definito la struttura dei file eseguibili e delle librerie nei sistemi operativi UNIX\footnote{Cfr. \texttt{https://it.wikipedia.org/wiki/COFF}} fino al 1999\footnote{Cfr. \texttt{https://en.wikipedia.org/wiki/Executable\_and\_Linkable\_Format}}, anno della definitiva adozione dello standard \textbf{Executable and Linkable Format} o \textbf{ELF}.
+XCOFF rappresenta tuttavia uno standard proprietario sviluppato da IBM\footnote{Cfr. IBM - \textit{XCOFF Object File Format} - \texttt{https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.files/XCOFF.htm} (data ultima consultazione 27-03-2019)} adottato nei sistemi operativi \textbf{Advanced Interactive eXecutive} o \textbf{AIX}, una famiglia di sistemi operativi proprietari basati su Unix sviluppati dalla stessa IBM.\footnote{Cfr. \texttt{https://www.ibm.com/it-infrastructure/power/os/aix}}
+
+In accordo alle nostre analisi, confermate anche dal report AR18-275A della NCCIC, il file \texttt{file 2.so} rappresenta una \textbf{shared library} che esporta una serie di metodi che consentono l'iterazione con i sistemi finanziari che utilizzano il protocollo \textbf{ISO8583}.\footnote{Cfr. The National Cybersecurity and Communications Integration Center’s (NCCIC), \textit{Malware Analysis Report (AR18-275A)} - 2 Ottobre 2018 - \texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A)}}
+
+\begin{table}[h!]
+  
+    \caption{Dettagli del file \texttt{2.s0}}
+    \centering
+    \label{tab:table1}
     
- 	Specifies a 24-bit signed two's-complement integer that is concatenated on the right with 0b00 and sign-extended to 64 bits (PowerPC®) or 32 bits (POWER® family). This is an immediate field.
+    \begin{adjustbox}{center=\textwidth}
+ 
+    \begin{tabular}{l|r}
+      \toprule
+      \textbf{Descrizione} & \textbf{Valore} \\
+      \midrule
+      
+      Nome & \texttt{2.so} \\
+      \hline
+      Dimensione (\textit{byte}) & \texttt{110592} \\
+   \hline
+      Data ultima modifca & \texttt{2018-11-09 11:08:40.000000000 +0100}\\
+   \hline
+      Tipo di file & \texttt{64-bit XCOFF executable or object module} \\
+    \hline
+      MD5 digest & \texttt{b66be2f7c046205b01453951c161e6cc}\\ 
+ \hline
+      SHA1 digest & \texttt{ec5784548ffb33055d224c184ab2393f47566c7a} \\ 
+     \hline
+      SHA256 digest & \texttt{ca9ab48d293cc84092e8db8f0ca99cb155b30c61d32a1da7cd3687de454fe86c} \\ 
+\hline
+      \multirow{2} {*}{SHA512 digest} & \texttt{6890dcce36a87b4bb2d71e177f10ba27f517d1a53ab02500296f9b3aac021810}\\
+      & \texttt{7ced483d70d757a54a5f7489106efa1c1830ef12c93a7f6f240f112c3e90efb5}  \\
+      
+      \bottomrule
+    \end{tabular}
+    \end{adjustbox}
+  
+\end{table}
 
- 	https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.alangref/idalangref\_inst\_fields.htm
- 	
- 	mflr r0 \# move LR into GPR0
- 	
- 	 If a branch instruction has the Link bit set to 1, then the Link Register is altered to store thereturn address for use by an invoked subroutine. The return address is the address of the instructionimmediately following the branch instruction (pag 33)
+\subsection{Analisi delle stringhe di rilievo}\label{strings2so}
 
+Per estrazione di tutte le stringhe stampabili contenute nel file \texttt{2.so} ci siamo serviti del tool \texttt{strings}\footnote{Cfr. \texttt{https://linux.die.net/man/1/strings}} di cui  riportiamo frammenti dell'output ottenuto nei listati \ref{code:strings2so-1} e \ref{code:strings2so-2}.
 
-The following code transfers the execution of the program to here and sets the Link Register: 
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringe estratte dal file \texttt{2.so}}, 
+label={code:2.so-1},
+firstnumber=465
+]
+...
+_GLOBAL__FI_eg64_so
+_GLOBAL__FD_eg64_so
+=s4m
+/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0/ppc64:/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0:/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0/../../..:/usr/lib:/lib
+libc.a
+shr_64.o
+libpthread.a
+shr_xpg5_64.o
+...
+\end{lstlisting}
 
-https://www.ibm.com/support/knowledgecenter/en/ssw\_aix\_71/com.ibm.aix.alangref/idalangref\_bbranchinst.htm
+Poiché nei sistemi operativi AIX la directory all'interno del quale sono contenute tutte le librerie di GCC assume la forma mostrata nel listato \ref{code:example-1}\footnote{http://www.perzl.org/aix/index.php\%3Fn\%3DMain.GCCBinariesVersionNeutral}, possiamo dedurre dalla riga 496 del listato \ref{code:strings2so-1} che la versione di GCC utilizzata è stata la 4.2.0 (versione rilasciata il 13 Maggio 2007\footnote{http://www.gnu.org/software/gcc/gcc-4.2/}) mentre la versione del sistema operativo bersaglio fosse stata la V6.1, versione ormai obsoleta del sistema operativo AIX il cui supporto è terminato ufficialmente il 30 Aprile del 2017.\footnote{https://www-01.ibm.com/support/docview.wss?uid=swg21634678\#AIX}
+Dalla stessa riga osserviamo che l'architettura hardware del sistema bersaglio è equipaggiata con un processore PowerPC
+
+Ovviamente il riferimento alla libreria standard \texttt{libc.c} e di GCC suggeriscono che il malware è stato scritto in C/C++.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Formato del percorso di installazione delle librerie GCC nei sistemi operativi AIX}, 
+label={code:2.so-2},
+]
+/opt/freeware/lib/gcc/<architecture_AIX_level>/<GCC_Level>
+\end{lstlisting}
+
+Il listato \ref{code:strings2so-2} mostra ciò che dovrebbero essere i nomi delle procedure esportate dalla libreria il che dimostra in modo inequivocabile il fatto che il malware è in grado di interagire con i sistemi informatici che fanno uso del protocollo ISO8583.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{2.so}}, 
+label={code:2.so-3},
+firstnumber=545
+]
+...
+DL_ISO8583_MSG_Init
+DL_ISO8583_MSG_Free
+DL_ISO8583_MSG_SetField_Str
+DL_ISO8583_MSG_SetField_Bin
+DL_ISO8583_MSG_RemoveField
+DL_ISO8583_MSG_HaveField
+DL_ISO8583_MSG_GetField_Str
+DL_ISO8583_MSG_GetField_Bin
+DL_ISO8583_MSG_Pack
+DL_ISO8583_MSG_Unpack
+DL_ISO8583_MSG_Dump
+_DL_ISO8583_MSG_AllocField
+DL_ISO8583_COMMON_SetHandler
+ DL_ISO8583_DEFS_1987_GetHandler
+ DL_ISO8583_DEFS_1993_GetHandler
+_DL_ISO8583_FIELD_Pack
+_DL_ISO8583_FIELD_Unpack
+...
+\end{lstlisting}
+
+\subsubsection{Analisi del codice assembly}
+
+Benché naturalmente sprovvista di una procedura \texttt{main}, trattandosi di una shared library, il file \texttt{2.so} assume un ruolo centrale per il corretto svolgimento dell'attacco poiché esporta tutte le procedure necessarie per manipolare le transazioni elettroniche dei sistemi finanziari attaccati.
+I metodi esportati dal file \texttt{so.2}, una parte dei quali sono mostrati nel listato \ref{code:2.so-3}, sono molto numerosi e riguardano principalmente l'ispezione e la manipolazione dei messaggi usati dal protocollo ISO8583 a cui si aggiungono altre procedure di supporto, tra cui quelle usate per implementare un meccanismo di logging (\texttt{out\_dump\_log}) e altre usate per gestire una tabella hash (\texttt{hashmap\_new}, \texttt{hashmap\_init}, \texttt{hashmap\_get} ecc.).
+Di seguito riportiamo l'analisi di alcune delle procedure principali presenti nel file.
+
+\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_GetField\_Bin}} 
+
+Analizzando le prime righe di codice della procedura, riportate in parte nel listato \ref{code:2.so-4}, troviamo molte istruzioni \texttt{std} e \texttt{mr} utilizzanti i registri \texttt{r0} e \texttt{r31} come sorgenti per popolare un altro insieme di registri; perciò si può supporre che i registri \texttt{r0} e \texttt{r31} siano stati usati per contenere i dati passati come argomento alla funzione, presumibilmente l'indirizzo dell'area di memoria del messaggio da ispezionare e un riferimento al campo da estrarre (probabilmente una stringa o un identificatore numerico).
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-4},
+firstnumber=347]
+std     r31,-8(r1)
+stdu    r1,-80(r1)
+mr      r31,r1
+mr      r0,r3
+std     r4,136(r31)
+std     r5,144(r31)
+std     r6,152(r31)
+stw     r0,128(r31)
+\end{lstlisting}
+
+Un altro frammento della stessa procedura, riportato nel listato \ref{code:2.so-5}, mostra come l'ispezione del campo di interesse appartenente al messaggio ISO8583 avvenga per mezzo di un ciclo; notiamo infatti diverse istruzioni di \texttt{beq} (\textit{Branch On Equal}) aventi come argomento uno stesso indirizzo target e altrettante istruzioni \texttt{cmpdi} (\textit{Compare Doubleword Immediate}). 
+E' probabile che tale ciclo sia stato usato per attraversare il flusso di byte che compone un certo messaggio fino al raggiungimento dell'indirizzo corrispondente al campo di intessere che pare venga restituito alla funzione chiamante per mezzo di un'apposita istruzione \texttt{mr} coinvolgendo il registro \texttt{r3} come output (riga 14010).
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-5},
+firstnumber=347]
+cmpdi   cr7,r0,0
+beq     cr7,0x10002048
+lwz     r0,128(r31)
+cmplwi  cr7,r0,128
+bgt     cr7,0x10002048
+lwz     r0,128(r31)
+clrldi  r9,r0,32
+ld      r11,136(r31)
+addi    r0,r9,1
+rldicr  r0,r0,4,59
+add     r9,r0,r11
+addi    r9,r9,8
+ld      r0,0(r9)
+cmpdi   cr7,r0,0
+beq     cr7,0x10002048
+\end{lstlisting}
+
+\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_GetField\_Str}}
+
+La funzione \texttt{DL\_ISO8583\_MSG\_GetField\_Str} è sostanzialmente identica a quella precedentemente descritta sebbene il nome suggerisca che tale funzione restituisca indubbiamente una stringa piuttosto che dati binari.
+
+\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_SetField\_Bin}}
+
+L'esistenza di tale procedura dimostra che il malware non si limita solo all'ispezione dei messaggi ma che è in grado di manipolarne i contenuti. 
+Come mostrato nel listato \ref{code:2.so-5}, in modo simile alle altre procedure, il messaggio viene dapprima ispezionato per mezzo di istruzioni di salto incondizionato (b) e condizionato (ble) insieme ad opportune istruzioni di comparazione (cmplwi) fino al raggiungimento dell'indirizzo corrispondente al campo da modificare.
+Una successiva istruzione di salto alla procedura \texttt{DL\_ISO8583\_MSG\_AllocField}, attraverso la quale viene presumibilmente allocata un'opportuna area di memoria atta ad ospitare il campo con i nuovi valori, è seguita infine dall'invocazione della procedura \texttt{memmove} completando così l'operazione di modifica del messaggio.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-6},
+firstnumber=347]
+cmplwi  cr7,r0,128
+ble     cr7,0x10001b84
+li      r0,1
+std     r0,128(r31)
+b       0x10001c08
+lwz     r0,208(r31)
+clrldi  r9,r0,32
+lwz     r0,224(r31)
+clrldi  r0,r0,32
+addi    r11,r31,120
+mr      r3,r9
+mr      r4,r0
+ld      r5,232(r31)
+mr      r6,r11
+bl      0x100026e0 <._DL_ISO8583_MSG_AllocField>
+nop
+mr      r0,r3
+std     r0,112(r31)
+ld      r0,112(r31)
+cmpdi   cr7,r0,0
+bne     cr7,0x10001c00
+ld      r9,120(r31)
+lwz     r0,224(r31)
+clrldi  r0,r0,32
+mr      r3,r9
+ld      r4,216(r31)
+mr      r5,r0
+bl      0x1000034c <.memmove>
+\end{lstlisting}
+
+\paragraph{La procedura \texttt{DL\_ISO8583\_MSG\_RemoveField}}
+
+La procedura \texttt{DL\_ISO8583\_MSG\_RemoveField} presenta a una struttura sostanzialmente identica a quelle viste finora. L'unica differenza degna di nota, come mostrato nel listato \ref{code:2.so-7}, riguarda l'eliminazione del campo specificato che avviene attraverso una chiamata alla procedura \texttt{free}.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-7},
+firstnumber=347]
+mr      r3,r0
+bl      0x100002dc <.free>
+ld      r2,40(r1)
+\end{lstlisting}
+
+\paragraph{La procedura \texttt{out\_dump\_log}}
+
+Tale procedura, richiamata molte volte nel codice, ha come scopo quello di scrivere messaggi di log opportunamente formattati in un file esterno, forse per motivi di debug o per tener traccia dello stato di avanzamento dell'attacco.
+La prima porzione del codice assembly, mostrata nel listato \ref{code:2.so-8}, è dominata da una grande quantità di istruzioni \texttt{std} usate per popolare tutti i registri dalla numero 3 alla 10 e dalla numero 23 alla 31, che probabilmente conterranno i dati da stampare nel file di log.
+Dal momento che la totalità di queste istruzioni usano i registri \texttt{r0} e \texttt{r31} come sorgenti quest'ultimi conterranno i dati passati come argomento alla funzione.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-8},
+firstnumber=347]
+mflr    r0
+std     r23,-72(r1)
+std     r24,-64(r1)
+std     r25,-56(r1)
+std     r26,-48(r1)
+std     r27,-40(r1)
+std     r28,-32(r1)
+std     r29,-24(r1)
+std     r31,-8(r1)
+std     r0,16(r1)
+stdu    r1,-4624(r1)
+mr      r31,r1
+std     r4,4680(r31)
+std     r5,4688(r31)
+std     r6,4696(r31)
+std     r7,4704(r31)
+std     r8,4712(r31)
+std     r9,4720(r31)
+std     r10,4728(r31)
+std     r3,4672(r31)
+\end{lstlisting}
+
+La parte centrale della procedura, mostrata invece nel listato \ref{code:2.so-9}, contiene un insieme di istruzione il cui scopo evidentemente è quello di scrivere tutti i dati precedentemente raccolti su un file.
+Come si può facilmente notare dal listato  \ref{code:2.so-9}, è facile intuire che ogni stringhe venga dapprima realizzata facendo ricorso alla funzione standard \texttt{snprintf} e poi, dopo l'apertura del file di log attraverso la chiamata di sistema \texttt{fopen}, vengano scritti aggiungendo ulteriori informazioni come data e ora locale, come dimostrano le istruzioni di salto verso le procedure \texttt{gettimeofday} e \texttt{localtime}. 
+La procedura si conclude con una chiamata alla procedura \texttt{close} per poi chiudersi definitivamente con l'istruzione \texttt{blr} che permette la ritornare alla procedura chiamante.
+
+\begin{lstlisting}[
+frame=lines, 
+caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+label={code:2.so-9},
+firstnumber=347]
+bl      0x10000748 <.snprintf>
+ld      r2,40(r1)
+addi    r0,r31,4280
+mr      r3,r0
+ld      r4,856(r2)
+bl      0x10000770 <.fopen>
+ld      r2,40(r1)
+mr      r0,r3
+std     r0,152(r31)
+ld      r0,152(r31)
+cmpdi   cr7,r0,0
+beq     cr7,0x1000a0ec
+addi    r0,r31,4264
+mr      r3,r0
+li      r4,0
+bl      0x10000798 <.gettimeofday>
+ld      r2,40(r1)
+addi    r0,r31,4264
+mr      r3,r0
+bl      0x100007c0 <.localtime>
+\end{lstlisting}
+
+\newpage
 
 
 \listoffigures
