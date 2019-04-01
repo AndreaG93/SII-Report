@@ -779,8 +779,6 @@ bl      0x10000b48 <.file_dump>
 
 \subsection{Analisi delle stringhe}\label{strings2so}
 
-
-
 Per estrazione di tutte le stringhe stampabili contenute nel file \texttt{2.so} ci siamo serviti del tool \texttt{strings}\footnote{Cfr. \texttt{https://linux.die.net/man/1/strings}} di cui  riportiamo frammenti dell'output ottenuto nei listati \ref{code:strings2so-1} e \ref{code:strings2so-2}.
 
 \begin{lstlisting}[
@@ -954,13 +952,18 @@ ld      r2,40(r1)
 
 \subsubsection{La procedura \texttt{out\_dump\_log}}
 
+La procedura denominata \texttt{out\_dump\_log}, usata, come suggerisce il nome, per ovvie finalità legate al \textbf{debugging} dell'applicazione e al \textbf{logging} di tutte le informazioni di interesse raccolte durante l'attacco, rappresenta quella invocata il maggior numero di volte all'interno del codice della libreria: ben 32 volte. Una delle procedure esportate, chiamata \texttt{NewRead}, invoca la suddetta funzione ben 11 volte e, in generale, l'invocazione è preceduta quasi sempre da un'altra nei confronti della funzione \texttt{ReadRecv}; quest'ultima considerazione dimostra come quasi certamente gli attaccanti ispezionavano il contenuto dei messaggi ricevuti salvando tutti i dati in \textbf{memoria di massa}, affinché fosse accessibile di seguito per un qualche scopo.
+
+
+ rappresenta quella invocata più frequentemente all'interno del codice; ben 32 volte il che dimostra la sua importanza dato il volume di dati registrato dagli attaccanti.
+
 Tale procedura, richiamata molte volte nel codice, ha come scopo quello di scrivere messaggi di log opportunamente formattati in un file esterno, forse per motivi di debug o per tener traccia dello stato di avanzamento dell'attacco.
 La prima porzione del codice assembly, mostrata nel listato \ref{code:2.so-8}, è dominata da una grande quantità di istruzioni \texttt{std} usate per popolare tutti i registri dalla numero 3 alla 10 e dalla numero 23 alla 31, che probabilmente conterranno i dati da stampare nel file di log.
 Dal momento che la totalità di queste istruzioni usano i registri \texttt{r0} e \texttt{r31} come sorgenti quest'ultimi conterranno i dati passati come argomento alla funzione.
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e}}, 
+caption={}, 
 label={code:2.so-8},
 firstnumber=347]
 mflr    r0

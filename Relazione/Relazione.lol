@@ -19,5 +19,4 @@
 \contentsline {lstlisting}{\numberline {1.19}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{19}{lstlisting.1.19}% 
 \contentsline {lstlisting}{\numberline {1.20}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{19}{lstlisting.1.20}% 
 \contentsline {lstlisting}{\numberline {1.21}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{20}{lstlisting.1.21}% 
-\contentsline {lstlisting}{\numberline {1.22}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{20}{lstlisting.1.22}% 
-\contentsline {lstlisting}{\numberline {1.23}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{21}{lstlisting.1.23}% 
+\contentsline {lstlisting}{\numberline {1.22}Stringhe estratte dal file \texttt {Injection\_API\_executable\_e}}{21}{lstlisting.1.22}% 
