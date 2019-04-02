@@ -6,4 +6,5 @@
 \contentsline {table}{\numberline {1.3}{\ignorespaces Sottoinsieme dei file contenuti in \texttt {/proc/pid} \relax }}{7}{table.caption.4}% 
 \contentsline {table}{\numberline {1.4}{\ignorespaces Breve descrizione dei registri ispezionati dal malware\relax }}{9}{table.caption.5}% 
 \contentsline {table}{\numberline {1.5}{\ignorespaces Alcune istruzioni assembly disponibili nell'architettura PowerPC\texttrademark \relax }}{10}{table.caption.6}% 
-\contentsline {table}{\numberline {1.6}{\ignorespaces Dettagli del file \texttt {2.s0}\relax }}{16}{table.caption.7}% 
+\contentsline {table}{\numberline {1.6}{\ignorespaces Dettagli del file \texttt {2.s0}\relax }}{17}{table.caption.7}% 
+\contentsline {table}{\numberline {1.7}{\ignorespaces Dettagli del file \texttt {5cfa1c2cb430bec721063e3e2d144feb}\relax }}{24}{table.caption.8}% 
