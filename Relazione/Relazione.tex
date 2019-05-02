@@ -1104,6 +1104,83 @@ fdsfdsfdsfsdfsdf
   
 \end{table}
 
+\section{Inpatto}
+
+Thread Execution Hijacking (a.k.a Suspend, Inject, and Resume (SIR))
+This technique has some similarities to the process hollowing technique previously discussed. In thread execution hijacking, malware targets an existing thread of a process and avoids any noisy process or thread creations operations. Therefore, during analysis you will probably see calls to CreateToolhelp32Snapshot and Thread32First followed by OpenThread.
+
+After getting a handle to the target thread, the malware puts the thread into suspended mode by calling SuspendThread to perform its injection. The malware calls VirtualAllocEx and WriteProcessMemory to allocate memory and perform the code injection. The code can contain shellcode, the path to the malicious DLL, and the address of LoadLibrary.
+Figure 4 illustrates a generic trojan using this technique. In order to hijack the execution of the thread, the malware modifies the EIP register (a register that contains the address of the next instruction) of the targeted thread by calling SetThreadContext. Afterwards, malware resumes the thread to execute the shellcode that it has written to the host process. From the attacker’s perspective, the SIR approach can be problematic because suspending and resuming a thread in the middle of a system call can cause the system to crash. To avoid this, a more sophisticated malware would resume and retry later if the EIP register is within the range of NTDLL.dll.
+
+Mitigation
+This type of attack technique cannot be easily mitigated with preventive controls since it is based on the abuse of operating system design features. For example, mitigating specific Windows API calls will likely have unintended side effects, such as preventing legitimate software (i.e., security products) from operating properly. Efforts should be focused on preventing adversary tools from running earlier in the chain of activity and on identification of subsequent malicious behavior. [77]
+Identify or block potentially malicious software that may contain process injection functionality by using whitelisting [78] tools, like AppLocker, [79] [80] or Software Restriction Policies [81] where appropriate. [82]
+Utilize Yama [83] to mitigate ptrace based process injection by restricting the use of ptrace to privileged users only. Other mitigation controls involve the deployment of security kernel modules that provide advanced access control and process restrictions such as SELinux [84], grsecurity [85], and AppAmour [86].
+
+SELinux (Security Enhanced Linux) è un sistema di controllo degli accessi obbligatorio costruito sull'interfaccia LSM (Linux Security Modules) di Linux. In pratica, il kernel interroga SELinux prima di ogni chiamata di sistema per sapere se il processo è autorizzato ad eseguire una data operazione. 
+SELinux sfrutta una serie di regole, note comunemente come politiche (policy), per autorizzare o vietare operazioni.
+
+AppArmor è un sistema di Mandatory Access Control (Controllo Accesso Obbligatorio) costruito sull'interfaccia LSM (Linux Security Modules) di Linux. In pratica, il kernel interroga AppArmor prima di ogni chiamata di sistema per sapere se il processo è autorizzato ad eseguire una data operazione. Attraverso questo meccanismo, AppArmor confina programmi ad una serie limitata di risorse. 
+AppArmor applica una serie di regole (note come "profilo") su ciascun programma. Il profilo applicato dal kernel dipende dal percorso di installazione del programma in esecuzione. Al contrario di SELinux (discusso nella Sezione 14.5, «Introduzione a SELinux»), le norme applicate non dipendono l'utente. Tutti gli utenti devono sottostare allo stesso insieme di regole quando è in esecuzione lo stesso programma (ma le autorizzazioni utente tradizionali sono ancora valide e potrebbero causare un comportamento diverso!). 
+
+Use a firewall to block all incoming connections from the Internet to services that should not be publicly available. By default, you should deny all incoming connections and only allow services you explicitly want to offer to the outside world.
+Enforce a password policy. Complex passwords make it difficult to crack password files on compromised computers. This helps to prevent or limit damage when a computer is compromised.
+Ensure that programs and users of the computer use the lowest level of privileges necessary to complete a task. When prompted for a root or UAC password, ensure that the program asking for administration-level access is a legitimate application.
+Disable AutoPlay to prevent the automatic launching of executable files on network and removable drives, and disconnect the drives when not required. If write access is not required, enable read-only mode if the option is available.
+Turn off file sharing if not needed. If file sharing is required, use ACLs and password protection to limit access. Disable anonymous access to shared folders. Grant access only to user accounts with strong passwords to folders that must be shared.
+Turn off and remove unnecessary services. By default, many operating systems install auxiliary services that are not critical. These services are avenues of attack. If they are removed, threats have less avenues of attack.
+If a threat exploits one or more network services, disable, or block access to, those services until a patch is applied.
+Always keep your patch levels up-to-date, especially on computers that host public services and are accessible through the firewall, such as HTTP, FTP, mail, and DNS services.
+Configure your email server to block or remove email that contains file attachments that are commonly used to spread threats, such as .vbs, .bat, .exe, .pif and .scr files.
+Isolate compromised computers quickly to prevent threats from spreading further. Perform a forensic analysis and restore the computers using trusted media.
+Train employees not to open attachments unless they are expecting them. Also, do not execute software that is downloaded from the Internet unless it has been scanned for viruses. Simply visiting a compromised Web site can cause infection if certain browser vulnerabilities are not patched.
+If Bluetooth is not required for mobile devices, it should be turned off. If you require its use, ensure that the device's visibility is set to "Hidden" so that it cannot be scanned by other Bluetooth devices. If device pairing must be used, ensure that all devices are set to "Unauthorized", requiring authorization for each connection request. Do not accept applications that are unsigned or sent from unknown sources.
+For further information on the terms used in this document, please refer to the Security Response glossary.
+
+Organizations should ensure that operating systems and all other software are up to date. Software updates will frequently include patches for newly discovered security vulnerabilities that could be exploited by attackers. In all reported FASTCash attacks to date, the attackers have compromised banking application servers running unsupported versions of the AIX operating system, beyond the end of their service pack support dates.
+
+https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware
+
+% ---
+
+What was already known is that the bank robbers inject a malicious Advanced Interactive eXecutive (AIX) executable into a running, legitimate process on the switch application server of an ATM network. These servers are vulnerable and targeted because they are running outdated or unpatched versions of the AIX operating system. The malware is able to create a fraudulent ISO 8583 message, these are the standard for financial transaction messaging.
+What is now being made public is the fact that the malicious executable is actually malware, named Trojan.Fastcash. The malware has two primary missions:
+It monitors incoming messages and intercepts attacker-generated fraudulent transaction requests to prevent them from reaching the switch application that processes transactions. 
+It contains logic that generates one of three fraudulent responses to fraudulent transaction requests.
+The FBI and DHS first issued warnings about Lazarus pulling off ATM attacks, dubbed FASTCash, in early October.
+Trojan.Fastcash reads all incoming network traffic looking for ISO 8583 messages and the primary account number.
+“If it finds any containing a PAN number used by the attackers where the Message Type Indicator (MTI) is “0x100 Authorization Request from Acquirer”, it will block the message from going any further. It will then transmit a fake response message approving fraudulent withdrawal requests. The result is that attempts to withdraw money via an ATM by the Lazarus attackers will be approved,” report stated.
+Jon DiMaggio, a senior threat intelligence analyst at Symantec, explained this means Lazarus is using a legitimate bank account, usually one with a zero balance. Since the malware intercepts the transaction request for funds, there is no need for the account to have any money at the time of exposure, he said.
+DiMaggio added there is a likely possibility, although unconfirmed, that Lazarus is using its access to the bank’s network create these empty accounts and then use these fraudulent bank account numbers to complete the theft. These newly created accounts and their associated account number are then passed along to the malware so it is ready to act when a withdrawal request comes through.
+While quite a bit is known about how the attacks take place, there are still some points in the attack that need to be fleshed out.
+“We have a bit of a blind spot on how the attacker is obtaining the legitimate PANs. However, we believe the attacker is likely using spear phishing emails to obtain initial access to the financial institutions. We also believe the attacker took the time to learn the victim’s environment to understand how the financial systems work,” he said.
+Several versions of Trojan.Fastcash have been spotted each of which uses a different response logic. This could be to tune the malware to be effective against specific banks.
+
+https://www.scmagazine.com/home/security-news/lazarus-fastcash-atm-attack-details-discovered/
+
+% --- %
+
+In order to permit their fraudulent withdrawals from ATMs, the attackers inject a malicious Advanced Interactive eXecutive (AIX) executable into a running, legitimate process on the switch application server of a financial transaction network, in this case a network handling ATM transactions. The malicious executable contains logic to construct fraudulent ISO 8583 messages. ISO 8583 is the standard for financial transaction messaging. The purpose of this executable has not been previously documented. It was previously believed that the attackers used scripts to manipulate legitimate software on the server into enabling the fraudulent activity.
+However, analysis by Symantec has found that this executable is in fact malware, which it has named Trojan.Fastcash.
+Trojan.Fastcash has two primary functions:
+It monitors incoming messages and intercepts attacker-generated fraudulent transaction requests to prevent them from reaching the switch application that processes transactions.
+It contains logic that generates one of three fraudulent responses to fraudulent transaction requests.
+Once installed on the server, Trojan.Fastcash will read all incoming network traffic, scanning for incoming ISO 8583 request messages. It will read the Primary Account Number (PAN) on all messages and, if it finds any containing a PAN number used by the attackers, the malware will attempt to modify these messages. How the messages are modified depends on each victim organization. It will then transmit a fake response message approving fraudulent withdrawal requests. The result is that attempts to withdraw money via an ATM by the Lazarus attackers will be approved.
+The PAN numbers used to carry out the FASTCash attacks relate to real accounts. According to the US-CERT report, most accounts used to initiate the transactions had minimal account activity or zero balances. How the attackers gain control of these accounts remains unclear. It is possible the attackers are opening the accounts themselves and making withdrawal requests with cards issued to those accounts. Another possibility is the attackers are using stolen cards to perform the attacks.
+In all reported FASTCash attacks to date, the attackers have compromised banking application servers running unsupported versions of the AIX operating system, beyond the end of their service pack support dates.
+
+https://techobserver.in/2018/11/10/symantec-uncovers-lazarus-groups-use-of-malware-for-fastcash-attacks-to-empty-cash-from-atms/
+
+
+https://www.us-cert.gov/ncas/alerts/TA18-275A
+
+Impact
+A successful network intrusion can have severe impacts, particularly if the compromise becomes public. Possible impacts to the affected organization include
+Temporary or permanent loss of sensitive or proprietary information,
+Disruption to regular operations,
+Financial costs to restore systems and files, and
+Potential harm to an organization’s reputation.
+
 
 \listoffigures
 \listoftables
