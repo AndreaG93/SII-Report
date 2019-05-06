@@ -1113,30 +1113,56 @@ La variante di attacco di code injection adottata dai criminali è nota come \te
 
 Come intuibile dal nome, questa forma di attacco prevede dapprima la sospensione del processo bersaglio o, più specificatamente, di tutti i suoi thread con lo scopo di poter successivamente alterarne lo stato, attraverso varie modalità come la modifica della sua memoria (\textit{Address Space}) o dei valori contenuti nel suo PCB, come il valore che detiene l'indirizzo della successiva istruzione (\textit{Program Counter}/\textit{Instruction Pointer}) o i dati contenuti nei registri. Successivamente, dopo tali modifiche, il processo attaccato viene riavviato affinché esegua il codice maligno precedentemente introdotto.
 
-\section{Impatto}
+\newpage
+\section{Analisi degli impatti subiti}
 
-Un simile attacco, perpetrato con successo all'interno della rete bancaria, può avere impatti, non solo economici, molto seri che si possono aggravare qualora la notizia dell'avvenuta compromissione del sistema diventa di dominio pubblico.
+L'attacco perpetrato dal gruppo Lazarus ha incontestabilmente causato una serie di danni diretti ed indiretti nei confronti dell'istituto bancario, comportando impatti considerevoli a livello economico-finanziario, politico-sociale e di reputazione, aggravati non appena la notizia dell'avvenuto attacco è divenuta di dominio pubblico.
 
-Innanzitutto, essendo stati compromessi i processi critici del sistema bancario relativi alle applicazioni di payment switch, il sistema non è stato più in grado di svolgere le funzioni per cui è stato progettato; ciò ha determinato non solo una semplice interruzione di un servizio legittimo bensì anche una sua corruzione per scopi criminali. Essendo infatti state introdotte linee di codice maligno nell'intento delle applicazioni del sistema, l'impatto economico si può considerare duplice poiché coinvolge sia l'istituzione bancaria sia i clienti. 
+\subsection{Impatti socio-economici}
 
-I danni economici sono dovuti a: mancati introiti, causati dall'interruzione dei servizi del sistema; costi finanziari per il ripristino del sistema, inclusi i costi da sostenere per aggiornamento del software e dei sistemi di sicurezza; costi da sostenere per il risarcimento dei danni subiti ai propri clienti.
+Essendo stati compromessi i processi governanti funzionalità critiche del sistema, l'attacco ha determinato innanzitutto un'interruzione dei un servizi legittimi offerti dall'istituto bancario, come quelli aventi funzione di credito sulle quali si basano le transazioni finanziare, comportando conseguenze economico-sociali molto gravi tra cui:
+\begin{itemize}
+\item Danni economici diretti a danno dell'istituto per mancati introiti.
+\item Danni economici indiretti, difficilmente quantificabili, a danno del tessuto economico sociale ed, in particolare, alle varie attività economiche che usufruiscono quotidianamente dei servizi offerti dall'istituto; si pensi, ad esempio, alle transizioni finanziare indispensabili  alle aziende per eseguire attività basilari come il pagamento delle forniture, degli stipendi dei dipendenti, le richieste di credito ecc. 
+\end{itemize}
 
-A tutto ciò si aggiunge un danno economico indiretto che coinvolge la società nel suo complesso a causa dell'interruzione di servizi, come quelli aventi funzione di credito sulle quali si basano le transazioni finanziare, considerati essenziali per lo svolgimento di molte attività economiche, impedendo a queste di svolgere alcuni dei propri compiti.
+L'introduzione di codice maligno all'interno dei sistema ha avuto molteplici conseguenze di notevole impatto economico quali:
+\begin{itemize}
+\item Furto di denaro a danno dei clienti dell'istituto verso i quali quest'ultima ha dovuto rispondere con operazioni di risarcimento. 
+\item Danni economico-finanziari dovuti alle operazioni di ripristino del sistema, aggiornamento dei software e di tutti i meccanismi di sicurezza.
+\end{itemize}
 
-Non bisogna dimenticare danni anche alla reputazione dell'istituzione bancaria rivelatasi non capace di proteggere adeguatamente i propri clienti; un simile danno di immagine implica danni economici di lungo termine causato dalla perdita di clienti, potenziali che non.
+\subsection{Impatti sulla reputazione}
 
+La diffusione della notizia riguardante l'avvenuto attacco attraverso vari canali di informazione ha indubbiamente causato un danno alla reputazione dell'istituzione bancaria per via degli scarsi sforzi rivolti alla sicurezza informatica, esponendo a gravi rischi i propri clienti sia dal punto di vista economico che di privacy, benché, dalle analisi, non risulta che il malware FASTCash sia stato concepito come spyware.
 
-\section{Contromisure e soluzioni}
+I danni all'immagine dell'istituto avranno inevitabilmente effetti di lungo termine a causa dalla perdita degli attuali e dei futuri clienti.
 
-\subsection{Gli aggiornamenti software}
+\newpage
+\section{Contromisure}
 
-I ricercatori della Symantec, come descritto nel report ufficiale rilasciato dall'azienda, hanno individuato nel mancato aggiornamento del sistema operativo AIX e del software antivirus la causa primaria del disastro informatico; infatti, come dichiarato anche dai principali canali di divulgazione, abbiamo avuto modo di verificare dalle informazioni estratte dal malware stesso che i server degli istituti bancari erano equipaggiati con versioni del sistema operativo AIX obsolete, perciò prive del supporto IBM relativamente alle patch di sicurezza, le quali avrebbero potuto mitigare o, nel migliore delle ipotesi, impedire gli effetti dell'attacco informatico.
+In questa ultima sezione forniremo una analisi dettaglia delle possibili contromisure capaci di contrastare le attività del malware FASTCash sia modo pro-attivo che reattivo.
 
-Tuttavia, nonostante l'enorme importanza di una regolare attività di aggiornamento del SO e del software antivirus, che riteniamo imprescindibile per garantire standard di sicurezza elevati, consideriamo il semplice aggiornamento del software insufficiente a garantire la sicurezza contro questa forma di attacchi.
+\subsection{Aggiornamenti software}
 
-Infatti, un attacco di code injection di tipo SIR, eseguito dal malware FASTCash, è, sfortunatamente, molto difficile da gestire proprio perché basa il proprio funzionamento sull'uso (sarebbe meglio dire \textit{abuso}) dei servizi offerti dal kernel di un comune sistema operativo, come quelli per la gestione dei processi/thread o i meccanismi di lettura e scrittura, abilmente sfruttati proprio dal malware FASTCash. L'imposizione di restrizioni sulle syscall per l'accesso a servizi così essenziali, come quelli menzionati, potrebbe portare all'insorgere di effetti collaterali anche molto gravi in quanto processi legittimi potrebbero non essere in grado di svolgere adeguatamente le proprie funzioni.
+La soluzione più elementare da adottare in ogni circostanza per contrastare in generale gli attacchi informatici riguardano gli aggiornamenti di tutto il parco software, dalle applicazioni fino al sistema operativo.  
 
-Non avendo sfruttato una vera e propria vulnerabilità del sistema operativo, bensì i suoi servizi di base, è giustificabile ritenere che l'aggiornamento del sistema, imprescindibile in ogni caso, non avrebbe impedito al malware FASTCash di compiere con successo l'attacco. 
+I ricercatori della Symantec hanno stabilito\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} che il mancato aggiornamento del sistema operativo AIX utilizzato dai payment switch server sia stata la causa principale del disastro.
+
+Infatti, come dichiarato anche dalla stessa Symantec e dai principali canali di divulgazione, abbiamo confermato dalle informazioni estratte dal malware stesso, analizzato precedentemente nella sezione 2, che gli attacchi erano rivolti verso i sistemi equipaggiati con versioni obsolete del sistema operativo AIX e, pertanto, prive del supporto IBM relativamente alle patch di sicurezza, le quali avrebbero potuto contrastare o, nel migliore delle ipotesi, impedire l'attacco informatico. 
+
+\subsubsection{Analisi dell'efficacia degli aggiornamenti software}
+
+In generale, come stabilito anche dalla NCCIC\footnote{\texttt{https://www.us-cert.gov/ncas/alerts/TA18-275A}}, l'aggiornamento dei software, inclusi antivirus, applicazioni e sistemi operativi, resta un modalità efficace per contrastare le attività criminali a danno dei sistemi informatici.
+
+Nonostante gli aggiornamenti software rappresentino un requisito imprescindibile per garantire standard di sicurezza elevati, riteniamo, in virtù delle caratteristiche tecniche del malware, l'attività di aggiornamento poco efficace contro FASTCash.
+ 
+Infatti FASTCash basa, come abbiamo avuto modo di notare durante la sua analisi, il proprio attacco sull'uso di una code injection di tipo SIR, il quale è sfortunatamente molto difficile da contrastare perché basa il proprio funzionamento sull'uso (sarebbe meglio dire \textit{abuso}) dei servizi essenziali offerti dal kernel di un comune sistema operativo, come quelli per la gestione dei processi/thread o i meccanismi di lettura e scrittura. 
+
+Dal momento che, da quanto stabilito dai ricercatori Symantec e NCCIC, non sembra che FASTCash abbia sfruttato una vera e propria vulnerabilità del sistema operativo, avendo usufruito esclusivamente di alcuni servizi essenziali del sistema operativo, 
+è giustificabile ritenere che l'aggiornamento dei software non avrebbe contrastato efficacemente il malware FASTCash.
+
+Anche l'imposizione di restrizioni sull'uso delle \textit{syscall} per l'accesso a servizi così essenziali, come quelli precedentemente menzionati, sarebbe risultata poco efficace poiché avrebbe potuto comportare il verificarsi di effetti collaterali legati al tentativo, da parte di processi legittimi, di accedere ai servizi del SO, comportando costi aggiuntivi per lo sviluppo di un software compatibile con le nuove impostazioni. 
 
 \subsection{Principio del privilegio minimo e gli ACL}
 
