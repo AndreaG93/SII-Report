@@ -1177,13 +1177,13 @@ I danni all'immagine dell'istituto avranno inevitabilmente effetti di lungo term
 
 In questo capitolo forniremo una analisi dettaglia delle possibili contromisure capaci di contrastare le attività del malware FASTCash sia modo pro-attivo che reattivo.
 
-\subsection{Aggiornamenti software}
+\section{Aggiornamenti software}
 
 Come suggerito dalla totalità delle aziende di sicurezza informatica, al fine di contrastare in generale gli attacchi informatici, è indispensabile una \textbf{regolare attività di aggiornamento} di tutto il parco software.
 
 I ricercatori della Symantec hanno stabilito\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} che il mancato aggiornamento del sistema operativo AIX utilizzato dai payment switch server abbia compromesso la sicurezza del sistema poiché privata del supporto IBM relativamente alle patch di sicurezza le quali avrebbero potuto contrastare o, nel migliore delle ipotesi, impedire l'attacco informatico. 
 
-\subsubsection{Analisi dell'efficacia degli aggiornamenti software}
+\subsection{Analisi dell'efficacia degli aggiornamenti software}
 
 Sebbene una regolare attività di aggiornamento rappresenti un requisito imprescindibile per garantire standard di sicurezza elevati, riteniamo, in virtù delle caratteristiche tecniche del malware e della forma di attacco perpetrata dai cyber-criminali, tale attività poco efficace contro FASTCash.
  
@@ -1193,29 +1193,66 @@ Non avendo sfruttato una vera e propria vulnerabilità del sistema operativo, co
 
 Supponendo anche rilascio di aggiornamenti di sicurezza che impongano restrizioni sull'uso delle \textit{syscall} per l'accesso ai servizi del SO, il malware FASTCash continuerebbe ad agire incontrastato essendo nascosto all'interno di un processo legittimo; oltre ad essere poco efficace, restrizioni sull'uso delle syscall potrebbero comportare il verificarsi di effetti collaterali legati al tentativo da parte di processi legittimi di accedere ai servizi del SO, comportando costi aggiuntivi per lo sviluppo di un software compatibile con le nuove impostazioni. 
 
-\subsection{Principio del privilegio minimo e gli ACL}
+\section{Principio del privilegio minimo}
 
 In base a quanto detto finora, riteniamo che gli sforzi finalizzati a reagire a questa forma di attacchi dovrebbero essere rivolti nell'impedire ai cyber-criminali di poter intraprendere l'attacco fin dal principio. 
 
 Le contromisure da adottare devono innanzitutto basarsi sul cosiddetto \textbf{principle of least privilege} (\textbf{PoLP}), in italiano \textbf{principio del privilegio minimo}, in cui si stabilisce che \textit{un opportuno sistema di sicurezza deve fornire un meccanismo che assicuri che ogni processo in esecuzione sul sistema sia in grado di accedere solo ed esclusivamente alle informazioni di cui necessità per garantire il suo corretto e legittimo funzionamento.}
 
-Come noto, una possibile implementazione si basa sull'uso delle \textbf{access control list} (\textbf{ACL}), in italiano \textbf{lista di controllo degli accessi}, ovvero opportune strutture dati, generalmente tabelle, contenenti informazioni che specifichino quali utenti o gruppi hanno l'autorizzazione ad accedere alle risorse del sistema come processi, file o risorse di rete.
+\subsection{Le liste di controllo degli accessi}
 
-L'adozione di apposite restrizioni di accesso al pseudo-filesystem \texttt{/proc}, accedendo alla quale i criminali hanno potuto compiere l'attacco di process injection, avrebbe potuto ostacolare o impedire l'attacco benché tale forma di sicurezza si riveli priva di utilità qualora gli attaccanti, attraverso tecniche di \textit{privilege escalation}, fossero riusciti ad ottenere le autorizzazioni necessarie per accedere alle risorse.
+Una possibile applicazione del principio del privilegio minimo si basa sull'uso delle \textbf{access control list} (\textbf{ACL}), in italiano \textbf{lista di controllo degli accessi}, ovvero opportune strutture dati, generalmente tabelle, contenenti informazioni che specifichino quali utenti o gruppi hanno l'autorizzazione ad accedere alle risorse del sistema come file o risorse di rete.
+
+Poiché il file \texttt{Injection\_API\_executable\_e}, contenente l'\textit{injection tool} di FASTCash, richiede per funzionare un accesso in lettura/scrittura al pseudo-file system \texttt{/proc} per compiere l'attacco, riteniamo che l'uso delle ACL avrebbe potuto contrastare efficacemente FASTCash ad esempio impedendo a priori l'accesso alla suddetta directory.
+
+Teoricamente, configurando opportunamente il sistema rendendo non eseguibili i file binari presenti nelle partizioni più vulnerabili, ad esempio utilizzando i flag \texttt{noexec} o \texttt{nosetuid} all'interno delle stringhe per i mount delle partizioni presenti nel file \texttt{/etc/fstab}, sarebbe stato possibile impedire a priori l'attacco rendendo impossibile l'avvio del processo malware.\footnote{\texttt{https://debian-administration.org/article/57/Making\_/tmp\_non-executable}}
+
+Ovviamente tale forma di sicurezza è priva di utilità qualora gli attaccanti riescano ad ottenere privilegi amministrativi attraverso tecniche di \textit{privilege escalation} che è necessario contrastare attraverso attività di aggiornamento e di configurazione del software.
 
 \subsection{Meccanismi di Whitelisting}
 
-Un'altra efficace contromisura consiste nell'adottare meccanismi di \textit{whitelisting} che consentano l'accesso alle risorse del sistema \textit{solo ed esclusivamente} ai processi attendibili. 
+Oltre a regolare le autorizzazioni di accesso alle risorse, un'altra efficace contromisura consiste nell'adottare meccanismi di \textbf{Whitelisting} che consentano l'accesso alle risorse del sistema \textit{solo ed esclusivamente} ai processi attendibili. 
 
 I software di whitelisting basano il proprio funzionamento sulla creazione preliminare di una lista, denominata \textit{whitelist}, contenente gli identificati, solitamente stringhe hash, di tutti i file eseguibili autorizzati ad accedere a determinate risorse del sistema. Utilizzando un approccio denominato \textit{default deny}, che si contrappone all'approccio \textit{default allow} adottato dalla maggioranza degli antivirus, questi software impediscono l'esecuzione di ogni file eseguibile sconosciuto, ovvero non presente nella whitelist, a prescindere dal livello di privilegio dell'utente.
 
 Nei sistemi basati su Unix, di cui fa parte anche il sistema operativo AIX, esistono moltissimi tool di whitelisting come \textit{AppAmour}, integrato nella maggior parte delle distribuzioni Linux; altri esempi noti sono \textit{SELinux} e \textit{grsecurity}.
 
-Riteniamo che l'uso di un qualsiasi strumento di whitelisting, opportunamente configurato e testato, avrebbe potuto con buone probabilità contrastare le attività del malware FASTCash impedendo al processo maligno responsabile della code injection di avviarsi. 
+Riteniamo che l'uso di un qualsiasi strumento di whitelisting, opportunamente configurato e testato, avrebbe potuto con buone probabilità contrastare le attività del malware FASTCash impedendo al processo maligno responsabile della code injection di avviarsi o di accedere alle risorse del sistema.
 
-Bisogna ammettere, tuttavia, che tale contromisura è lungi dall'essere una panacea; gli attaccanti avrebbero potuto, per mezzo di tecniche di \textit{priviledge escalation}, riuscire a ottenere le autorizzazioni necessarie per alterare il contenuto della whitelist stessa allo scopo di consentire la successiva esecuzione del malware. Per tale motivo è indispensabile, allo scopo di non compromettere l'efficacia di questi strumenti, provvedere ad una opportuna protezione degli account responsabili della gestione della whitelist mediante forme di autenticazione più sofisticate e sicure.\footnote{\textit{Cfr.} \texttt{https://www.sans.org/reading-room/whitepapers/application/application-whitelisting-panacea-propaganda-33599}}
+Tuttavia tale contromisura è lungi dall'essere una panacea; gli attaccanti avrebbero potuto, per mezzo di tecniche di \textit{priviledge escalation}, riuscire a ottenere le autorizzazioni necessarie per alterare il contenuto della whitelist stessa allo scopo di consentire la successiva esecuzione del malware. Per tale motivo è indispensabile, allo scopo di non compromettere l'efficacia di questi strumenti, provvedere ad una opportuna protezione degli account responsabili della gestione della whitelist mediante forme di autenticazione più sofisticate e sicure.\footnote{\textit{Cfr.} \texttt{https://www.sans.org/reading-room/whitepapers/application/application-whitelisting-panacea-propaganda-33599}}
 
-\subsection{Monitoring}
+\section{Riduzione della superficie di attacco}
+
+Dalle nostre analisi e da quelle pubblicate dalla NCCIC, risulta che il malware FASTCash sfrutti, per ragioni che purtroppo ignoriamo, la GUI session manager di X11 accedendo alla directory \texttt{/tmp/.ICE-unix/} all'interno della quale sono contenute tutti i dati riguardante la sessione corrente del gestore grafico.
+
+Per quanto si possa controllare l'accesso non autorizzato alle risorse di X11 al fine di contrastare le attività di FASTCash, riteniamo che in generale l'utilizzo di un gestore grafico all'interno di sistemi critici, come i  payment switch server dell'istituto bancario, rappresenti un grave rischio per la sicurezza. 
+
+Infatti l'uso del gestore grafico aumenta il numero di vulnerabilità sfruttabili dai malware poiché i bug di sicurezza del gestore si aggiungono a quelle già presenti nel sistema stesso, aumentando la superficie di attacco del sistema. 
+
+E' indubbio che la rimozione del gestore grafico avrebbe impedito al malware di funzionare a dovere anche qualora avesse compiuto con successo la process injection.
+
+In base a quanto detto, riteniamo che all'interno di sistemi critici, al fine di aumentare la sicurezza del sistema, sia buona regola \textbf{installare ed eseguire solo ed esclusivamente le applicazioni indispensabili} per eseguire un certo servizio, disabilitando o rimuovendo ogni componente ridondate offerto dal sistema operativo. Così facendo si riducono il numero di vulnerabilità del sistema e si facilità le operazioni di monitoring del sistema essendo più piccola la quantità di processi in esecuzione nel sistema.
+
+\subsection{Gli Unikernel}
+
+Fortunatamente esiste uno strumento molto potente per ridurre al massimo la superficie di attacco minimizzando il numero di vulnerabilità del nostro sistema: gli \textbf{unikernel}. 
+
+Gli unikernel sono sistemi operativi specializzati con unico spazio d'indirizzamento la cui principale caratteristica risiede nel possedere un set minimale di librerie e servizi, ossia quelli indispensabili per  l'esecuzione delle applicazioni richieste. 
+
+Una descrizione dettagliata degli unikernel non ricade negli scopi della presente relazione, tuttavia basti ricordare che gli unikernel hanno una dimensione, in termini di linee di codice, pari al 4\% di un sistema operativo tradizionale. Ciò comporta notevolissimi vantaggi in termini di sicurezza poiché, oltre alla riduzione delle vulnerabilità esposte, data la minore quantità di codice è possibile scoprire e risolvere le vulnerabilità 
+con maggior velocità prima ancora di essere sfruttate da cyber-criminali.\footnote{\texttt{https://en.wikipedia.org/wiki/Unikernel}}
+
+\subsection{Ridondanza e virtualizzazione}
+
+Una contromisura che riteniamo efficace per aumentare la sicurezza del sistema e ridurre la probabilità di successo degli attaccanti è rappresentato dall'adozione di un certo grado di \textbf{ridondanza dei sistemi critici}. 
+
+Riteniamo che, subordinando l'approvazione di una transazione finanziaria all'approvazione di più sistemi di payment switch indipendenti e coordinati attraverso algoritmi di consenso come Raft o Paxos, sarebbe stato possibile contrastare in modo molto efficace l'attività dei cyber-criminali costretti ad attaccare un numero maggiore di sistemi. 
+
+Ricorrendo a strumenti di virtualizzazione è possibile, oltre ad aumentare il grado di isolamento dei sistemi, aumentare il grado di ridondanza per le funzionalità critiche
+
+Se si utilizzano sistemi operativi minimali come gli unikernel, in virtù delle loro caratteristiche, è possible migliorare le prestazioni ottenute attraverso la virtualizzazione e aumentando maggiormente la sicurezza del sistema grazie i vantaggi in termini di sicurezza dell'uso degli unikernel
+
+\section{Monitoring}
 
 L'attività che più di tutte avrebbe contribuito a contrastare le azioni intraprese dal malware FASTCash è rappresentato dal \textit{monitoring}, ovvero la possibilità, offerta da una variegata suite di applicazioni, di poter eseguire il \textit{log di tutti gli eventi di interesse in un sistema} come, nel nostro caso specifico, l'esecuzione di transazioni finanziarie, con lo scopo di riuscire a rilevare le attività del malware e poter quindi reagire tempestivamente per limitare i danni.
 
@@ -1223,47 +1260,7 @@ Questi sofisticati software non si limitano semplicemente alla raccolta di dati 
 
 Qualora rilevassero attività insolite, questi software reagiscono emettendo i cosiddetti \textit{alert}, avvisi finalizzati ad informare il personale incaricato della sicurezza del sistema della presenza di attività insolite nel sistema, la quale potrà infine prende provvedimenti per contrastate le attività del malware.  
 
-\subsection{GUI session manager}
-
-Durante l'analisi del file \texttt{2.so}, abbiamo notato come gli attaccanti, per ragioni che purtroppo ignoriamo, hanno potuto interagire con la GUI session manager di X11 attraverso il protocollo ICE per completare l'attacco.
-
-Da quanto dichiarato anche dal report NCCIC, è indubbio il fatto che gli attaccanti abbiano sfruttato la presenza di X11 accedendo alla directory /tmp all'intenro della quale sono contentute le informazione relative alla sessione della GUI Manager di X11.
-
-Riteniamo che l'utilizzo di X11 all'itnro di un sistema cosiì crucila come quelli adibiti alla gestione dei servizi bancari sia una grave falla di siscurezza poiché tale scelta, oltrea sesporre le vulnerabilità del sistema dd
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Maintain up-to-date antivirus signatures and engines.
-Keep operating system patches up-to-date.
-Disable file and printer sharing services. If these services are required, use strong passwords or Active Directory authentication.
-Restrict users’ ability (i.e., permissions) to install and run unwanted software applications. Do not add users to the local administrators group unless required.
-Enforce a strong password policy and require regular password changes.
-Exercise caution when opening email attachments, even if the attachment is expected and the sender appears to be known.
-Enable a personal firewall on organization workstations, and configure it to deny unsolicited connection requests.
-Disable unnecessary services on organization workstations and servers.
-Scan for and remove suspicious email attachments; ensure the scanned attachment is its “true file type” (i.e., the extension matches the file header).
-Monitor users’ web browsing habits; restrict access to sites with content that could pose cybersecurity risks.
-Exercise caution when using removable media (e.g., USB thumb drives, external drives, CDs).
-Scan all software downloaded from the internet before executing.
-Maintain situational awareness of the latest cybersecurity threats.
-Implement appropriate ACLs.
-
-
+\section{Regole generali}
 
 \listoffigures
 \listoftables
