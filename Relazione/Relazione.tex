@@ -64,7 +64,7 @@ breaklines=true
 \tableofcontents
 \newpage
 
-\chapter{Analisi tecnica del malware}
+\chapter{Descrizione dell'attacco}
 
 Secondo il rapporto stilato dalla NCCIC\footnote{Cfr. \texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}, il malware denominato \textbf{FASTCash} è composto da una serie \textbf{12 file} i quali, attraverso tecniche di \textbf{code injection} tali da alterare il normale comportamento di uno o più processi legittimi, che hanno consentito l'ispezione e alterazione dei dati trasmessi durante transazioni basate su \textbf{protocollo ISO 8583}, hanno permesso agli attaccanti di eseguire operazioni di prelievo fraudolento di denaro dagli ATM.
 Tra questi file, di cui riportiamo una lista completa in \ref{tab:MalwareFileList}, spiccano per importanza:
@@ -77,14 +77,7 @@ Tra questi file, di cui riportiamo una lista completa in \ref{tab:MalwareFileLis
 \item Un \textbf{trojan} capace di consentire \textbf{accesso remoto completo} al sistema bersaglio.
 \end{itemize}
 
-Prima di procedere con la descrizione dettagliata di alcuni dei file che compongono il malware, riportiamo di seguito i vari tool utilizzati durante le nostre analisi:
 
-\begin{description}
-\item[\texttt{strings}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/strings}} Usato per l'estrazione di tutte le stringhe stampabili contenuti in un file.
-\item[\texttt{stat}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/stat}} Utilizzato per ottenere alcune informazioni di base dei file tra cui nome, dimensione, data di ultima modifica, ecc.
-\item[\texttt{file}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/file}} Usato per determinare la tipologia di appartenenza di uno specifico file.
-\item[\texttt{onlinedisassembler}]\footnote{Cfr. \texttt{https://onlinedisassembler.com/}} Il de-assemblaggio dei file è stato eseguito utilizzando il servizio cloud \textbf{onlinedisassembler} che ci ha permesso di ricavare facilmente i listati di codice assembly dei file scritti per le architetture PowerPC\texttrademark.
-\end{description}
 
 \begin{table}[h!]
  
@@ -130,13 +123,62 @@ Prima di procedere con la descrizione dettagliata di alcuni dei file che compong
   
 \end{table}
 
-\section{Il file \texttt{Injection\_API\_executable\_e}}\label{sec:InjectionAPIExecutableE}
+\newpage
+\chapter{Analisi dell'attacco di Process Injection}
+
+\section{Introduzione}
+
+In questo capitolo analizzeremo dettagliatamente la tecnica di attacco usata dai cyber-criminali per alterare a loro vantaggio il corretto funzionamento dei server bancari presso le quali erano in esecuzione le applicazioni di \textit{payment switch}.
+
+\subsection{Definizione della forma di attacco}
+
+I rapporti pubblicati dalla NCCIC\footnote{\texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}} \footnote{\texttt{https://www.us-cert.gov/ncas/alerts/TA18-275A}} e dalla Symantec\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} indicano che la forma di attacco adottata per compromettere i server dell'istituto bancario fosse stata una \textbf{process injection}.
+
+Con la locuzione \textit{process injection} si intende una tecnica che rende possibile \textit{l'esecuzione di codice arbitrario precedentemente introdotto all'interno dello spazio d'indirizzamento di un processo distinto in esecuzione}.\footnote{\texttt{https://attack.mitre.org/techniques/T1055/}}
+
+L'esecuzione di codice maligno nel contesto di un processo legittimo, oltre a garantire ai cyber-criminali l'accesso a tutte le risorse assegnate al suddetto processo da parte del SO (memoria, risorse di rete, dati ecc.), non viene generalmente individuata dai prodotti commerciali per la sicurezza informatica, essendo l'esecuzione del malware \textit{nascosta}.\footnote{\textit{Ibid.}}
+
+\subsection{Descrizione della variante di attacco adottata}
+
+Esistono molte varianti di attacco di process injection che, sfruttando diverse tipologie di vulnerabilità esposte dal sistema operativo, sono in grado di introdurre con successo codice arbitrario all'interno di un processo; la variante adottata dai cyber-criminali nel malware FASTCash è conosciuta come \textbf{SIR}, acronimo di \textbf{Suspend-Inject-Resume}.
+
+Come facilmente intuibile dal nome, tale tipologia di attacco prevede:\footnote{\texttt{https://www.endgame.com/blog/technical-blog/ten-process-injection-techniques-technical-survey-common-and-trending-process}}
+\begin{enumerate}
+\item La \textbf{sospensione del processo} bersaglio o, più specificatamente, di tutti i suoi thread. 
+\item \textbf{Alterazione dello stato del processo} attraverso la modifica del suo spazio di indirizzamento (\textit{Address Space}) o dei valori contenuti nel suo PCB, come il valore che detiene l'indirizzo della successiva istruzione (\textit{Program Counter}/\textit{Instruction Pointer}) o i dati contenuti nei registri.
+\item Il \textbf{riavvio del processo} attaccato in modo tale che esegua il codice maligno precedentemente introdotto.
+\end{enumerate}
+
+\subsection{Gli strumenti usati per l'analisi}
+
+Prima di procedere con la descrizione dettagliata dell'attacco perpetrato dal malware FASTCash, riportiamo di seguito i vari tool utilizzati durante le nostre analisi:
+
+\begin{description}
+\item[\texttt{strings}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/strings}} Usato per l'estrazione di tutte le stringhe stampabili contenuti in un file.
+\item[\texttt{stat}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/stat}} Utilizzato per ottenere alcune informazioni di base dei file tra cui nome, dimensione, data di ultima modifica, ecc.
+\item[\texttt{file}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/file}} Usato per determinare la tipologia di appartenenza di uno specifico file.
+\item[\texttt{onlinedisassembler}]\footnote{Cfr. \texttt{https://onlinedisassembler.com/}} Il de-assemblaggio dei file è stato eseguito utilizzando il servizio cloud \textbf{onlinedisassembler} che ci ha permesso di ricavare facilmente i listati di codice assembly dei file scritti per le architetture PowerPC\texttrademark.
+\end{description}
+
+\newpage
+\section{I file di FASTCash responsabili dell'attacco}
+
+In questa sezione analizzeremo i file del malware FASTCash responsabili dell'attacco di process injection contro l'istituto bancario cercando di comprenderne il funzionamento. 
+
+Nel corso di questo capitolo analizzeremo nel dettaglio i seguenti file.
+
+\begin{description}
+\item[\texttt{Injection\_API\_executable\_e}] Tale file contiene l'\textit{injection tool}.
+\item[\texttt{2.so}] Questo file, insieme a quelli denominati dalla NCCIC come \texttt{Lost\_File1\_\-so\-\_file} e \texttt{Lost\_File.so}, rappresenta una \textit{shared library} contenente i metodi usati per manomettere le transazioni finanziarie ed invocati dal codice maligno introdotto durante la process injection.
+\end{description}
+
+Ricordiamo che i sample sono stati ottenuti mediante download dal database di \textit{Hybrid-Analysis}.\footnote{\texttt{https://www.hybrid-analysis.com/}}
+
+\subsection{Il file \texttt{Injection\_API\_executable\_e}}\label{sec:InjectionAPIExecutableE}
 
 L'output ottenuto dal tool \texttt{file} indica che il file \texttt{Injection\_API\_executable\_e}, di cui abbiamo riportato alcuni dettagli nella tabella \ref{tab:FileDetails-1}, è un \textbf{eseguibile} di tipo \textbf{eXtended COFF} (\textbf{XCOFF}), ovvero una versione migliorata ed estesa del formato \textbf{Common Object File Format} (\textbf{COFF}), il formato standard per la definizione dei file a livello strutturale nei sistemi operativi UNIX\footnote{Cfr. \texttt{https://it.wikipedia.org/wiki/COFF}} fino al 1999\footnote{Cfr. \texttt{https://en.wikipedia.org/wiki/Executable\_and\_Linkable\_Format}}, anno della definitiva adozione dello standard \textbf{Executable and Linkable Format} o \textbf{ELF}.
 
 Il formato XCOFF è uno standard proprietario sviluppato da IBM\footnote{Cfr. \texttt{https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.files/XCOFF.htm}} ed adottato nei sistemi operativi \textbf{Advanced Interactive eXecutive} o \textbf{AIX}, una famiglia di sistemi operativi proprietari basati su Unix sviluppati dalla stessa IBM.\footnote{Cfr. \texttt{https://www.ibm.com/it-infrastructure/power/os/aix}}
-
-In questa sezione cercheremo di descrivere le capacità di questo file tra cui, come già detto precedentemente, quella di eseguire tecniche di \textbf{code injection} a danno di un processo legittimo con l'intento di alterarne il comportamento a favore degli attaccanti. 
 
 \begin{table}[h!]
   
@@ -174,7 +216,7 @@ In questa sezione cercheremo di descrivere le capacità di questo file tra cui, 
   
 \end{table}
 
-\subsection{Analisi delle stringhe}\label{subsection:InjectionAPIExecutableE}
+\subsubsection{Analisi delle stringhe}\label{subsection:InjectionAPIExecutableE}
 
 Cominciamo l'analisi studiando alcune delle stringhe più importanti che è possibile estrarre ricorrendo al tool \texttt{strings}.
 
@@ -192,10 +234,8 @@ numbers=none]
 frame=lines, 
 caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} (1)}, 
 label={code:stringsInjectionAPIexecutablee1},
-firstnumber=347]
-...
+firstnumber=348]
 /opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5/ppc64:/opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5:/opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5/../../..:/usr/lib:/lib
-...
 \end{lstlisting}
 
 Sfortunatamente non è stato possibile risalire alla versione degli aggiornamenti, identificati dalla stessa IBM con il nome di \textit{Technology Levels} (TLs) \footnote{Cfr: \texttt{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/}}, installati sul sistema operativo bersaglio al momento dell'attacco, pertanto non possiamo escludere lo sfruttamento di una qualche vulnerabilità nota da parte degli attaccanti; in ogni caso, dal momento che il malware è stato compilato per la versione 7.1 di AIX, possiamo presupporre che la versione del sistema operativo attaccato fosse almeno pari alla 7.1. E' importante ricordare che   il supporto ufficiale da parte di IBM nei confronti della versione 7.1 di AIX TL0, sostituita dalla ben più moderna versione 7.2 rilasciata nel dicembre 2015, è stata già terminata nel novembre 2013, benché la versione 7.1 TL5 riceverà ancora aggiornamenti da parte di IBM fino ad aprile 2022.\footnote{Cfr: \texttt{https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}}
@@ -204,10 +244,8 @@ Sfortunatamente non è stato possibile risalire alla versione degli aggiornament
 frame=lines, 
 caption={Stringhe estratte dal file \texttt{Injection\_API\_executable\_e} (2)}, 
 label={code:stringsInjectionAPIexecutablee2},
-firstnumber=944]
-...
+firstnumber=945]
 IBM XL C for AIX, Version 11.1.0.1
-...
 \end{lstlisting}
 
 Il particolare mostrato nel listato \ref{code:stringsInjectionAPIexecutablee2} dimostra l'uso da parte degli attaccanti del software \textbf{XL C/C++ for AIX} versione 11.1.0.1, un compilatore C/C++ appositamente ottimizzato dalla IBM per i propri sistemi operativi\footnote{Cfr. \texttt{https://www.ibm.com/it-it/marketplace/xl-cpp-aix-compiler-power}}, confermando, insieme ai numerosi riferimenti alle ben note librerie standard di C, come il C/C++ sia stato il linguaggio di programmazione scelto per implementare il malware.
@@ -423,7 +461,7 @@ firstnumber=308]
 
 
 	\newpage
-\subsection{Analisi del codice assembly}
+\subsubsection{Analisi del codice assembly}
 	
 	\begin{table}[h!]
 	    \caption{Alcune istruzioni assembly disponibili nell'architettura PowerPC\texttrademark}
@@ -747,7 +785,7 @@ bl      0x10000b48 <.file_dump>
 
 
 \newpage
-\section{Il file \texttt{2.so}}\label{sec:2.so}
+\subsection{Il file \texttt{2.so}}\label{sec:2.so}
 
 \texttt{2.so} è un file di tipo \textbf{eXtended COFF} che, come dimostreremo all'interno di questa sezione, è stato progettato per l'ispezione e la manipolazione dei dati contenuti nei messaggi basati sul protocollo \textbf{ISO8583} scambiati tra i sistemi informatici degli istituti finanziari. Come dimostrato anche dalla già citata analisi AR18-275A della NCCIC, il file, come suggerisce anche l'estensione \texttt{.so}, rappresenta una \textbf{shared library} che, esportando una grande quantità di metodi in grado di interagire con i messaggi basati sul suddetto protocollo, permette agli attaccanti di alterare le transazioni finanziare a proprio favore.
 
@@ -787,7 +825,7 @@ bl      0x10000b48 <.file_dump>
   
 \end{table}
 
-\subsection{Analisi delle stringhe}\label{strings2so}
+\subsubsection{Analisi delle stringhe}\label{strings2so}
 
 \begin{lstlisting}[
 frame=lines, 
@@ -881,7 +919,7 @@ Crypt
 
 Osservando infine il frammento riportato in \ref{code:2so-4} possiamo comprendere l'esistenza di alcuni metodi utilizzati per rispondere alle transazioni finanziarie generate dai sistemi bancari sotto attacco.
 
-\subsection{Analisi del codice assembly}
+\subsubsection{Analisi del codice assembly}
 
 Benché naturalmente sprovvista di una procedura \texttt{main}, trattandosi di una shared library, il file \texttt{2.so} assume un ruolo centrale per il corretto svolgimento dell'attacco poiché esporta tutte le procedure necessarie per manipolare le transazioni elettroniche dei sistemi finanziari attaccati.
 I metodi esportati dal file \texttt{so.2}, una parte dei quali sono mostrati nel listato \ref{code:2.so-3}, sono molto numerosi e riguardano principalmente l'ispezione e la manipolazione dei messaggi usati dal protocollo ISO8583 a cui si aggiungono altre procedure di supporto, tra cui quelle usate per implementare un meccanismo di logging (\texttt{out\_dump\_log}) e altre usate per gestire una tabella hash (\texttt{hashmap\_new}, \texttt{hashmap\_init}, \texttt{hashmap\_get} ecc.).
@@ -1066,7 +1104,7 @@ bl      0x100007c0 <.localtime>
 
 
 \newpage
-\section{Il file \texttt{5cfa1c2cb430bec721063e3e2d144feb}}
+\subsection{Il file \texttt{5cfa1c2cb430bec721063e3e2d144feb}}
  
 fdsfdsfdsfsdfsdf 
  
@@ -1107,18 +1145,14 @@ fdsfdsfdsfsdfsdf
 
 
 
-Il metodo di attacco utilizzato per compromettere il corretto funzionamento dei server bancari, presso le quali erano in esecuzione le applicazioni di payment switch, è quella della \textit{code injection}, traducibile in italiano come \textit{iniezione di codice}; tale forma di attacco consiste nel compromettere l'esecuzione di uno processo legittimo da parte di uno maligno il quale, attraverso lo sfruttamento di varie tecniche e vulnerabilità (\textit{Process Hollowing}, \textit{APC Injection}, \textit{DLL-injection}, \textit{SIR}..), riesce a introdurre codice maligno nel processo bersaglio alterandone la sua esecuzione.
 
-La variante di attacco di code injection adottata dai criminali è nota come \textit{SIR}, acronimo di \textit{Suspend-Inject-Resume}, ovvero \textit{Sospendi-Inietta-Riavvia}
-
-Come intuibile dal nome, questa forma di attacco prevede dapprima la sospensione del processo bersaglio o, più specificatamente, di tutti i suoi thread con lo scopo di poter successivamente alterarne lo stato, attraverso varie modalità come la modifica della sua memoria (\textit{Address Space}) o dei valori contenuti nel suo PCB, come il valore che detiene l'indirizzo della successiva istruzione (\textit{Program Counter}/\textit{Instruction Pointer}) o i dati contenuti nei registri. Successivamente, dopo tali modifiche, il processo attaccato viene riavviato affinché esegua il codice maligno precedentemente introdotto.
 
 \newpage
-\section{Analisi degli impatti subiti}
+\chapter{Analisi degli impatti subiti}
 
 L'attacco perpetrato dal gruppo Lazarus ha incontestabilmente causato una serie di danni diretti ed indiretti nei confronti dell'istituto bancario, comportando impatti considerevoli a livello economico-finanziario, politico-sociale e di reputazione, aggravati non appena la notizia dell'avvenuto attacco è divenuta di dominio pubblico.
 
-\subsection{Impatti socio-economici}
+\section{Impatti socio-economici}
 
 Essendo stati compromessi i processi governanti funzionalità critiche del sistema, l'attacco ha determinato innanzitutto un'interruzione dei un servizi legittimi offerti dall'istituto bancario, come quelli aventi funzione di credito sulle quali si basano le transazioni finanziare, comportando conseguenze economico-sociali molto gravi tra cui:
 \begin{itemize}
@@ -1132,45 +1166,42 @@ L'introduzione di codice maligno all'interno dei sistema ha avuto molteplici con
 \item Danni economico-finanziari dovuti alle operazioni di ripristino del sistema, aggiornamento dei software e di tutti i meccanismi di sicurezza.
 \end{itemize}
 
-\subsection{Impatti sulla reputazione}
+\section{Impatti sulla reputazione}
 
 La diffusione della notizia riguardante l'avvenuto attacco attraverso vari canali di informazione ha indubbiamente causato un danno alla reputazione dell'istituzione bancaria per via degli scarsi sforzi rivolti alla sicurezza informatica, esponendo a gravi rischi i propri clienti sia dal punto di vista economico che di privacy, benché, dalle analisi, non risulta che il malware FASTCash sia stato concepito come spyware.
 
 I danni all'immagine dell'istituto avranno inevitabilmente effetti di lungo termine a causa dalla perdita degli attuali e dei futuri clienti.
 
 \newpage
-\section{Contromisure}
+\chapter{Contromisure}
 
-In questa ultima sezione forniremo una analisi dettaglia delle possibili contromisure capaci di contrastare le attività del malware FASTCash sia modo pro-attivo che reattivo.
+In questo capitolo forniremo una analisi dettaglia delle possibili contromisure capaci di contrastare le attività del malware FASTCash sia modo pro-attivo che reattivo.
 
 \subsection{Aggiornamenti software}
 
-La soluzione più elementare da adottare in ogni circostanza per contrastare in generale gli attacchi informatici riguardano gli aggiornamenti di tutto il parco software, dalle applicazioni fino al sistema operativo.  
+Come suggerito dalla totalità delle aziende di sicurezza informatica, al fine di contrastare in generale gli attacchi informatici, è indispensabile una \textbf{regolare attività di aggiornamento} di tutto il parco software.
 
-I ricercatori della Symantec hanno stabilito\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} che il mancato aggiornamento del sistema operativo AIX utilizzato dai payment switch server sia stata la causa principale del disastro.
-
-Infatti, come dichiarato anche dalla stessa Symantec e dai principali canali di divulgazione, abbiamo confermato dalle informazioni estratte dal malware stesso, analizzato precedentemente nella sezione 2, che gli attacchi erano rivolti verso i sistemi equipaggiati con versioni obsolete del sistema operativo AIX e, pertanto, prive del supporto IBM relativamente alle patch di sicurezza, le quali avrebbero potuto contrastare o, nel migliore delle ipotesi, impedire l'attacco informatico. 
+I ricercatori della Symantec hanno stabilito\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} che il mancato aggiornamento del sistema operativo AIX utilizzato dai payment switch server abbia compromesso la sicurezza del sistema poiché privata del supporto IBM relativamente alle patch di sicurezza le quali avrebbero potuto contrastare o, nel migliore delle ipotesi, impedire l'attacco informatico. 
 
 \subsubsection{Analisi dell'efficacia degli aggiornamenti software}
 
-In generale, come stabilito anche dalla NCCIC\footnote{\texttt{https://www.us-cert.gov/ncas/alerts/TA18-275A}}, l'aggiornamento dei software, inclusi antivirus, applicazioni e sistemi operativi, resta un modalità efficace per contrastare le attività criminali a danno dei sistemi informatici.
-
-Nonostante gli aggiornamenti software rappresentino un requisito imprescindibile per garantire standard di sicurezza elevati, riteniamo, in virtù delle caratteristiche tecniche del malware, l'attività di aggiornamento poco efficace contro FASTCash.
+Sebbene una regolare attività di aggiornamento rappresenti un requisito imprescindibile per garantire standard di sicurezza elevati, riteniamo, in virtù delle caratteristiche tecniche del malware e della forma di attacco perpetrata dai cyber-criminali, tale attività poco efficace contro FASTCash.
  
-Infatti FASTCash basa, come abbiamo avuto modo di notare durante la sua analisi, il proprio attacco sull'uso di una code injection di tipo SIR, il quale è sfortunatamente molto difficile da contrastare perché basa il proprio funzionamento sull'uso (sarebbe meglio dire \textit{abuso}) dei servizi essenziali offerti dal kernel di un comune sistema operativo, come quelli per la gestione dei processi/thread o i meccanismi di lettura e scrittura. 
+Come abbiamo avuto modo di notare durante l'analisi, l'attacco effettuato dal malware FASTCash è per sua natura  molto difficile da contrastare attraverso gli aggiornamenti di sicurezza perché basa il proprio funzionamento sull'uso (sarebbe meglio dire \textit{abuso}) dei servizi essenziali offerti dal kernel del sistema operativo, in particolare la gestione dei processi/thread e i meccanismi di lettura e scrittura. 
 
-Dal momento che, da quanto stabilito dai ricercatori Symantec e NCCIC, non sembra che FASTCash abbia sfruttato una vera e propria vulnerabilità del sistema operativo, avendo usufruito esclusivamente di alcuni servizi essenziali del sistema operativo, 
-è giustificabile ritenere che l'aggiornamento dei software non avrebbe contrastato efficacemente il malware FASTCash.
+Non avendo sfruttato una vera e propria vulnerabilità del sistema operativo, come stabilito dai report della Symantec e della NCCIC, è giustificabile ritenere che l'aggiornamento dei software non avrebbe contrastato efficacemente il malware FASTCash. 
 
-Anche l'imposizione di restrizioni sull'uso delle \textit{syscall} per l'accesso a servizi così essenziali, come quelli precedentemente menzionati, sarebbe risultata poco efficace poiché avrebbe potuto comportare il verificarsi di effetti collaterali legati al tentativo, da parte di processi legittimi, di accedere ai servizi del SO, comportando costi aggiuntivi per lo sviluppo di un software compatibile con le nuove impostazioni. 
+Supponendo anche rilascio di aggiornamenti di sicurezza che impongano restrizioni sull'uso delle \textit{syscall} per l'accesso ai servizi del SO, il malware FASTCash continuerebbe ad agire incontrastato essendo nascosto all'interno di un processo legittimo; oltre ad essere poco efficace, restrizioni sull'uso delle syscall potrebbero comportare il verificarsi di effetti collaterali legati al tentativo da parte di processi legittimi di accedere ai servizi del SO, comportando costi aggiuntivi per lo sviluppo di un software compatibile con le nuove impostazioni. 
 
 \subsection{Principio del privilegio minimo e gli ACL}
 
-In base a quanto detto finora, riteniamo che gli sforzi finalizzati a reagire a questa forma di attacchi dovrebbero essere rivolti nell'impedire agli attaccanti di poter intraprendere l'attacco fin dal principio. 
+In base a quanto detto finora, riteniamo che gli sforzi finalizzati a reagire a questa forma di attacchi dovrebbero essere rivolti nell'impedire ai cyber-criminali di poter intraprendere l'attacco fin dal principio. 
 
-Le contromisure da adottare devono innanzitutto basarsi sul cosiddetto \textbf{principle of least privilege} (\textbf{PoLP}), in italiano \textbf{principio del privilegio minimo}, in cui si stabilisce che un opportuno sistema di sicurezza deve fornire un meccanismo che assicuri che ogni processo in esecuzione sul sistema sia in grado di accedere solo ed esclusivamente alle informazioni di cui necessità per garantire il suo corretto e legittimo funzionamento. Come noto, una possibile implementazione si basa sull'uso delle \textbf{access control list} (\textbf{ACL}), in italiano \textbf{lista di controllo degli accessi}, ovvero opportune strutture dati, generalmente tabelle, contenenti informazioni che specifichino quali utenti o gruppi hanno l'autorizzazione ad accedere alle risorse del sistema come processi, file o risorse di rete.
+Le contromisure da adottare devono innanzitutto basarsi sul cosiddetto \textbf{principle of least privilege} (\textbf{PoLP}), in italiano \textbf{principio del privilegio minimo}, in cui si stabilisce che \textit{un opportuno sistema di sicurezza deve fornire un meccanismo che assicuri che ogni processo in esecuzione sul sistema sia in grado di accedere solo ed esclusivamente alle informazioni di cui necessità per garantire il suo corretto e legittimo funzionamento.}
 
-L'adozione di apposite restrizioni di accesso al pseudo-filesystem \texttt{/proc}, accedendo alla quale i criminali hanno potuto compiere l'attacco di code injection, avrebbe potuto ostacolare o impedire l'attacco benché tale forma di sicurezza si riveli priva di utilità qualora gli attaccanti, attraverso tecniche di \textit{privilege escalation}, fossero riusciti ad ottenere le autorizzazioni necessarie per accedere alle risorse.
+Come noto, una possibile implementazione si basa sull'uso delle \textbf{access control list} (\textbf{ACL}), in italiano \textbf{lista di controllo degli accessi}, ovvero opportune strutture dati, generalmente tabelle, contenenti informazioni che specifichino quali utenti o gruppi hanno l'autorizzazione ad accedere alle risorse del sistema come processi, file o risorse di rete.
+
+L'adozione di apposite restrizioni di accesso al pseudo-filesystem \texttt{/proc}, accedendo alla quale i criminali hanno potuto compiere l'attacco di process injection, avrebbe potuto ostacolare o impedire l'attacco benché tale forma di sicurezza si riveli priva di utilità qualora gli attaccanti, attraverso tecniche di \textit{privilege escalation}, fossero riusciti ad ottenere le autorizzazioni necessarie per accedere alle risorse.
 
 \subsection{Meccanismi di Whitelisting}
 
