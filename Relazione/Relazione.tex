@@ -1220,7 +1220,36 @@ Questi sofisticati software non si limitano semplicemente alla raccolta di dati 
 
 Qualora rilevassero attività insolite, questi software reagiscono emettendo i cosiddetti \textit{alert}, avvisi finalizzati ad informare il personale incaricato della sicurezza del sistema della presenza di attività insolite nel sistema, la quale potrà infine prende provvedimenti per contrastate le attività del malware.  
 
-\section{Regole generali}
+\section{Altre contromisure specifiche}
+
+I rapporti della NCCIC forniscono una serie di contromisure ad hoc per i sistemi critici di una qualsiasi istituzione bancaria che desideri proteggersi dal malware FASTCash
+
+
+
+Require Chip and Personal Identification Number Cryptogram Validation
+Implement chip and Personal Identification Number (PIN) requirements for debit cards.
+Validate card-generated authorization request cryptograms.
+Use issuer-generated authorization response cryptograms for response messages.
+Require card-generated authorization response cryptogram validation to verify legitimate response messages. 
+Isolate Payment System Infrastructure
+Require two-factor authentication before any user can access the switch application server.
+Verify that perimeter security controls prevent internet hosts from accessing the private network infrastructure servicing your payment switch application server.
+Verify that perimeter security controls prevent all hosts outside of authorized endpoints from accessing your system.
+Logically Segregate Operating Environments
+Use firewalls to divide operating environments into enclaves.
+Use Access Control Lists (ACLs) to permit or deny specific traffic from flowing between those enclaves.
+Give special considerations to enclaves holding sensitive information (e.g., card management systems) from enclaves requiring internet connectivity (e.g., email).
+Encrypt Data in Transit
+Secure all links to payment system engines with a certificate-based mechanism, such as mutual transport layer security, for all traffic external or internal to the organization.
+Limit the number of certificates used on the production server, and restrict access to those certificates.
+Monitor for Anomalous Behavior as Part of Layered Security
+Configure the switch application server to log transactions. Routinely audit transactions and system logs.
+Develop a baseline of expected software, users, and logons. Monitor switch application servers for unusual software installations, updates, account changes, or other activity outside of expected behavior.
+Develop a baseline of expected transaction participants, amounts, frequency, and timing. Monitor and flag anomalous transactions for suspected fraudulent activity.
+Recommendations for Organizations with ATM or Point-of-Sale Devices
+Implement chip and PIN requirements for debit cards.
+Require and verify message authentication codes on issuer financial request response messages.
+Perform authorization response cryptogram validation for Europay, Mastercard, and Visa transactions.
 
 \listoftables
 \lstlistoflistings
