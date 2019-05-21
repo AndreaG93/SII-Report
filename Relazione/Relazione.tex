@@ -21,6 +21,15 @@
 \usepackage{adjustbox}
 \usepackage{footnote}
 \usepackage{authblk}
+\usepackage{titlesec}
+
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+
 
 \usepackage{tabularx}
 \usepackage[skip=0.5\baselineskip]{caption}
@@ -142,7 +151,7 @@ L'esecuzione di codice maligno nel contesto di un processo legittimo, oltre a ga
 
 Esistono molte varianti di attacco di process injection che, sfruttando diverse tipologie di vulnerabilità esposte dal sistema operativo, sono in grado di introdurre con successo codice arbitrario all'interno di un processo; la variante adottata dai cyber-criminali nel malware FASTCash è conosciuta come \textbf{SIR}, acronimo di \textbf{Suspend-Inject-Resume}.
 
-Come facilmente intuibile dal nome, tale tipologia di attacco prevede:\footnote{\texttt{https://www.endgame.com/blog/technical-blog/ten-process-injection-techniques-technical-survey-common-and-trending-process}}
+Come facilmente intuibile dal nome, tale tipologia di attacco prevede 3 fasi:\footnote{\texttt{https://www.endgame.com/blog/technical-blog/ten-process-injection-techniques-technical-survey-common-and-trending-process}}
 \begin{enumerate}
 \item La \textbf{sospensione del processo} bersaglio o, più specificatamente, di tutti i suoi thread. 
 \item \textbf{Alterazione dello stato del processo} attraverso la modifica del suo spazio di indirizzamento (\textit{Address Space}) o dei valori contenuti nel suo PCB, come il valore che detiene l'indirizzo della successiva istruzione (\textit{Program Counter}/\textit{Instruction Pointer}) o i dati contenuti nei registri.
@@ -165,20 +174,23 @@ Prima di procedere con la descrizione dettagliata dell'attacco perpetrato dal ma
 
 In questa sezione analizzeremo i file del malware FASTCash responsabili dell'attacco di process injection contro l'istituto bancario cercando di comprenderne il funzionamento. 
 
-Nel corso di questo capitolo analizzeremo nel dettaglio i seguenti file.
+Nel corso di questo capitolo analizzeremo nel dettaglio i seguenti file, i cui sample sono stati ottenuti mediante download dal database di \textit{Hybrid-Analysis}:\footnote{\texttt{https://www.hybrid-analysis.com/}}
 
 \begin{description}
 \item[\texttt{Injection\_API\_executable\_e}] Tale file contiene l'\textit{injection tool}.
-\item[\texttt{2.so}] Questo file, insieme a quelli denominati dalla NCCIC come \texttt{Lost\_File1\_\-so\-\_file} e \texttt{Lost\_File.so}, rappresenta una \textit{shared library} contenente i metodi usati per manomettere le transazioni finanziarie ed invocati dal codice maligno introdotto durante la process injection.
+\item[\texttt{Injection\_API\_log\_generating\_script}] Un file di log.
+\item[\texttt{2.so}] Questo file, insieme a quelli denominati dalla NCCIC come \texttt{Lost\_File1\_\-so\-\_file} e \texttt{Lost\_File.so}, rappresenta una \textit{shared library} contenente i metodi usati per manomettere le transazioni finanziarie ed invocati dal codice maligno introdotto durante la process injection. Non partecipa direttamente alla process injection, ma le funzioni esportate dalle suddette librerie vengono invocate direttamente dal codice introdotto durante l'attacco. 
 \end{description}
-
-Ricordiamo che i sample sono stati ottenuti mediante download dal database di \textit{Hybrid-Analysis}.\footnote{\texttt{https://www.hybrid-analysis.com/}}
 
 \subsection{Il file \texttt{Injection\_API\_executable\_e}}\label{sec:InjectionAPIExecutableE}
 
-L'output ottenuto dal tool \texttt{file} indica che il file \texttt{Injection\_API\_executable\_e}, di cui abbiamo riportato alcuni dettagli nella tabella \ref{tab:FileDetails-1}, è un \textbf{eseguibile} di tipo \textbf{eXtended COFF} (\textbf{XCOFF}), ovvero una versione migliorata ed estesa del formato \textbf{Common Object File Format} (\textbf{COFF}), il formato standard per la definizione dei file a livello strutturale nei sistemi operativi UNIX\footnote{Cfr. \texttt{https://it.wikipedia.org/wiki/COFF}} fino al 1999\footnote{Cfr. \texttt{https://en.wikipedia.org/wiki/Executable\_and\_Linkable\_Format}}, anno della definitiva adozione dello standard \textbf{Executable and Linkable Format} o \textbf{ELF}.
+Cerchiamo ora di dimostrare come il file \texttt{Injection\_API\_executable\_e} sia quello responsabile dell'attacco di process injection attraverso gli strumenti citati nell'introduzione.
 
-Il formato XCOFF è uno standard proprietario sviluppato da IBM\footnote{Cfr. \texttt{https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.files/XCOFF.htm}} ed adottato nei sistemi operativi \textbf{Advanced Interactive eXecutive} o \textbf{AIX}, una famiglia di sistemi operativi proprietari basati su Unix sviluppati dalla stessa IBM.\footnote{Cfr. \texttt{https://www.ibm.com/it-infrastructure/power/os/aix}}
+L'output ottenuto dal tool \texttt{file} indica che il suddetto file, di cui abbiamo riportato alcuni dettagli nella tabella \ref{tab:FileDetails-1}, è un \textbf{eseguibile} di tipo \textbf{eXtended COFF} (\textbf{XCOFF}), ovvero una versione migliorata ed estesa del formato \textbf{Common Object File Format} (\textbf{COFF}), il formato standard per la definizione dei file a livello strutturale nei sistemi operativi UNIX\footnote{Cfr. \texttt{https://it.wikipedia.org/wiki/COFF}} fino al 1999\footnote{Cfr. \texttt{https://en.wikipedia.org/wiki/Executable\_and\_Linkable\_Format}}, anno della definitiva adozione dello standard \textbf{Executable and Linkable Format} o \textbf{ELF}.
+
+Il formato XCOFF è uno standard proprietario sviluppato da IBM\footnote{Cfr. \texttt{https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.files/XCOFF.htm}} ed adottato nei sistemi operativi \textbf{Advanced Interactive eXecutive} o \textbf{AIX}, una famiglia di sistemi operativi proprietari basati su Unix sviluppati dalla stessa software house.\footnote{Cfr. \texttt{https://www.ibm.com/it-infrastructure/power/os/aix}}
+
+Come confermato anche dalla stampa internazionale, da queste informazioni possiamo affermare senza ombra di dubbio che il sistema operativo in esecuzione sui server bancari sia stato proprio un AIX; ma cosa possiamo dire della versione?
 
 \begin{table}[h!]
   
@@ -218,9 +230,9 @@ Il formato XCOFF è uno standard proprietario sviluppato da IBM\footnote{Cfr. \t
 
 \subsubsection{Analisi delle stringhe}\label{subsection:InjectionAPIExecutableE}
 
-Cominciamo l'analisi studiando alcune delle stringhe più importanti che è possibile estrarre ricorrendo al tool \texttt{strings}.
+Per rispondere alla precedente domanda dobbiamo analizzare il malware studiando alcune delle stringhe estratte ricorrendo al tool \texttt{strings}.
 
-Osservando innanzitutto il formato della directory di installazione predefinita delle librerie del compilatore \textbf{GCC} nei sistemi operativi AIX, riportato per comodità nel listato \ref{code:InjectionAPIExecutableE-1}\footnote{Cfr: \texttt{http://www.perzl.org/aix/index.php\%3Fn\%3DMain.GCCBinariesVersionNeutral}}, possiamo facilmente conoscere dal frammento mostrato nel listato \ref{code:InjectionAPIExecutableE-1} sia la versione di GCC che quella del sistema operativo AIX utilizzati per eseguire la \textit{build} del malware, le quali risultano essere pari a 4.8.5\footnote{Ulteriori dettagli su: \texttt{https://gcc.gnu.org/gcc-4.8/}} e 7.1\footnote{Ulteriori dettagli su: \texttt{https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}} rispettivamente. Dallo stesso listato si può apprendere inoltre l'architettura del sistema: la PowerPC\texttrademark.
+Osservando innanzitutto il formato della directory di installazione predefinita delle librerie del compilatore \textbf{GCC} nei sistemi operativi AIX, riportato per comodità nel listato \ref{code:InjectionAPIExecutableE-1}\footnote{Cfr: \texttt{http://www.perzl.org/aix/index.php\%3Fn\%3DMain.GCCBinariesVersionNeutral}}, possiamo facilmente conoscere dalle stringhe estratte mostrate nel listato \ref{code:InjectionAPIExecutableE-1} sia la versione di GCC che quella del sistema operativo AIX utilizzati per eseguire la \textit{build} del malware, le quali risultano essere pari a 4.8.5\footnote{Ulteriori dettagli su: \texttt{https://gcc.gnu.org/gcc-4.8/}} e 7.1\footnote{Ulteriori dettagli su: \texttt{https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}} rispettivamente. Dallo stesso listato si può apprendere inoltre l'architettura del sistema: la PowerPC\texttrademark.
 
 \begin{lstlisting}[
 frame=lines, 
@@ -238,7 +250,11 @@ firstnumber=348]
 /opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5/ppc64:/opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5:/opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5/../../..:/usr/lib:/lib
 \end{lstlisting}
 
-Sfortunatamente non è stato possibile risalire alla versione degli aggiornamenti, identificati dalla stessa IBM con il nome di \textit{Technology Levels} (TLs) \footnote{Cfr: \texttt{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/}}, installati sul sistema operativo bersaglio al momento dell'attacco, pertanto non possiamo escludere lo sfruttamento di una qualche vulnerabilità nota da parte degli attaccanti; in ogni caso, dal momento che il malware è stato compilato per la versione 7.1 di AIX, possiamo presupporre che la versione del sistema operativo attaccato fosse almeno pari alla 7.1. E' importante ricordare che   il supporto ufficiale da parte di IBM nei confronti della versione 7.1 di AIX TL0, sostituita dalla ben più moderna versione 7.2 rilasciata nel dicembre 2015, è stata già terminata nel novembre 2013, benché la versione 7.1 TL5 riceverà ancora aggiornamenti da parte di IBM fino ad aprile 2022.\footnote{Cfr: \texttt{https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}}
+Benché non sono state trovate in rete dati ufficiali a riguardo, dal momento che il malware stesso è stato compilato per la versione 7.1 di AIX, possiamo presupporre che la versione del sistema operativo attaccato fosse \textit{almeno} pari a tale versione. 
+
+Sfortunatamente non è stato possibile risalire alla versione degli aggiornamenti, identificati dalla stessa IBM con il nome di \textit{Technology Levels} (TLs) \footnote{Cfr: \texttt{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/}}, installati sul sistema operativo bersaglio al momento dell'attacco, pertanto non possiamo escludere lo sfruttamento di una qualche vulnerabilità nota da parte degli attaccanti.
+
+Ciò che è veramente importante ricordare è che il supporto ufficiale da parte di IBM nei confronti della versione 7.1 di AIX TL0, sostituita dalla ben più moderna versione 7.2 rilasciata nel dicembre 2015, è stato già terminato nel novembre 2013, benché la versione 7.1 TL5 riceverà ancora aggiornamenti fino ad aprile 2022.\footnote{Cfr: \texttt{https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}}
 
 \begin{lstlisting}[
 frame=lines, 
@@ -250,13 +266,17 @@ IBM XL C for AIX, Version 11.1.0.1
 
 Il particolare mostrato nel listato \ref{code:stringsInjectionAPIexecutablee2} dimostra l'uso da parte degli attaccanti del software \textbf{XL C/C++ for AIX} versione 11.1.0.1, un compilatore C/C++ appositamente ottimizzato dalla IBM per i propri sistemi operativi\footnote{Cfr. \texttt{https://www.ibm.com/it-it/marketplace/xl-cpp-aix-compiler-power}}, confermando, insieme ai numerosi riferimenti alle ben note librerie standard di C, come il C/C++ sia stato il linguaggio di programmazione scelto per implementare il malware.
 
-Osservando il frammento mostrato nel listato \ref{code:stringsInjectionAPIexecutablee3}, è possibile notare un insieme di stringhe, aventi formato \texttt{([FUNCTION\_NAME] \textit{info})}, le quali, come avremo modo di notare durante l'analisi del codice assembly, fanno parte certamente di un meccanismo di logging sfruttato dagli attaccanti; tale aspetto è stato confermato dalla già citata analisi della NCCIC
+\paragraph{Le attività di logging di FASTCash}
+
+Osservando ora il frammento mostrato nel listato \ref{code:stringsInjectionAPIexecutablee3}, è possibile notare un insieme di stringhe, aventi formato \texttt{[FUNCTION\_NAME] \textit{info}}, le quali, come avremo modo di notare anche durante l'analisi del codice assembly, fanno parte certamente di un \textbf{meccanismo di logging} sfruttato dagli attaccanti; tale aspetto è stato confermato dalla già citata analisi della NCCIC ed è noto anche il file di log stesso, di cui abbiamo riportato alcuni dettagli nella sezione \ref{sec:apilog}.
 
 Con ogni probabilità, le suddette stampe sono state realizzate per mezzo della funzione della libreria standard \texttt{snprintf}, come dimostrato dal codice assembly e dai numerosi riferimenti alla suddetta funzione presenti nel file. E' interessante notare come molte delle stampe coinvolgano numeri interi senza segno in forma esadecimale, come dimostrato dall'uso dei \textit{conversion specifier} (le speciali sequenze di caratteri usati abitualmente nella definizione del formato di output nelle funzioni \texttt{printf}) nella forma \texttt{\%llX}\footnote{Cfr. \texttt{http://man7.org/linux/man-pages/man3/printf.3.html}}.
 
-Queste stampe di log coinvolgono gran parte delle funzioni implementate nel file e presumibilmente sono state utilizzate dagli attaccanti per motivi di debug e racconta di informazioni arricchite anche da indicazioni temporali, come dimostrano l'uso delle funzioni \texttt{gettimeofday} e \texttt{localtime}. Inoltre, la presenza di procedura denominata \texttt{out\_log}, analizzata in dettaglio in \ref{sec:2.so}, dimostra che le suddette stampe siano state scritte in memoria di massa.
+Queste stampe di log coinvolgono gran parte delle funzioni implementate nel file e presumibilmente sono state utilizzate dagli attaccanti per motivi di debug e racconta di informazioni arricchite anche da indicazioni temporali, come dimostrano l'uso delle funzioni \texttt{gettimeofday} e \texttt{localtime}. 
 
-Infine le righe le righe 333, 334 e 335 del listato \ref{code:stringsInjectionAPIexecutablee3} indicano che il malware sia stato implementato sotto forma di una \textbf{command-line utility interattiva}; tale supposizione è stata confermata anche dall'analisi NCCIC.
+Inoltre, la presenza di una procedura denominata \texttt{out\_log}, analizzata in dettaglio in \ref{sec:2.so}, dimostra come le suddette stampe vengano scritte in memoria di massa.
+
+Infine le righe 333, 334 e 335 del listato \ref{code:stringsInjectionAPIexecutablee3} indicano che il malware sia stato implementato sotto forma di una \textbf{command-line utility interattiva}; tale supposizione è stata confermata anche dall'analisi NCCIC. 
 
 \begin{lstlisting}[
 frame=lines, 
@@ -288,15 +308,13 @@ Usage: injection pid dll_path mode [handle func toc]
 ...
 \end{lstlisting}
 
-Prima di analizzare nel dettaglio l'attacco di code injection vero e proprio, è indispensabile dapprima comprendere come vengono rappresentati e gestiti i \textbf{processi} nei sistemi operativi AIX.
-Ogni particolare aspetto di un processo, come, ad esempio, il suo stato, i sui livelli di privilegio o il proprio spazio di indirizzamento, è descritto da un insieme di file. Quest'ultimi, dato un processo il cui identificatore sia pari a \texttt{pid}, sono tutti raccolti nella directory \texttt{/proc/pid}. Tale sistema di gestione dei processi adottato da AIX permette di:
+\paragraph{La gestione dei processi in AIX}
 
-\begin{itemize}
-\item Conoscere i \texttt{pid} di \textbf{tutti} i processi del sistema attraverso il listing nella directory \texttt{/proc}.
-\item Accedere alle informazioni di un dato processo attraverso semplici operazioni di lettura e scrittura sui suddetti file, utilizzando ad esempio le \textit{system call} standard come \texttt{open()}, \texttt{close()}, \texttt{read()} e \texttt{write()}. \footnote{Cfr. IBM - \textit{AIX Version 7.1: Files References} - pag. 232-246}
-\end{itemize}
+Prima di analizzare nel dettaglio l'attacco vero e proprio, è indispensabile dapprima comprendere come vengono rappresentati e gestiti i \textbf{processi} nei sistemi operativi AIX.
 
-Di questi file, alcuni dei quali sono riportati a titolo di esempio nella tabella \ref{tab:AIXProcessFiles}\footnote{La lista completa è disponibile in \textit{ivi} pag. 246}, ricordiamo in particolare:
+Sia dato un processo con identificatore pari a \texttt{pid}. Ogni particolare aspetto di tale processo, come, ad esempio, il suo stato, i sui livelli di privilegio o il proprio spazio di indirizzamento, viene descritto da un insieme di file raccolti all'interno della directory \texttt{/proc/pid}.
+
+Di questi file, alcuni dei quali riportati nella tabella \ref{tab:AIXProcessFiles}\footnote{La lista completa è disponibile in \textit{ivi} pag. 246}, ricordiamo in particolare i seguenti: 
 
 \begin{description}
 \item[/proc/pid/as] Contiene l'immagine dello spazio degli indirizzi del processo e può essere aperto sia per la lettura che per la scrittura e supporta la subroutine \texttt{lseek} per accedere all'indirizzo virtuale di interesse.\footnote{\textit{Cfr. ivi} pag. 232}
@@ -305,6 +323,13 @@ Di questi file, alcuni dei quali sono riportati a titolo di esempio nella tabell
 
 \item[/proc/pid/status] Contiene informazioni sullo stato del processo. \footnote{\textit{Cfr. ivi} pag. 232}
 \end{description}
+
+Un aspetto molto importante da considerare è che, in virtù di tale sistema di gestione dei processi, è possibile: 
+
+\begin{enumerate}
+\item Conoscere i \texttt{pid} di \textbf{tutti} i processi del sistema attraverso il listing nella directory \texttt{/proc}.
+\item Accedere alle informazioni di un dato processo attraverso semplici operazioni di lettura e scrittura sui suddetti file, utilizzando ad esempio le \textit{system call} standard come \texttt{open()}, \texttt{close()}, \texttt{read()} e \texttt{write()}. \footnote{Cfr. IBM - \textit{AIX Version 7.1: Files References} - pag. 232-246}
+\end{enumerate}
 
 \begin{table}[h!]
  
@@ -332,9 +357,13 @@ Di questi file, alcuni dei quali sono riportati a titolo di esempio nella tabell
     \end{tabular}
 \end{table}
 
-Come mostrato nel listato \ref{code:stringsInjectionAPIexecutablee4}, sono state individuate all'interno del file tre stringhe che fanno riferimento ai suddetti file descrittori di processo ed, in particolare, ai file \texttt{ctl}, \texttt{status} e \texttt{as}.
+\paragraph{L'accesso del malware ai file dei processi}
 
-Come dimostrato dall'analisi della NCCIC, dalla nostra analisi del codice assembler e anche dalla presenza del \textit{conversion specifier} \texttt{\%d}, non c'è dubbio che il malware, dopo aver individuato l'identificatore del processo bersaglio, ricostruisca, per mezzo della funzione \texttt{sprintf}, i percorsi completi verso i suddetti file per poi ispezionare e manipolarne il contenuto.
+Ora che abbiamo compreso alcune delle caratteristiche più elementari riguardo la gestione dei processi nei sistemi operativi AIX è molto più facile comprendere l'attacco compiuto da FASTCash.
+
+Infatti, come mostrato nel listato \ref{code:stringsInjectionAPIexecutablee4}, sono state individuate all'interno del malware tre stringhe che fanno riferimento ai sopracitati file descrittori di processo ed, in particolare, ai file \texttt{ctl}, \texttt{status} e \texttt{as}.
+
+Come dimostrato dall'analisi della NCCIC e dalla nostra, la presenza del \textit{conversion specifier} \texttt{\%d} indica che il malware, dopo aver individuato l'identificatore del processo bersaglio, ricostruisca, per mezzo della funzione \texttt{sprintf}, i percorsi completi verso i suddetti file per poi ispezionare e manipolarne il contenuto. 
 
 \begin{lstlisting}[
 frame=lines, 
@@ -346,11 +375,11 @@ firstnumber=320]
 /proc/%d/as
 \end{lstlisting}
 
-Analizziamo ora nel dettaglio cosa può essere effettivamente scritto all'interno dei suddetti file.
+A questo punto è legittimo chiedersi cosa può essere effettivamente scritto all'interno dei suddetti file.
 
-La documentazione ufficiale rilasciata dalla IBM riporta l'esistenza di un insieme di \textbf{messaggi strutturati}\footnote{La documentazione IBM usa in modo intercambiabile il termine \textit{messaggio} e quello di \textit{segnale}}, ognuno dei quali identificato da un codice operativo, rappresentato da un valore \texttt{int}, e da una serie di argomenti (se presenti)\footnote{\textit{Cfr. ivi} pag. 242}. Come già detto, questi messaggi possono essere scritti direttamente nel file \texttt{ctl} di un dato processo, alterandone lo stato.
+La documentazione ufficiale rilasciata dalla IBM riporta l'esistenza di un insieme di \textbf{messaggi strutturati}\footnote{La documentazione IBM usa in modo intercambiabile il termine \textit{messaggio} e quello di \textit{segnale}}, ognuno dei quali identificato da un codice operativo, rappresentato da un valore \texttt{int}, e da una serie di argomenti (se presenti)\footnote{\textit{Cfr. ivi} pag. 242}. Un aspetto importante che bisogna tenere in mente è che questi messaggi possono essere scritti direttamente nel file \texttt{ctl} di un dato processo al fine di alterare lo stato del processo.
 
-Osservando il listato \ref{code:stringsInjectionAPIexecutablee5}, notiamo una stampa del logger all'interno è presente la stringa \textbf{PCWSTOP}; \textbf{PCWSTOP} è il nome di un messaggio definito nei sistemi operativi AIX che viene usato per sospendere l'esecuzione di un processo il cui \texttt{pid} viene passato come argomento.\footnote{Cfr. \textit{Ibidem}}
+Osservando il listato \ref{code:stringsInjectionAPIexecutablee5}, notiamo una stampa del logger all'interno è presente la stringa in cui compare la parola \textbf{PCWSTOP}; PCWSTOP è il nome di un messaggio definito nei sistemi operativi AIX che viene usato per sospendere l'esecuzione di un processo il cui \texttt{pid} viene passato come argomento.\footnote{Cfr. \textit{Ibidem}}
 I risultati della NCCIC e le nostre analisi sul codice assembly indicano che il malware usi questo ed altri messaggi per interrompere dapprima il processo bersaglio, accedere al suo spazio di indirizzamento, effettuare la code injection per poi riavviare il processo affinché esegua effettivamente il codice malevolo.
 
 \begin{lstlisting}[
@@ -392,6 +421,12 @@ firstnumber=299]
 \end{lstlisting}
 
 Come dimostrano i log mostrati nei listati \ref{code:stringsInjectionAPIexecutablee7} e \ref{code:stringsInjectionAPIexecutablee8}, il malware non si limita solo alla scrittura dei messaggi nei file di controllo dei processi ma raccoglie ed altera le informazioni presenti nei registri del processore, parte dei quali sono riportati nella tabella \ref{tab:PowerPCRegister}\footnote{Cfr. \textit{AIX Version 7.1: Assembler Language Reference} per una lista completa oppure visita \texttt{https://www.ibm.com/support/knowledgecenter/en/ssw\_aix\_71/com.ibm.aix.alangref/idalangref\_arch\_overview.htm} o \texttt{https://www.ibm.com/support/knowledgecenter/en/ssw\_aix\_71/com.ibm.aix.kdb/kdb\_registers.htm}}
+
+Sfortunatamente, non avendo la possibilità di eseguire il malware direttamente, ignoriamo quali dati siano stati prelevati e/o scritti attraverso i registri, benché è possibile fare una serie di supposizioni che riteniamo molto probabili.
+
+Infatti riteniamo plausibile che sia stato alterato il registro \texttt{IAR} affinché, dopo il riavvio del processo bersaglio, venga eseguito il codice malevolo introdotto durante l'attacco. 
+
+Presumibilmente una serie di indirizzi relativi allo spazio d'indirizzamento del processo bersaglio sono stati ricavati dai registri al verificarsi di certe condizioni, come la chiamata ad una specifica syscall; ciò spiegherebbe l'uso, pare per ben due volte, del messaggio PCSENTRY e PCSFAULT.  
 
 \begin{lstlisting}[
 frame=lines, 
@@ -463,6 +498,8 @@ firstnumber=308]
 	\newpage
 \subsubsection{Analisi del codice assembly}
 	
+Segue ora una breve analisi di alcune linee codice assembler estratte dal malware allo scopo di confermare alcuni aspetti finora.
+	
 	\begin{table}[h!]
 	    \caption{Alcune istruzioni assembly disponibili nell'architettura PowerPC\texttrademark}
 	    \centering
@@ -499,49 +536,32 @@ firstnumber=308]
 	       \end{adjustbox}
 	\end{table}
 
-\subsubsection{La procedura \texttt{main}} 
+\paragraph{La procedura \texttt{main}} 
 
-La parte iniziale della procedura \texttt{main} è caratterizzata da una serie di operazioni che coinvolgono stringhe come dimostrano la serie di istruzioni di salto condizionato verso le funzioni \texttt{strlen} (riga 7028), \texttt{strncpy} (riga 7035) e \texttt{strtoull} (riga 6973, 6984 e 6995) che probabilmente sono state utilizzate per raccogliere informazioni. Sono presenti due istruzioni di salto vero le funzioni \texttt{atoi} (riga 7015 e 7041) usate per convertire i parametri passati dagli attaccanti attraverso la linea di comando il che dimostra la natura interattiva del malware.
+Essendo \texttt{Injection\_API\_executable\_e} un file eseguibile, è naturale cominciare dall'analisi della procedura \texttt{main}.
 
-Dopo una serie di istruzioni di salto verso procedure varie procedure di inizilizzazione, tra cui spiccano \texttt{load\_config} e \texttt{get\_func\_addr}, viene raggiunta la porzione di codice mostrata nel listato \ref{code:AssemblyFunction-main-1} dove, dopo aver copiato i dati necessari in alcuni registri attraverso le apposite istruzioni mr, vengono eseguite a cascata due istruzioni di salto verso una procedura chiamata inject, che contiene il codice operativo per l'esecuzione della code injection. 
+Nelle primissime linee di codice della procedura sono state trovate varie istruzioni di salto incondizionato verso la funzione \texttt{atoi} (riga 7015 e 7041), probabilmente utilizzata, come confermato anche dalla NCCIC, per gestire gli input ricevuti da terminale, dimostrando così la natura interattiva del file malevolo.  
 
-\begin{lstlisting}[
-frame=lines, 
-caption={Codice assembly estratto dal file \texttt{Injection\_API\_executable\_e}}, 
-label={code:AssemblyFunction-main-1},
-firstnumber=308]
-mr      r3,r10
-mr      r4,r9
-addi    r5,r2,-728
-bl      0x1000256c <.inject>
-li      r3,120
-bl      0x10003468 <.sleep>
-ld      r2,40(r1)
-addi    r10,r31,120
-lwz     r9,116(r31)
-extsw   r9,r9
-mr      r3,r10
-mr      r4,r9
-li      r5,0
-bl      0x1000256c <.inject>
-bl      0x10001154 <.CloseHandle>
-\end{lstlisting}
+Successivamente il malware intraprende varie azioni, di cui ignoriamo le finalità, per la manipolazione di stringhe, come dimostrano la serie di istruzioni di salto condizionato verso le funzioni \texttt{strlen} (riga 7028), \texttt{strncpy} (riga 7035) e \texttt{strtoull} (riga 6973, 6984 e 6995).
 
+Infine, dopo una serie di istruzioni di salto verso procedure che riteniamo avere scopo di inizializzazione (\texttt{load\_config}, \texttt{get\_func\_addr}), viene raggiunta la porzione di codice mostrata nel listato \ref{code:AssemblyFunction-main-1} in cui viene eseguita una istruzione di salto verso una procedura denominata \texttt{inject} che, come vedremo, contiene il codice operativo per l'esecuzione della process injection. 
 
+\paragraph{La procedura \texttt{inject}}
 
-\subsubsection{La procedura \texttt{inject}}
+Tra tutte le procedure presenti all'interno del malware, quella contenente il codice per l'esecuzione dell'attacco di process injection è stata denominata     \texttt{inject}.
 
-In questo paragrafo descriveremo le operazioni eseguite dalla procedura chiamata \texttt{inject} a cui gli autori del malware hanno affidato il compito di eseguire l'attacco di code injection a danno del processo bersaglio.
-Nel listato \ref{code:AssemblyFunction-inject-01} viene mostrato il frammento corrispondente alla prima parte della suddetta funzione, all'interno del quale possiamo distinguere le seguenti operazioni:
-\begin{itemize}
-\item Copia nel \textit{link register} dell'indirizzo di ritorno dal registro \texttt{r0} attraverso l'istruzione \texttt{mflr}.
-\item Inizializzazione di vari registri necessari attraverso varie istruzioni \texttt{std} e \texttt{mr} che coinvolgono i registri \texttt{r4}, \texttt{r5},\texttt{r9} e  \texttt{r31}, quest'ultimo probabilmente adibito ad ospitare l'indirizzo di memoria di base da cui viene computato l'indirizzo da cui prelevare i dati dalla memoria. Si presupponi che i registri precedentemente menzionati ospiteranno gli indirizzi alle celle di memoria contenenti il codice malevolo che verrà poi scritto all'interno dello spazio di indirizzamento del processo bersaglio.
-\item Esecuzione della code injection vera e propria attraverso una serie di istruzioni di salto (\texttt{bl}) verso l'indirizzo \texttt{0x10002f00} corrispondente alla prima istruzione della funzione \texttt{memset} preceduta dalle necessarie inizializzazioni dei registri di input attraverso varie istruzioni \texttt{mr}.
-\end{itemize}
+Osservando il frammento di codice mostrato nel listato \ref{code:AssemblyFunction-inject-01}, possiamo distinguere le seguenti azioni preliminari compiute dal malware:
+
+\begin{enumerate}
+\item Copia dell'indirizzo di ritorno della procedura chiamante, presente all'interno dal registro \texttt{r0}, all'interno del link register attraverso l'uso dell'istruzione \texttt{mflr}.
+\item Inizializzazione di una serie di registri e aree di memoria ricorrendo alle istruzioni \texttt{std} e \texttt{mr} contenenti con ogni probabilità indirizzi di memoria da passare come argomento alla procedura \texttt{memset} chiamata successivamente.
+\item Alterazione dello spazio d'indirizzamento del processo bersaglio attraverso numerose chiamate alla procedura \texttt{memset}; le funzioni \texttt{memset} qui invocate, come avremmo modo di intuire successivamente, hanno il solo compito di inizializzare aree di memoria a preparazione della successiva copia del codice malevolo.
+ 
+\end{enumerate}
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Codice assembly estratto dal file \texttt{Injection\_API\_executable\_e}}, 
+caption={Codice assembly estratto dal file \texttt{Injection\_API\_executable\_e} (1)}, 
 label={code:AssemblyFunction-inject-01},
 firstnumber=308]
 mflr    r0
@@ -579,23 +599,15 @@ mr      r5,r9
 bl      0x10002f00 <.memset>
 \end{lstlisting}
 
-Dopo una serie di istruzioni di salto verso la funzione \texttt{memset}, ed aver dunque conclusa le operazioni di modifica della memoria del processo attaccato, possiamo osservare le successive operazioni eseguite dal listato \ref{code:AssemblyFunction-inject-02} in cui apprendiamo che:
+Successivamente, osservando il frammento riportato in \ref{code:AssemblyFunction-inject-02}, possiamo innanzitutto osservare l'intensa attività di log eseguita dal malware durante la sua attività; vengono infatti eseguite molte istruzioni \texttt{bl} per invocare due procedure denominate \texttt{out\_log} e \texttt{out\_regs}, invocate dopo ogni passo dell'attacco. Osservando il codice assembler, è facile convincersi come la procedura \texttt{out\_log} venga invocata per effettuare la scrittura di una serie informazioni di interesse su un file esterno mentre \texttt{out\_regs} per scrivere nel log il contenuto dei registri.
 
-\begin{itemize}
-\item Vengono eseguite ben tre istruzioni \texttt{bl} per permettere l'esecuzione della procedura \texttt{out\_log} per effettuare la scrittura delle informazioni di interesse su un file esterno.
-\item Vengono diverse istruzioni di salto per eseguire varie procedure tra cui quella denominata \texttt{proc\_attach}, usata probabilmente per modificare alcune informazioni di stato del processo, la \texttt{proc\_wait}, usata probabilmente per arrestare l'esecuzione del processo bersaglio, \texttt{proc\_getregs} ed \texttt{out\_regs} usate rispettivamente per leggere i valori contenuti nei registri e successivamente scriverli in un file di log.
-
-\end{itemize}
+Successivamente viene intrapreso l'attacco vero e proprio. In accordo a quanto detto nell'introduzione a proposito della forma di attacco di process injection di tipo SIR, il processo bersaglio viene sospeso ed, a tale scopo, viene invocato la procedura \texttt{proc\_wait}; dopo l'arresto avviene la raccolta dei valori dei registri attraverso l'invocazione delle procedure  \texttt{proc\_getregs} ed \texttt{out\_regs}.
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Codice assembly estratto dal file \texttt{Injection\_API\_executable\_e}}, 
+caption={Codice assembly estratto dal file \texttt{Injection\_API\_executable\_e} (2)}, 
 label={code:AssemblyFunction-inject-02},
-firstnumber=308]
-bl      0x10000674 <.out_log>
-bl      0x10001220 <.proc_attach>
-li      r3,0
-bl      0x10001a28 <.proc_continue>
+firstnumber=312]
 li      r3,0
 li      r4,0
 bl      0x10001b44 <.proc_wait>
@@ -609,11 +621,13 @@ mr      r3,r9
 bl      0x10000c80 <.out_regs>
 \end{lstlisting}
 
-Dopo una serie di istruzioni di salto verso altre funzioni, tra cui figura una denominata \texttt{proc\_readmemory}, avviene l'ultima fase della code injection durante la quale, come dimostrato dal listato \ref{code:AssemblyFunction-inject-03}, viene alterata la memoria del processo bersaglio attraverso istruzioni di salto verso le procedure \texttt{proc\_writememory}, usata probabilmente per indurre il processo bersaglio a eseguire il codice malevolo copiato in precedenza, e la \texttt{proc\_setregs} usata per alterare il contenuto dei registri e dunque modificare il futuro comportamento del processo. La procedura si conclude con il riavvio del processo e una lunga fase di log attraverso una grande quantità di istruzioni di salto verso la procedura \texttt{out\_log}.
+Quindi, dopo aver raccolto altre informazioni attraverso la procedura \texttt{proc\_readmemory}, come mostrato nel listato \ref{code:AssemblyFunction-inject-03}, viene introdotto il codice malevolo nello spazio di indirizzamento del processo attraverso l'invocazione della procedura \texttt{proc\_writememory}.
+
+Successivamente vengono eseguite azioni per alterare il contenuto dei registri, probabilmente per fare in modo che il processo bersaglio esegua il codice malevolo appena introdotto attraverso l'esecuzione di un procedura denominata \texttt{proc\_setregs}, concludendo in tal modo l'attacco.
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Codice assembly estratto dal file \texttt{Injection\_API\_executable\_e}}, 
+caption={Codice assembly estratto dal file \texttt{Injection\_API\_executable\_e} (3)}, 
 label={code:AssemblyFunction-inject-03},
 firstnumber=308]
 bl      0x10002460 <.proc_writememory>
@@ -636,158 +650,53 @@ mr      r3,r9
 bl      0x10000c80 <.out_regs>
 \end{lstlisting}
 
-\subsubsection{La procedura \texttt{proc\_attach}}
+\newpage
+\subsection{Il file \texttt{Injection\_API\_log\_generating\_script}}\label{sec:apilog}
 
-Analizziamo nel dettaglio l'attacco al processo la quale si compone in varie fare.
-Nel listato possiamo osservare come vengono dapprima eseguite delle operazioni di store ward con diversi offset con un registro comune come indirizzo sorgente; 
+Il file denominato \texttt{Injection\_API\_log\_generating\_script}, secondo i rapporti dalla NCCIC\footnote{\text{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}, rappresenta il file di log generato automaticamente durante l'esecuzione dell'injection tool \texttt{Inject\_API\_executable\_e} analizzato nella precedente sezione.
 
-Successivamente gli attaccanti utilizzano quello che probabilmente si tratti dell'indirizzo dell'area di memoria del processo bersaglio e con ripetute operazioni si store word muove il puntatore a quell'area di memoria con step da 4 byte. Alla fine, raggiunta la posizione desiderata, sposta il risultato in vari registri e esegue un'operazione di salto (bl) che punta all'indirizzo per la funzione memset.
-
-\begin{lstlisting}
-[
-frame=lines, 
-caption={Codice assembly estratto dal file \texttt{Injection\_API\_executable\_e}}, 
-label={code:AssemblyFunction-inject-04},
-firstnumber=308]
-<.proc_attach>:
-mflr    r0
-std     r0,16(r1)
-std     r29,-24(r1)
-std     r30,-16(r1)
-std     r31,-8(r1)
-stdu    r1,-352(r1)
-mr      r31,r1
-li      r9,0
-stw     r9,128(r31)
-li      r9,0
-stw     r9,132(r31)
-li      r9,0
-std     r9,136(r31)
-li      r9,0
-std     r9,144(r31)
-li      r9,0
-std     r9,152(r31)
-li      r9,0
-std     r9,160(r31)
-li      r9,0
-std     r9,168(r31)
-li      r9,0
-stw     r9,176(r31)
-addi    r10,r31,180
-li      r9,140
-mr      r3,r10
-li      r4,0
-mr      r5,r9
-bl      0x10002f00 <.memset>
-\end{lstlisting}
-
-Dopo aver richiamato la funzione \texttt{memset}, certamente utilizzata dagli attaccanti per eseguire la \textit{code injection} alterando il contenuto dello spazio di indirizzamento del processo bersaglio, la funzione \texttt{proc\_attach} incomincia una fase di logging durante la quale, attraverso ripetuti salti condizionati agli indirizzi \texttt{0x100031ec}, \texttt{0x1000319c} e \texttt{0x10000674}, corrispondenti agli indirizzi delle funzioni \texttt{write}, \texttt{sterror} (utilizzata certamente dagli attaccanti per verificare l'output della funzione \texttt{write}), \texttt{log\_out}, vengono archiviati in un file esterno il contenuto dei registri di interesse che paiono essere i registri r31, r30, r29 e r9 che vengono copiati con ripetute istruzioni \texttt{mr} in registri ausiliari (r4, r5, r6 e r7 rispettivamente) prima di essere inviati come input alla funzione \texttt{log\_out}.
-
-\begin{lstlisting}
-[
-frame=lines, 
-caption={Codice assembly estratto dal file \texttt{Injection\_API\_executable\_e}}, 
-label={code:AssemblyFunction-inject-05},
-firstnumber=308]
-li      r9,14
-stw     r9,136(r31)
-li      r9,4
-stw     r9,140(r31)
-addi    r9,r2,-764
-lwz     r9,0(r9)
-extsw   r10,r9
-addi    r9,r31,136
-mr      r3,r10
-mr      r4,r9
-li      r5,8
-bl      0x100031ec <.write>
-ld      r2,40(r1)
-mr      r9,r3
-stw     r9,128(r31)
-addi    r9,r2,-768
-lwz     r9,0(r9)
-extsw   r29,r9
-ld      r9,128(r2)
-lwz     r9,0(r9)
-extsw   r30,r9
-ld      r9,128(r2)
-lwz     r9,0(r9)
-extsw   r9,r9
-mr      r3,r9
-bl      0x1000319c <.strerror>
-ld      r2,40(r1)
-mr      r9,r3
-lwz     r10,128(r31)
-extsw   r10,r10
-ld      r3,536(r2)
-mr      r4,r29
-mr      r5,r10
-mr      r6,r30
-mr      r7,r9
-bl      0x10000674 <.out_log>
-\end{lstlisting}
-
-La fase di code injection si conclude con il caricamento nel registro \texttt{r0} dell'indirizzo della funzione chiamante copiato successivamente nel link register attraverso l'istruzione \texttt{mtrl}; vengono in seguito eseguite una serie di istruzioni ld per popolare i registri r29, r30 e r31 che conterranno probabilmente i valori di ritorno della funzione per poi eseguire una istruzione \texttt{blr} (\textit{Branch Link Register}).
-
-\begin{lstlisting}
-ld      r0,16(r1)
-mtlr    r0
-ld      r29,-24(r1)
-ld      r30,-16(r1)
-ld      r31,-8(r1)
-blr
-\end{lstlisting}
-
-
-\begin{lstlisting}
-bl      0x10000674 <.out_log>
-bl      0x10001220 <.proc_attach>
-li      r3,0
-bl      0x10001a28 <.proc_continue>
-li      r3,0
-li      r4,0
-bl      0x10001b44 <.proc_wait>
-ld      r3,728(r2)
-bl      0x10000674 <.out_log>
-addi    r9,r31,152
-mr      r3,r9
-bl      0x10001ee4 <.proc_getregs>
-addi    r9,r31,152
-mr      r3,r9
-bl      0x10000c80 <.out_regs>
-addi    r8,r31,536
-addi    r10,r31,152
-li      r9,384
-mr      r3,r8
-mr      r4,r10
-mr      r5,r9
-bl      0x1000324c <.memmove>
-nop
-ld      r9,536(r31)
-addi    r9,r9,-16
-mr      r3,r9
-li      r4,16384
-bl      0x10000b48 <.file_dump>
-\end{lstlisting}
+Il contenuto del file, di cui omettiamo un'analisi specifica in quanto di scarso interesse ai fini della nostra trattazione, è ovviamente pari a quanto descritto durante l'analisi dell'injection tool.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+\begin{table}[h!]
+  
+    \caption{Dettagli del file \texttt{Injection\_API\_log\_generating\_script}}
+    \centering
+    \label{tab:table1}
+    
+    \begin{adjustbox}{center=\textwidth}
+ 
+    \begin{tabular}{l|r}
+      \toprule
+      \textbf{Descrizione} & \textbf{Valore} \\
+      \midrule
+      
+      Nome & \texttt{Injection\_API\_log\_generating\_script} \\
+      \hline
+      Dimensione (\textit{byte}) & \texttt{2337} \\
+   \hline
+      Tipo di file & \texttt{ASCII text} \\
+    \hline
+      MD5 digest & \texttt{844eec0ff86c10f5f9b41648b066563b}\\ 
+ \hline
+      SHA1 digest & \texttt{5d0fd2c5f58dcbc51e210894e8698bc14ccd30e2} \\ 
+     \hline
+      SHA256 digest & \texttt{e03dc5f1447f243cf1f305c58d95000ef4e7dbcc5c4e91154daa5acd83fea9a8} \\ 
+\hline
+      \multirow{2} {*}{SHA512 digest} & \texttt{199dee05b602039e480f62963cb0ec3b96393e37bb78ff1475e6dfc5857e4849}\\
+      & \texttt{24a476dbe73f02de96670ff488eb26f53ca9c600dd44390cf767a4aa510869a4}  \\
+      
+      \bottomrule
+    \end{tabular}
+    \end{adjustbox}
+  
+\end{table}
 
 \newpage
 \subsection{Il file \texttt{2.so}}\label{sec:2.so}
 
-\texttt{2.so} è un file di tipo \textbf{eXtended COFF} che, come dimostreremo all'interno di questa sezione, è stato progettato per l'ispezione e la manipolazione dei dati contenuti nei messaggi basati sul protocollo \textbf{ISO8583} scambiati tra i sistemi informatici degli istituti finanziari. Come dimostrato anche dalla già citata analisi AR18-275A della NCCIC, il file, come suggerisce anche l'estensione \texttt{.so}, rappresenta una \textbf{shared library} che, esportando una grande quantità di metodi in grado di interagire con i messaggi basati sul suddetto protocollo, permette agli attaccanti di alterare le transazioni finanziare a proprio favore.
+Come suggerisce la sua l'estensione, il file \texttt{2.so} rappresenta una \textbf{shared library} usata per esportare funzioni in grado di interagire con i messaggi basati su protocollo \textbf{ISO 8583}, con lo scopo di alterare le transazioni finanziare a proprio favore.
 
 \begin{table}[h!]
   
@@ -830,21 +739,6 @@ bl      0x10000b48 <.file_dump>
 \begin{lstlisting}[
 frame=lines, 
 caption={Stringe estratte dal file \texttt{2.so} (1)}, 
-label={code:2so-1},
-firstnumber=465
-]
-...
-/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0/ppc64:/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0:/opt/freeware/lib/gcc/powerpc-ibm-aix6.1.0.0/4.2.0/../../..:/usr/lib:/lib
-...
-\end{lstlisting}
-
-Seguendo lo stesso ragionamento descritto in \ref{subsection:InjectionAPIExecutableE}, comprendiamo dal listato \ref{code:2so-1} che gli attaccanti si siano serviti della versione 4.2.0 di GCC\footnote{Cfr. \texttt{http://www.gnu.org/software/gcc/gcc-4.2/}} compatibile con l'architettura PowerPC\texttrademark con sistema operativo AIX 6.1 (di quest'ultimo il supporto è terminato ufficialmente il 30 Aprile del 2017.\footnote{Cfr. \texttt{https://www-01.ibm.com/support/docview.wss?uid=swg21634678\#AIX}}).
-
-La libreria esporta una grandissima quantità di funzioni molte delle quali riguardanti la manipolazione dei messaggi basati su protocollo ISO8583, alcune delle quali riportate nel listato \ref{code:2so-2}.
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Stringe estratte dal file \texttt{2.so} (2)}, 
 label={code:2so-2},
 firstnumber=545
 ]
@@ -867,11 +761,21 @@ DL_ISO8583_DEFS_1993_GetHandler
 DL_ISO8583_FIELD_Pack
 DL_ISO8583_FIELD_Unpack
 ...
+GenerateRandAmount
+GenerateResponseTransaction1
+GenerateResponseTransaction2
+GenerateResponseInquiry1
+Crypt
+...
 \end{lstlisting}
+
+Osservando l'output ottenuto usando il tool \texttt{strings} di cui ne riportiamo un piccolo frammento in \ref{code:2so-2}, è facile convincersi che la maggior parte delle funzioni esportate, di cui è abbastanza facile intuirne lo scopo, riguardano il protocollo ISO 8583.
+
+I metodi esportati non si limitano ovviamente alla sola gestione dei messaggi ISO 8583 sebbene siano la maggioranza; esistono metodi per la gestione di tabelle hash, di generazione di numeri casuali, metodi per gestire le risposte ricevute dai sistemi bancari durante le transazioni e molto altro ancora.
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Stringhe estratte dal file \texttt{2.so} (3)}, 
+caption={Stringhe estratte dal file \texttt{2.so} (2)}, 
 label={code:2so-3},
 firstnumber=545
 ]
@@ -900,30 +804,18 @@ DetourInitFunc(%s, %s) %s
 [DetourDetach] hook_func_addr(%x) %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X
 \end{lstlisting}
 
-Come dimostrato dal frammento riportato in \ref{code:2so-3} e dall'analisi di alcuni frammenti chiave del codice assembly in \ref{subsubsection:outDumpLog}, la libreria svolge un'\textbf{intensa attività di logging} scrivendo direttamente in memoria di massa attraverso una procedura chiamata \texttt{out\_dump\_log}.
-Dal listato \ref{code:2so-3} possiamo osservare un'interessante riferimento al percorso \texttt{/tmp/.ICE-unix/}: in accordo alla documentazione relativa alla versione R6.8.2 di X11\footnote{Cfr. \texttt{https://www.x.org/releases/X11R6.8.2/doc/RELNOTES5.html}} (la famosa implementazione del X Window System\footnote{Cfr. \texttt{https://www.x.org/wiki/}})
-il suddetto percorso viene usato per ospitare una serie di \texttt{socket} sfruttate dal protocollo \textbf{Inter-Client Exchange} (\textbf{ICE}), utilizzato per la risoluzione di varie problematiche come quelle legate all'autenticazione o al \textit{byte order negotiation}\footnote{Cfr. \texttt{https://www.x.org/releases/X11R7.7/doc/libICE/ICElib.html\#Overview\_of\_ICE}}. Pertanto, sebbene ne ignoriamo le motivazioni, abbiamo motivo di ritenere che gli attaccanti abbiano interagito con la GUI session manager di X11 attraverso il protocollo ICE.
+Osserviamo ora l'insieme di stringhe riportate in \ref{code:2so-3}
 
-\begin{lstlisting}[
-frame=lines, 
-caption={Stringhe estratte dal file \texttt{2.so} (4)}, 
-label={code:2so-4},
-firstnumber=545
-]
-GenerateRandAmount
-GenerateResponseTransaction1
-GenerateResponseTransaction2
-GenerateResponseInquiry1
-Crypt
-\end{lstlisting}
+Analogamente al file \texttt{Injection\_API\_executable\_e}, la libreria esegue una notevole attività di log delle proprie attività; come avremmo modo di notare successivamente nella sezione \ref{subsubsection:outDumpLog}, i dati di log vengono scritti direttamente in memoria di massa attraverso la procedura \texttt{out\_dump\_log}.
 
-Osservando infine il frammento riportato in \ref{code:2so-4} possiamo comprendere l'esistenza di alcuni metodi utilizzati per rispondere alle transazioni finanziarie generate dai sistemi bancari sotto attacco.
+Dal listato possiamo osservare un'interessante riferimento al percorso \texttt{/tmp/.ICE-unix/}: in accordo alla documentazione relativa alla versione R6.8.2 di X11\footnote{Cfr. \texttt{https://www.x.org/releases/X11R6.8.2/doc/RELNOTES5.html}} (la famosa implementazione del X Window System\footnote{Cfr. \texttt{https://www.x.org/wiki/}}) il suddetto percorso viene usato per ospitare una serie di \texttt{socket} sfruttate dal protocollo \textbf{Inter-Client Exchange} (\textbf{ICE}), utilizzato per la risoluzione di varie problematiche come quelle legate all'autenticazione o al \textit{byte order negotiation}\footnote{Cfr. \texttt{https://www.x.org/releases/X11R7.7/doc/libICE/ICElib.html\#Overview\_of\_ICE}}. Pertanto, sebbene ne ignoriamo le motivazioni, abbiamo motivo di ritenere che gli attaccanti abbiano interagito con la GUI session manager di X11 attraverso il protocollo ICE per svolgere le loro attività.
 
 \subsubsection{Analisi del codice assembly}
 
-Benché naturalmente sprovvista di una procedura \texttt{main}, trattandosi di una shared library, il file \texttt{2.so} assume un ruolo centrale per il corretto svolgimento dell'attacco poiché esporta tutte le procedure necessarie per manipolare le transazioni elettroniche dei sistemi finanziari attaccati.
-I metodi esportati dal file \texttt{so.2}, una parte dei quali sono mostrati nel listato \ref{code:2.so-3}, sono molto numerosi e riguardano principalmente l'ispezione e la manipolazione dei messaggi usati dal protocollo ISO8583 a cui si aggiungono altre procedure di supporto, tra cui quelle usate per implementare un meccanismo di logging (\texttt{out\_dump\_log}) e altre usate per gestire una tabella hash (\texttt{hashmap\_new}, \texttt{hashmap\_init}, \texttt{hashmap\_get} ecc.).
-Di seguito riportiamo l'analisi di alcune delle procedure principali presenti nel file.
+Benché naturalmente sprovvista di una procedura \texttt{main} trattandosi di una libreria, il file \texttt{2.so} assume un ruolo centrale per il corretto svolgimento dell'attacco in quanto, come già detto, esporta tutte le procedure necessarie per manipolare le transazioni elettroniche dei sistemi finanziari.
+
+I metodi esportati sono molto numerosi e una loro analisi esula dagli scopi della nostra trattazione; nonostante ciò, abbiamo voluto studiarne per dimostrare la capacità 
+della libreria di alterare i messaggi del protocollo ISO 8583.
 
 \subsubsection{La procedura \texttt{DL\_ISO8583\_MSG\_GetField\_Bin}} 
 
@@ -1028,56 +920,19 @@ bl      0x100002dc <.free>
 ld      r2,40(r1)
 \end{lstlisting}
 
-\subsubsection{La procedura \texttt{out\_dump\_log}}\label{subsubsection:outDumpLog}
+\paragraph{La procedura \texttt{out\_dump\_log}}\label{subsubsection:outDumpLog}
 
-La procedura denominata \texttt{out\_dump\_log}, usata, come suggerisce il nome, per ovvie finalità legate al \textbf{debugging} dell'applicazione e al \textbf{logging} di tutte le informazioni di interesse raccolte durante l'attacco, rappresenta quella invocata il maggior numero di volte all'interno del codice della libreria: ben 32 volte. Una delle procedure esportate, chiamata \texttt{NewRead}, invoca la suddetta funzione ben 11 volte e, in generale, l'invocazione è preceduta quasi sempre da un'altra nei confronti della funzione \texttt{ReadRecv}; quest'ultima considerazione dimostra come quasi certamente gli attaccanti ispezionavano il contenuto dei messaggi ricevuti salvando tutti i dati in \textbf{memoria di massa}, affinché fosse accessibile di seguito per un qualche scopo.
+La procedura denominata \texttt{out\_dump\_log} è stata usata, come inequivocabilmente suggerisce il nome, per finalità legate alle attività di log del malware.
 
+L'importanza della procedura risiede nella quantità delle invocazioni eseguite: ben 32 volte. Curiosamente l'invocazione di \texttt{out\_dump\_log} è quasi sempre preceduta da un'altra verso una funzione denominata \texttt{ReadRecv}; dal codice assembler è facile intuire che gli attaccanti ispezionavano il contenuto dei messaggi ricevuti per poi salvarne il contenuto nel file di log.
 
- rappresenta quella invocata più frequentemente all'interno del codice; ben 32 volte il che dimostra la sua importanza dato il volume di dati registrato dagli attaccanti.
-
-Tale procedura, richiamata molte volte nel codice, ha come scopo quello di scrivere messaggi di log opportunamente formattati in un file esterno, forse per motivi di debug o per tener traccia dello stato di avanzamento dell'attacco.
-La prima porzione del codice assembly, mostrata nel listato \ref{code:2.so-8}, è dominata da una grande quantità di istruzioni \texttt{std} usate per popolare tutti i registri dalla numero 3 alla 10 e dalla numero 23 alla 31, che probabilmente conterranno i dati da stampare nel file di log.
-Dal momento che la totalità di queste istruzioni usano i registri \texttt{r0} e \texttt{r31} come sorgenti quest'ultimi conterranno i dati passati come argomento alla funzione.
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Codice assembly estratto dal file \texttt{2.so}}, 
-label={code:2.so-8},
-firstnumber=347]
-mflr    r0
-std     r23,-72(r1)
-std     r24,-64(r1)
-std     r25,-56(r1)
-std     r26,-48(r1)
-std     r27,-40(r1)
-std     r28,-32(r1)
-std     r29,-24(r1)
-std     r31,-8(r1)
-std     r0,16(r1)
-stdu    r1,-4624(r1)
-mr      r31,r1
-std     r4,4680(r31)
-std     r5,4688(r31)
-std     r6,4696(r31)
-std     r7,4704(r31)
-std     r8,4712(r31)
-std     r9,4720(r31)
-std     r10,4728(r31)
-std     r3,4672(r31)
-\end{lstlisting}
-
-La parte centrale della procedura, mostrata invece nel listato \ref{code:2.so-9}, contiene un insieme di istruzione il cui scopo evidentemente è quello di scrivere tutti i dati precedentemente raccolti su un file.
-Come si può facilmente notare dal listato  \ref{code:2.so-9}, è facile intuire che ogni stringhe venga dapprima realizzata facendo ricorso alla funzione standard \texttt{snprintf} e poi, dopo l'apertura del file di log attraverso la chiamata di sistema \texttt{fopen}, vengano scritti aggiungendo ulteriori informazioni come data e ora locale, come dimostrano le istruzioni di salto verso le procedure \texttt{gettimeofday} e \texttt{localtime}. 
-La procedura si conclude con una chiamata alla procedura \texttt{close} per poi chiudersi definitivamente con l'istruzione \texttt{blr} che permette la ritornare alla procedura chiamante.
+Il frammento di codice mostrato in \ref{code:2.so-9} suggerisce che il file di log, creato ed aperto invocando la funzione \texttt{fopen}, veniva arricchito anche da informazioni temporali, come dimostrano le istruzioni di salto verso le procedure \texttt{gettimeofday} e \texttt{localtime}. 
 
 \begin{lstlisting}[
 frame=lines, 
 caption={Codice assembly estratto dal file \texttt{2.so}}, 
 label={code:2.so-9},
-firstnumber=347]
-bl      0x10000748 <.snprintf>
-ld      r2,40(r1)
-addi    r0,r31,4280
+firstnumber=350]
 mr      r3,r0
 ld      r4,856(r2)
 bl      0x10000770 <.fopen>
@@ -1096,16 +951,6 @@ addi    r0,r31,4264
 mr      r3,r0
 bl      0x100007c0 <.localtime>
 \end{lstlisting}
-
-\newpage
-
-
-
-
-
-
-
-
 
 \newpage
 \chapter{Analisi degli impatti subiti}
@@ -1224,32 +1069,25 @@ Qualora rilevassero attività insolite, questi software reagiscono emettendo i c
 
 I rapporti della NCCIC forniscono una serie di contromisure ad hoc per i sistemi critici di una qualsiasi istituzione bancaria che desideri proteggersi dal malware FASTCash
 
+Secondo la NCCIC, per aumentare la sicurezza generale del sistema bancario, sarebbe opportuno adottare, almeno, una \textbf{forma di autenticazione a due fattori} secondo la quale si devono combinare almeno due forme di autenticazione appartenenti a distinte classi. Tali clLe varie classi di autenticazione sono:\footnote{\texttt{https://searchsecurity.techtarget.com/definition/four-factor-authentication-4FA}}
+\begin{description}
+\item[\textit{Something an user knows}] Questa classe comprende tutte le forme di autenticazione che richiedono un "\textit{qualcosa}" che l'utente deve conoscere per eseguire il login in un sistema, come, ad esempio, \textbf{usernames}, \textbf{ID}, \textbf{password} e \textbf{personal identification numbers} (\textbf{PIN}).
+\item[\textit{Something an user has}] Fanno parte di questa categoria i cosiddetti \textbf{one-time password tokens} (\textbf{OTP tokens}), tessere magnetiche, carte SIM
+\item[\textit{Something an user is}] In questa categoria fanno parte tutte le forme di autenticazione biometriche (scansione impronta digitale, retina ecc.)
+\item[\textit{Something where user is}] Quest'ultima classe comprende forme di autenticazione legate alla posizione dell'utente, come dati  GPS, indirizzi IP ecc.
+\end{description} 
+
+L'adozione di una forma di autenticazione a più fattori avrebbe indubbiamente reso più difficile l'accesso al sistema da parte dei criminali per l'installazione del malware impedendo a monte l'attacco. 
+
+richiedere l'autenticazione ad ogni operazione.
 
 
-Require Chip and Personal Identification Number Cryptogram Validation
-Implement chip and Personal Identification Number (PIN) requirements for debit cards.
-Validate card-generated authorization request cryptograms.
-Use issuer-generated authorization response cryptograms for response messages.
-Require card-generated authorization response cryptogram validation to verify legitimate response messages. 
-Isolate Payment System Infrastructure
-Require two-factor authentication before any user can access the switch application server.
-Verify that perimeter security controls prevent internet hosts from accessing the private network infrastructure servicing your payment switch application server.
-Verify that perimeter security controls prevent all hosts outside of authorized endpoints from accessing your system.
-Logically Segregate Operating Environments
-Use firewalls to divide operating environments into enclaves.
-Use Access Control Lists (ACLs) to permit or deny specific traffic from flowing between those enclaves.
-Give special considerations to enclaves holding sensitive information (e.g., card management systems) from enclaves requiring internet connectivity (e.g., email).
-Encrypt Data in Transit
-Secure all links to payment system engines with a certificate-based mechanism, such as mutual transport layer security, for all traffic external or internal to the organization.
-Limit the number of certificates used on the production server, and restrict access to those certificates.
-Monitor for Anomalous Behavior as Part of Layered Security
-Configure the switch application server to log transactions. Routinely audit transactions and system logs.
-Develop a baseline of expected software, users, and logons. Monitor switch application servers for unusual software installations, updates, account changes, or other activity outside of expected behavior.
-Develop a baseline of expected transaction participants, amounts, frequency, and timing. Monitor and flag anomalous transactions for suspected fraudulent activity.
-Recommendations for Organizations with ATM or Point-of-Sale Devices
-Implement chip and PIN requirements for debit cards.
-Require and verify message authentication codes on issuer financial request response messages.
-Perform authorization response cryptogram validation for Europay, Mastercard, and Visa transactions.
+
+
+
+
+
+
 
 \listoftables
 \lstlistoflistings
