@@ -814,67 +814,22 @@ Dal listato possiamo osservare un'interessante riferimento al percorso \texttt{/
 
 Benché naturalmente sprovvista di una procedura \texttt{main} trattandosi di una libreria, il file \texttt{2.so} assume un ruolo centrale per il corretto svolgimento dell'attacco in quanto, come già detto, esporta tutte le procedure necessarie per manipolare le transazioni elettroniche dei sistemi finanziari.
 
-I metodi esportati sono molto numerosi e una loro analisi esula dagli scopi della nostra trattazione; nonostante ciò, abbiamo voluto studiarne per dimostrare la capacità 
-della libreria di alterare i messaggi del protocollo ISO 8583.
+Come già detto i metodi esportati dalla libreria sono molto numerosi e vari, comprendendo, ad esempio, procedure di ispezione dei campi dei messaggi (\texttt{DL\_ISO8583\_MSG\_GetField\_Bin},\texttt{DL\_ISO8583\_MSG\_GetField\_Str}) o manipolazione (\texttt{DL\_ISO8583\_MSG\_SetField\_Bin}, \texttt{DL\_ISO8583\_MSG\_RemoveField}).
 
-\subsubsection{La procedura \texttt{DL\_ISO8583\_MSG\_GetField\_Bin}} 
+\paragraph{\texttt{DL\_ISO8583\_MSG\_SetField\_Bin}}
 
-Analizzando le prime righe di codice della procedura, riportate in parte nel listato \ref{code:2.so-4}, troviamo molte istruzioni \texttt{std} e \texttt{mr} utilizzanti i registri \texttt{r0} e \texttt{r31} come sorgenti per popolare un altro insieme di registri; perciò si può supporre che i registri \texttt{r0} e \texttt{r31} siano stati usati per contenere i dati passati come argomento alla funzione, presumibilmente l'indirizzo dell'area di memoria del messaggio da ispezionare e un riferimento al campo da estrarre (probabilmente una stringa o un identificatore numerico).
+La procedura denominata \texttt{DL\_ISO8583\_MSG\_SetField\_Bin} sia stata implementata dagli attaccanti poter alterare il contenuto di un particolare campo dei messaggi ISO 8583 scambiati fra i sistemi bancari.
 
-\begin{lstlisting}[
-frame=lines, 
-caption={Codice assembly estratto dal file \texttt{2.so}}, 
-label={code:2.so-4},
-firstnumber=347]
-std     r31,-8(r1)
-stdu    r1,-80(r1)
-mr      r31,r1
-mr      r0,r3
-std     r4,136(r31)
-std     r5,144(r31)
-std     r6,152(r31)
-stw     r0,128(r31)
-\end{lstlisting}
+Come mostrato nel frammento riportato nel listato \ref{code:2.so-1}, la manipolazione del messaggio incomincia con una fase di ispezione finalizzata alla ricerca dell'indirizzo di memoria corrispondente al campo del messaggio che s'intende modificare. 
 
-Un altro frammento della stessa procedura, riportato nel listato \ref{code:2.so-5}, mostra come l'ispezione del campo di interesse appartenente al messaggio ISO8583 avvenga per mezzo di un ciclo; notiamo infatti diverse istruzioni di \texttt{beq} (\textit{Branch On Equal}) aventi come argomento uno stesso indirizzo target e altrettante istruzioni \texttt{cmpdi} (\textit{Compare Doubleword Immediate}). 
-E' probabile che tale ciclo sia stato usato per attraversare il flusso di byte che compone un certo messaggio fino al raggiungimento dell'indirizzo corrispondente al campo di intessere che pare venga restituito alla funzione chiamante per mezzo di un'apposita istruzione \texttt{mr} coinvolgendo il registro \texttt{r3} come output (riga 14010).
+Come si può notare, l'ispezione del messaggio avviene per mezzo di un ciclo come dimostrano la presenza di diverse istruzioni di salto, come \texttt{beq} (\textit{Branch On Equal}) e \texttt{ble} (\textit{branch if Less or Equal}), e di comparazione, come \texttt{cmpdi} (\textit{Compare Doubleword Immediate}) o \texttt{cmplwi} (\textit{Compare Logical Word Immediate}).
+
+Una volta trovato l'indirizzo, l'operazione di scrittura vera e propria viene eseguita invocando dapprima la procedura \texttt{DL\_ISO8583\_MSG\_AllocField}, attraverso la quale viene allocata sufficiente memoria per contenere il nuovo campo, e utilizzando successivamente la procedura \texttt{memmove}, usata per copiare i dati nel messaggio.
 
 \begin{lstlisting}[
 frame=lines, 
-caption={Codice assembly estratto dal file \texttt{2.so}}, 
-label={code:2.so-5},
-firstnumber=347]
-cmpdi   cr7,r0,0
-beq     cr7,0x10002048
-lwz     r0,128(r31)
-cmplwi  cr7,r0,128
-bgt     cr7,0x10002048
-lwz     r0,128(r31)
-clrldi  r9,r0,32
-ld      r11,136(r31)
-addi    r0,r9,1
-rldicr  r0,r0,4,59
-add     r9,r0,r11
-addi    r9,r9,8
-ld      r0,0(r9)
-cmpdi   cr7,r0,0
-beq     cr7,0x10002048
-\end{lstlisting}
-
-\subsubsection{La procedura \texttt{DL\_ISO8583\_MSG\_GetField\_Str}}
-
-La funzione \texttt{DL\_ISO8583\_MSG\_GetField\_Str} è sostanzialmente identica a quella precedentemente descritta sebbene il nome suggerisca che tale funzione restituisca indubbiamente una stringa piuttosto che dati binari.
-
-\subsubsection{La procedura \texttt{DL\_ISO8583\_MSG\_SetField\_Bin}}
-
-L'esistenza di tale procedura dimostra che il malware non si limita solo all'ispezione dei messaggi ma che è in grado di manipolarne i contenuti. 
-Come mostrato nel listato \ref{code:2.so-5}, in modo simile alle altre procedure, il messaggio viene dapprima ispezionato per mezzo di istruzioni di salto incondizionato (b) e condizionato (ble) insieme ad opportune istruzioni di comparazione (cmplwi) fino al raggiungimento dell'indirizzo corrispondente al campo da modificare.
-Una successiva istruzione di salto alla procedura \texttt{DL\_ISO8583\_MSG\_AllocField}, attraverso la quale viene presumibilmente allocata un'opportuna area di memoria atta ad ospitare il campo con i nuovi valori, è seguita infine dall'invocazione della procedura \texttt{memmove} completando così l'operazione di modifica del messaggio.
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Codice assembly estratto dal file \texttt{2.so}}, 
-label={code:2.so-6},
+caption={Codice assembly estratto dal file \texttt{2.so} (1)}, 
+label={code:2.so-1},
 firstnumber=347]
 cmplwi  cr7,r0,128
 ble     cr7,0x10001b84
@@ -906,21 +861,7 @@ mr      r5,r0
 bl      0x1000034c <.memmove>
 \end{lstlisting}
 
-\subsubsection{La procedura \texttt{DL\_ISO8583\_MSG\_RemoveField}}
-
-La procedura \texttt{DL\_ISO8583\_MSG\_RemoveField} presenta a una struttura sostanzialmente identica a quelle viste finora. L'unica differenza degna di nota, come mostrato nel listato \ref{code:2.so-7}, riguarda l'eliminazione del campo specificato che avviene attraverso una chiamata alla procedura \texttt{free}.
-
-\begin{lstlisting}[
-frame=lines, 
-caption={Codice assembly estratto dal file \texttt{2.so}}, 
-label={code:2.so-7},
-firstnumber=347]
-mr      r3,r0
-bl      0x100002dc <.free>
-ld      r2,40(r1)
-\end{lstlisting}
-
-\paragraph{La procedura \texttt{out\_dump\_log}}\label{subsubsection:outDumpLog}
+\paragraph{\texttt{out\_dump\_log}}\label{subsubsection:outDumpLog}
 
 La procedura denominata \texttt{out\_dump\_log} è stata usata, come inequivocabilmente suggerisce il nome, per finalità legate alle attività di log del malware.
 
@@ -986,37 +927,37 @@ In questo capitolo forniremo una analisi dettaglia delle possibili contromisure 
 
 Come suggerito dalla totalità delle aziende di sicurezza informatica, al fine di contrastare in generale gli attacchi informatici, è indispensabile una \textbf{regolare attività di aggiornamento} di tutto il parco software.
 
-I ricercatori della Symantec hanno stabilito\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} che il mancato aggiornamento del sistema operativo AIX utilizzato dai payment switch server abbia compromesso la sicurezza del sistema poiché privata del supporto IBM relativamente alle patch di sicurezza le quali avrebbero potuto contrastare o, nel migliore delle ipotesi, impedire l'attacco informatico. 
+I ricercatori della Symantec hanno stabilito\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} che il mancato aggiornamento del sistema operativo AIX utilizzato dai payment switch server abbia compromesso la sicurezza del sistema poiché privata del supporto IBM relativamente alle patch di sicurezza, le quali avrebbero potuto contrastare o, nel migliore delle ipotesi, impedire l'attacco informatico. 
 
 \subsection{Analisi dell'efficacia degli aggiornamenti software}
 
-Sebbene una regolare attività di aggiornamento rappresenti un requisito imprescindibile per garantire standard di sicurezza elevati, riteniamo, in virtù delle caratteristiche tecniche del malware e della forma di attacco perpetrata dai cyber-criminali, tale attività poco efficace contro FASTCash.
+Sebbene una regolare attività di aggiornamento rappresenti un requisito imprescindibile per garantire standard di sicurezza elevati, riteniamo tale attività, in virtù delle caratteristiche tecniche del malware e della forma di attacco adottata, poco efficace contro FASTCash.
  
-Come abbiamo avuto modo di notare durante l'analisi, l'attacco effettuato dal malware FASTCash è per sua natura  molto difficile da contrastare attraverso gli aggiornamenti di sicurezza perché basa il proprio funzionamento sull'uso (sarebbe meglio dire \textit{abuso}) dei servizi essenziali offerti dal kernel del sistema operativo, in particolare la gestione dei processi/thread e i meccanismi di lettura e scrittura. 
+Riteniamo infatti che l'attacco effettuato da FASTCash sia molto difficile da rilevare e contrastare poiché basa il proprio funzionamento sull'(ab)uso dei servizi essenziali offerti dal kernel del sistema operativo, in particolare la gestione dei processi/thread e meccanismi di lettura e scrittura. 
 
-Non avendo sfruttato una vera e propria vulnerabilità del sistema operativo, come stabilito dai report della Symantec e della NCCIC, è giustificabile ritenere che l'aggiornamento dei software non avrebbe contrastato efficacemente il malware FASTCash. 
+Non avendo sfruttato una vera e propria vulnerabilità del sistema operativo, come stabilito dai report della Symantec e della NCCIC, è giustificabile ritenere che l'aggiornamento dei software, intesa come unica forma di sicurezza, non avrebbe contrastato efficacemente il malware FASTCash. 
 
-Supponendo anche rilascio di aggiornamenti di sicurezza che impongano restrizioni sull'uso delle \textit{syscall} per l'accesso ai servizi del SO, il malware FASTCash continuerebbe ad agire incontrastato essendo nascosto all'interno di un processo legittimo; oltre ad essere poco efficace, restrizioni sull'uso delle syscall potrebbero comportare il verificarsi di effetti collaterali legati al tentativo da parte di processi legittimi di accedere ai servizi del SO, comportando costi aggiuntivi per lo sviluppo di un software compatibile con le nuove impostazioni. 
+Benché si potrebbe pensare di rilasciare aggiornamenti di sicurezza che impongano restrizioni sull'uso delle \textit{syscall} per l'accesso ai servizi del SO, riteniamo che FASTCash continuerebbe ad agire incontrastato in quanto "nascosto" all'interno di un processo ritenuto legittimo; oltre ad essere una misura in generale poco efficace, politiche basate su restrizioni riguardanti l'uso delle \textit{syscall} potrebbero comportare il verificarsi di effetti collaterali legati al tentativo da parte di processi legittimi di accedere ai servizi del SO, comportando costi aggiuntivi per lo sviluppo di un software compatibile con le nuove impostazioni. 
 
 \section{Principio del privilegio minimo}
 
-In base a quanto detto finora, riteniamo che gli sforzi finalizzati a reagire a questa forma di attacchi dovrebbero essere rivolti nell'impedire ai cyber-criminali di poter intraprendere l'attacco fin dal principio. 
+Per contrastare FASTCash, riteniamo molto efficace concentrare gli sforzi nell'impedire l'avvio dell'attacco ai fin dal principio. 
 
-Le contromisure da adottare devono innanzitutto basarsi sul cosiddetto \textbf{principle of least privilege} (\textbf{PoLP}), in italiano \textbf{principio del privilegio minimo}, in cui si stabilisce che \textit{un opportuno sistema di sicurezza deve fornire un meccanismo che assicuri che ogni processo in esecuzione sul sistema sia in grado di accedere solo ed esclusivamente alle informazioni di cui necessità per garantire il suo corretto e legittimo funzionamento.}
+Le contromisure più efficaci devono innanzitutto basarsi sul cosiddetto \textbf{principle of least privilege} (\textbf{PoLP}), in italiano \textbf{principio del privilegio minimo}, in cui si stabilisce che \textit{un opportuno sistema di sicurezza deve fornire un meccanismo che assicuri che ogni processo in esecuzione sul sistema sia in grado di accedere solo ed esclusivamente alle informazioni di cui necessità per garantire il suo corretto e legittimo funzionamento.}
 
 \subsection{Le liste di controllo degli accessi}
 
 Una possibile applicazione del principio del privilegio minimo si basa sull'uso delle \textbf{access control list} (\textbf{ACL}), in italiano \textbf{lista di controllo degli accessi}, ovvero opportune strutture dati, generalmente tabelle, contenenti informazioni che specifichino quali utenti o gruppi hanno l'autorizzazione ad accedere alle risorse del sistema come file o risorse di rete.
 
-Poiché il file \texttt{Injection\_API\_executable\_e}, contenente l'\textit{injection tool} di FASTCash, richiede per funzionare un accesso in lettura/scrittura al pseudo-file system \texttt{/proc} per compiere l'attacco, riteniamo che l'uso delle ACL avrebbe potuto contrastare efficacemente FASTCash ad esempio impedendo a priori l'accesso alla suddetta directory.
+Poiché il file \texttt{Injection\_API\_executable\_e}, contenente l'\textit{injection tool} di FASTCash, richiede, per poter funzionare, l'accesso in lettura/scrittura al pseudo-file system \texttt{/proc}, l'introduzione di restrizioni sull'accesso a tale directory avrebbe potuto contrastare efficacemente FASTCash.
 
-Teoricamente, configurando opportunamente il sistema rendendo non eseguibili i file binari presenti nelle partizioni più vulnerabili, ad esempio utilizzando i flag \texttt{noexec} o \texttt{nosetuid} all'interno delle stringhe per i mount delle partizioni presenti nel file \texttt{/etc/fstab}, sarebbe stato possibile impedire a priori l'attacco rendendo impossibile l'avvio del processo malware.\footnote{\texttt{https://debian-administration.org/article/57/Making\_/tmp\_non-executable}}
+Teoricamente, configurando opportunamente il sistema rendendo non eseguibili i file binari presenti nelle partizioni più vulnerabili, utilizzando i flag \texttt{noexec} o \texttt{nosetuid} all'interno delle stringhe per i mount delle partizioni presenti nel file \texttt{/etc/fstab}, sarebbe stato possibile impedire a priori l'attacco rendendo impossibile l'avvio del processo malware.\footnote{\texttt{https://debian-administration.org/article/57/Making\_/tmp\_non-executable}}
 
-Ovviamente tale forma di sicurezza è priva di utilità qualora gli attaccanti riescano ad ottenere privilegi amministrativi attraverso tecniche di \textit{privilege escalation} che è necessario contrastare attraverso attività di aggiornamento e di configurazione del software.
+Ovviamente tale forma di sicurezza è priva di utilità qualora gli attaccanti riescano ad ottenere privilegi amministrativi attraverso tecniche di \textit{privilege escalation} che è necessario contrastare attraverso regolari attività di aggiornamento e forme di autenticazione resistenti.
 
 \subsection{Meccanismi di Whitelisting}
 
-Oltre a regolare le autorizzazioni di accesso alle risorse, un'altra efficace contromisura consiste nell'adottare meccanismi di \textbf{Whitelisting} che consentano l'accesso alle risorse del sistema \textit{solo ed esclusivamente} ai processi attendibili. 
+Oltre a regolare le autorizzazioni di accesso alle risorse, una contromisura ancora più efficace consiste nell'adottare meccanismi di \textbf{Whitelisting} che consentano l'accesso alle risorse del sistema \textit{solo ed esclusivamente} a processi attendibili. 
 
 I software di whitelisting basano il proprio funzionamento sulla creazione preliminare di una lista, denominata \textit{whitelist}, contenente gli identificati, solitamente stringhe hash, di tutti i file eseguibili autorizzati ad accedere a determinate risorse del sistema. Utilizzando un approccio denominato \textit{default deny}, che si contrappone all'approccio \textit{default allow} adottato dalla maggioranza degli antivirus, questi software impediscono l'esecuzione di ogni file eseguibile sconosciuto, ovvero non presente nella whitelist, a prescindere dal livello di privilegio dell'utente.
 
@@ -1036,7 +977,7 @@ Infatti l'uso del gestore grafico aumenta il numero di vulnerabilità sfruttabil
 
 E' indubbio che la rimozione del gestore grafico avrebbe impedito al malware di funzionare a dovere anche qualora avesse compiuto con successo la process injection.
 
-In base a quanto detto, riteniamo che all'interno di sistemi critici, al fine di aumentare la sicurezza del sistema, sia buona regola \textbf{installare ed eseguire solo ed esclusivamente le applicazioni indispensabili} per eseguire un certo servizio, disabilitando o rimuovendo ogni componente ridondate offerto dal sistema operativo. Così facendo si riducono il numero di vulnerabilità del sistema e si facilità le operazioni di monitoring del sistema essendo più piccola la quantità di processi in esecuzione nel sistema.
+In base a quanto detto, riteniamo che all'interno di sistemi critici, al fine di aumentare la sicurezza del sistema, sia buona regola \textbf{installare ed eseguire solo ed esclusivamente le applicazioni indispensabili} per eseguire un certo servizio, disabilitando o rimuovendo ogni componente ridondate offerto dal sistema operativo. \textit{Così facendo si riducono il numero di vulnerabilità del sistema e si facilità le operazioni di monitoring del sistema essendo più piccola la quantità di processi in esecuzione nel sistema.}
 
 \subsection{Gli Unikernel}
 
@@ -1049,13 +990,11 @@ con maggior velocità prima ancora di essere sfruttate da cyber-criminali.\footn
 
 \subsection{Ridondanza e virtualizzazione}
 
-Una contromisura che riteniamo efficace per aumentare la sicurezza del sistema e ridurre la probabilità di successo degli attaccanti è rappresentato dall'adozione di un certo grado di \textbf{ridondanza dei sistemi critici}. 
+Una contromisura che riteniamo efficace per aumentare la sicurezza del sistema e ridurre la probabilità di successo degli attaccanti è rappresentato dall'adozione di un certo grado di \textbf{ridondanza dei sistemi critici}.
 
-Riteniamo che, subordinando l'approvazione di una transazione finanziaria all'approvazione di più sistemi di payment switch indipendenti e coordinati attraverso algoritmi di consenso come Raft o Paxos, sarebbe stato possibile contrastare in modo molto efficace l'attività dei cyber-criminali costretti ad attaccare un numero maggiore di sistemi. 
+Riteniamo che, subordinando l'approvazione di una transazione finanziaria all'approvazione di più sistemi di payment switch \textbf{indipendenti}, opportunamente coordinati attraverso algoritmi di consenso (Raft, Paxos ecc.), sarebbe stato possibile contrastare in modo molto efficace l'attività dei cyber-criminali, costretti ad attaccare un numero maggiore di sistemi. 
 
-Ricorrendo a strumenti di virtualizzazione è possibile, oltre ad aumentare il grado di isolamento dei sistemi, aumentare il grado di ridondanza per le funzionalità critiche
-
-Se si utilizzano sistemi operativi minimali come gli unikernel, in virtù delle loro caratteristiche, è possible migliorare le prestazioni ottenute attraverso la virtualizzazione e aumentando maggiormente la sicurezza del sistema grazie i vantaggi in termini di sicurezza dell'uso degli unikernel
+La ridondanza dei sistemi può essere raggiunta anche attraverso tecniche di virtualizzazione, con vantaggi ben noti dal punto di vista della sicurezza grazie all'isolamento fra sistemi.
 
 \section{Monitoring}
 
@@ -1065,11 +1004,13 @@ Questi sofisticati software non si limitano semplicemente alla raccolta di dati 
 
 Qualora rilevassero attività insolite, questi software reagiscono emettendo i cosiddetti \textit{alert}, avvisi finalizzati ad informare il personale incaricato della sicurezza del sistema della presenza di attività insolite nel sistema, la quale potrà infine prende provvedimenti per contrastate le attività del malware.  
 
-\section{Altre contromisure specifiche}
+\section{Autenticazione}
 
-I rapporti della NCCIC forniscono una serie di contromisure ad hoc per i sistemi critici di una qualsiasi istituzione bancaria che desideri proteggersi dal malware FASTCash
+Sfortunatamente, le contromisure che abbiamo elencato finora sono vulnerabili a tecniche di \textit{privilege escalation}, attraverso le quali gli attaccanti possono aggirare i nostri sistemi di protezione, firewall e antivirus inclusi.
 
-Secondo la NCCIC, per aumentare la sicurezza generale del sistema bancario, sarebbe opportuno adottare, almeno, una \textbf{forma di autenticazione a due fattori} secondo la quale si devono combinare almeno due forme di autenticazione appartenenti a distinte classi. Tali clLe varie classi di autenticazione sono:\footnote{\texttt{https://searchsecurity.techtarget.com/definition/four-factor-authentication-4FA}}
+La riduzione della superficie di attacco e una regolare attività di aggiornamento costituiscono il presupposto per un sistema resistente a queste forme di attacco; tuttavia è indispensabile adottare opportune forme di autenticazione, capaci di proteggere adeguatamente gli account con privilegi elevati.
+
+Come ricordato anche nei rapporti NCCIC, sarebbe opportuno adottare \textit{almeno} una \textbf{forma di autenticazione a due fattori} secondo la quale si devono combinare almeno due forme di autenticazione appartenenti a distinte classi, riportate di seguito:\footnote{\texttt{https://searchsecurity.techtarget.com/definition/four-factor-authentication-4FA}}
 \begin{description}
 \item[\textit{Something an user knows}] Questa classe comprende tutte le forme di autenticazione che richiedono un "\textit{qualcosa}" che l'utente deve conoscere per eseguire il login in un sistema, come, ad esempio, \textbf{usernames}, \textbf{ID}, \textbf{password} e \textbf{personal identification numbers} (\textbf{PIN}).
 \item[\textit{Something an user has}] Fanno parte di questa categoria i cosiddetti \textbf{one-time password tokens} (\textbf{OTP tokens}), tessere magnetiche, carte SIM
@@ -1077,17 +1018,7 @@ Secondo la NCCIC, per aumentare la sicurezza generale del sistema bancario, sare
 \item[\textit{Something where user is}] Quest'ultima classe comprende forme di autenticazione legate alla posizione dell'utente, come dati  GPS, indirizzi IP ecc.
 \end{description} 
 
-L'adozione di una forma di autenticazione a più fattori avrebbe indubbiamente reso più difficile l'accesso al sistema da parte dei criminali per l'installazione del malware impedendo a monte l'attacco. 
-
-richiedere l'autenticazione ad ogni operazione.
-
-
-
-
-
-
-
-
+Sebbene l'adozione di forme di autenticazione complesse possa essere controproducente sia dal punto di vista della sicurezza che della produttività, forme di autenticazione che comprendono 3 o più fattori sono molto efficaci nel proteggere gli account.
 
 \listoftables
 \lstlistoflistings
