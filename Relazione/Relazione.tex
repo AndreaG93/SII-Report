@@ -928,6 +928,9 @@ A causa delle modalità di attacco intraprese dal malware, è facile rendersi co
 \end{itemize}
 
 \newpage
+\chapter{I sistemi vulnerabili all'attacco}
+
+\newpage
 \chapter{Contromisure}
 
 In questo capitolo forniremo una analisi dettaglia delle possibili contromisure capaci di contrastare le attività del malware FASTCash sia modo pro-attivo che reattivo.
@@ -1005,13 +1008,15 @@ Riteniamo che, subordinando l'approvazione di una transazione finanziaria all'ap
 
 La ridondanza dei sistemi può essere raggiunta anche attraverso tecniche di virtualizzazione, con vantaggi ben noti dal punto di vista della sicurezza grazie all'isolamento fra sistemi.
 
+Se il sistema presenta un certo grado di replicazione, sarebbe possibile, una volta rilevati i sistemi compromessi, arrestare quest'ultimi e provvedere al loro ripristino, continuando ad offrire i servizi ai propri clienti.
+
 \section{Monitoring}
 
 L'attività che più di tutte avrebbe contribuito a contrastare le azioni intraprese dal malware FASTCash è rappresentato dal \textit{monitoring}, ovvero la possibilità, offerta da una variegata suite di applicazioni, di poter eseguire il \textit{log di tutti gli eventi di interesse in un sistema} come, nel nostro caso specifico, l'esecuzione di transazioni finanziarie, con lo scopo di riuscire a rilevare le attività del malware e poter quindi reagire tempestivamente per limitare i danni.
 
 Questi sofisticati software non si limitano semplicemente alla raccolta di dati ma sono in grado, previa un'opportuna configurazione, di poter reagire qualora rilevassero attività sospette attraverso l'esecuzione regolare di attività di audit sui log raccolti. 
 
-Qualora rilevassero attività insolite, questi software reagiscono emettendo i cosiddetti \textit{alert}, avvisi finalizzati ad informare il personale incaricato della sicurezza del sistema della presenza di attività insolite nel sistema, la quale potrà infine prende provvedimenti per contrastate le attività del malware.  
+Qualora rilevassero attività insolite, questi software reagiscono emettendo i cosiddetti \textit{alert}, avvisi finalizzati ad informare il personale incaricato della sicurezza del sistema della presenza di attività insolite nel sistema, la quale potrà infine prende provvedimenti per contrastate le attività del malware.
 
 \section{Autenticazione}
 
@@ -1028,6 +1033,16 @@ Come ricordato anche nei rapporti NCCIC, sarebbe opportuno adottare \textit{alme
 \end{description} 
 
 Sebbene l'adozione di forme di autenticazione complesse possa essere controproducente sia dal punto di vista della sicurezza che della produttività, forme di autenticazione che comprendono 3 o più fattori sono molto efficaci nel proteggere gli account.
+
+\section{Ripristino con le immagini di sistema (snapshot di sistema)}
+
+Come abbiamo avuto modo di notare, il malware è capace di compromettere in modo irreversibile i processi del sistema rendendo impossibile l'erogazione dei servizi bancari.
+
+Qualora si riconosca che i nostri sistemi sono stati compromessi da FASTCash, sebbene ad oggi la maggior parte dei software antivirus sono in grado di riconoscere FASTCash e contrastare la sua attività, arrestando tutti i processi ad esso associati, un modo per riottenere la piena operatività dei sistemi  corrotti in tempi rapidi, anche nel caso in cui i software di protezione risultino inefficaci, è ricorrere alle \textbf{snapshot di sistema} attraverso cui eseguire un ripristino completo da un backup precedente.
+
+Bisogna prestare attenzione al fatto che ripristinare un sistema con immagini di backup sono utili solo per riottenere l'operatività; il sistema, infatti, continua ad essere vulnerabile. In tal caso, dopo aver ripristinato il sistema, sarebbe auspicabile eseguire immediatamente operazioni di aggiornamento di tutto il parco software e delle politiche di sicurezza, per poi eseguire l'aggiornamento dello snapshot e solo alla fine avviare i servizi destinati all'utenza.
+
+In generale è molto importarne eseguire una regolare attività di configurazione ed aggiornamento istantanee di sistema essendo queste molto utili in situazioni di emergenza per recuperare le attività dei sistemi compromessi.
 
 \listoftables
 \lstlistoflistings
