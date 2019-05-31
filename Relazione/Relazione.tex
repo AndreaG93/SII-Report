@@ -132,6 +132,44 @@ Tra questi file, di cui riportiamo una lista completa in \ref{tab:MalwareFileLis
 \end{table}
 
 \newpage
+\section{Manipolazioni dei messaggi ISO 8583}
+
+L'ISO 8583 è uno standard internazionale di messaggio nell'ambito delle transazioni finanziarie, utilizzato da molte reti finanziarie, tra cui Visa e MasterCard e dalla quasi totalità degli enti finanziari mondiali.
+
+Dal punto di vista strutturale, un messaggio ISO 8583 è composta da 3 campi:
+
+\begin{description}
+\item[Message Type Identifier (MTI)] Identifica la tipologia del messaggio ed è composto da un insieme di 4 valori dove:
+
+\begin{itemize}
+\item Il primo indica la versione del protocollo il quale, qualora assumesse, ad esempio, il valore 0, denota la versione del 1987 del protocollo.
+\item Il secondo è utilizzato per indicare la classe del messaggio; un valore pari a 2 indica un messaggio di tipo finanziario.
+\item Il terzo indica, invece, la funzione svolta dal messaggio; un valore pari a 0 è usato per rappresentare una richiesta mentre, se pari ad 1, una risposta.
+\item Infine, il quarto è usato per identificare il soggetto della transazione; il valore 0 indica un generico acquirente.
+\end{itemize}
+
+\item[Bitmap] Rappresenta un campo composto da 64 bit (o 16 caratteri esadecimali) in cui ogni bit posto a 1 denota la validità delle informazioni presenti nel campo \textit{Data} del messaggio; per esempio, qualora il bit n. 2 assumesse valore pari ad 1, il campo \textbf{PAN} (\textit{Primary Account Number}) risulta essere presente nel payload del messaggio.
+
+\item[Data] Rappresenta il payload contenente tutte le informazioni relative alla transazione. Può contenere fino a 192 possibili elementi (128 nella versione del 1987) ognuno dei quali può contenere dati numerici, alfanumerici o binari di lunghezza fissa o variabile.
+\end{description}
+
+\subsection{Manipolazione}
+
+Durante l'attacco, il malware interagisce esclusivamente con i messaggi dove:
+\begin{enumerate}
+\item Il MTI del messaggio contiene il valore \texttt{0200}, ossia \textit{una richiesta di prelievo di denaro d parte dell'acquirente}.
+\item il valore del \textit{Point of service entry modes}, indicante le modalità di accesso al sistema bancario, sia pari a 90, valore che indica l'uso di una carta di credito.
+\end{enumerate}
+
+Una volta intercettato un messaggio con tali caratteristiche, il malware estrae il valore corrispondete al campo PAN e lo confronta con un insieme di valori PAN posseduti dagli attaccanti. 
+
+Tale verifica avviene per mezzo di una funzione contenuta all'interno delle librerie introdotte nel sistema; la funzione \texttt{CheckPan()}\footnote{\texttt{https://security.arizona.edu/content/ta18-275a-hidden-cobra-–-fastcash-campaign}} \footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}}.
+
+Qualora la verifica abbia avuto esito positivo, ovvero il PAN estratto dal messaggio corrisponde ad uno dei PAN in possesso agli attaccanti, il messaggio viene manipolato invocando la funzione \texttt{GenerateResponseTransaction1}, la quale modifica il terzo valore del campo MIT del messaggio impostandolo ad 1. Infine, il messaggio, con valore MIT pari ad \texttt{0210}, viene inoltrato all'ATM che rilascerà i contanti ai criminali, completando così l'attacco.
+
+In tutti gli altri casi, i messaggi vengono rilasciati e inoltrati al sistema bancario seguendo il normale l'iter.
+
+\newpage
 \chapter{Analisi dell'attacco di Process Injection}
 
 \section{Introduzione}
@@ -911,6 +949,23 @@ L'introduzione di codice maligno all'interno dei sistema ha avuto molteplici con
 \item Danni economico-finanziari dovuti alle operazioni di ripristino del sistema, aggiornamento dei software e di tutti i meccanismi di sicurezza.
 \end{itemize}
 
+Forniamo ora alcune cifre; secondo la stampa internazionale, il gruppo Lazarus è riuscito ad impossessarsi di circa \textbf{200 milioni di dollari} a danno di vari istituti bancari in ben 23 diverse nazioni asiatiche ed africane.\footnote{\texttt{https://www.bankinfosecurity.com/lazarus-fastcash-bank-hackers-wield-aix-trojan-a-11694}}
+
+Valutare l'impatto economico e fornire una stima affidabile dei danni subiti è tuttavia impossibile in quanto non sono stati pubblicati report che valutassero la situazione economica degli istituti bancari successivamente all'attacco FASTCash. 
+
+Pertanto, al fine di elaborare una stima abbastanza affidabile degli oneri finanziari a carico delle banche colpite da FASTCash, abbiamo supposto che:
+
+\begin{itemize}
+\item Ogni banca possieda un proprio centro di calcolo composto da non meno di 25 rack capaci di ospitare almeno 25 server ciascuno. Inoltre ogni server è equipaggiato con non meno di 2 processori da 12 core ciascuno.\footnote{Dal momento che \textbf{non} è nota la configurazione hardware dei server bancari colpiti da FASTCash, queste assunzioni sono basate sulle caratteristiche tecniche dei prodotti IBM di fascia media per il mercato enterprice. I prodotti presi come riferimento sono lo \textbf{IBM Power System L922} (server) e lo \textbf{IBM S2 25U Standard Rack} (rack) \\ \texttt{ https://www-01.ibm.com/common/ssi/rep\_ca/5/872/ENUSAG10-0065/ENUSAG10-0065.PDF} \\ \texttt{https://www.ibm.com/downloads/cas/GLZO1XOY}}
+\item Ogni banca colpita da FASTCash provveda all'aggiornamento di tutti i sistemi equipaggiati con vecchie versioni di AIX. Per eseguire l'upgrade, abbiamo considerato il costo d'acquisto della licenza di \textbf{IBM AIX 7.2 Enterprise Edition} pari a circa 1000 dollari per core.\footnote{\texttt{https://www.theregister.co.uk/2010/04/15/ibm\_aix\_6\_1\_express/} (I prezzi riportati nella fonte sono relativi alla versione 6.1 di AIX. Abbiamo assunto che i costi d'acquisto delle varie versioni di AIZ siano grossomodo dello stesso ordine di grandezza.)}
+\item Il costo da sostenere per il risarcimento di tutti i clienti colpiti da FASTCash sia equivalente all'ammontare prelevato dagli attaccanti.
+\item Il costo da sostenere per ogni tecnico informatico qualificato, indispensabili per l'esecuzione dei necessari interventi di manutenzione straordinaria per l'aggiornamento e configurazione dei sistemi colpiti, sia pari a circa 9500 dollari. Abbiamo supposto team da almeno 7 persone per banca (ossia un addetto ogni 3 rack).\footnote{\texttt{http://www.leverup.it/download/PRESENTAZIONI\%20LEVER\%20UP/03\_03\_2\_Listino\%20SGA\%20REV\%203.pdf}}
+\end{itemize}
+
+In base a tali assunzioni, è possibile stimare che la somma totale dei danni subiti da una banca colpita dal malware FASTCash sia pari a circa \textbf{25.379.000 dollari}.
+
+E' importante ricordare che tale stima è approssimativa poiché non abbiamo considerato i danni dovuti ai mancati introiti causati sia dall'interruzione dei servizi che dalla perdita di potenziali clienti in seguito al calo di reputazione delle banche colpite.
+
 \section{Impatti sulla reputazione}
 
 La diffusione della notizia riguardante l'avvenuto attacco attraverso vari canali di informazione ha indubbiamente causato un danno alla reputazione dell'istituzione bancaria per via degli scarsi sforzi rivolti alla sicurezza informatica, esponendo a gravi rischi i propri clienti sia dal punto di vista economico che di privacy, benché, dalle analisi, non risulta che il malware FASTCash sia stato concepito come spyware.
@@ -1034,15 +1089,17 @@ Come ricordato anche nei rapporti NCCIC, sarebbe opportuno adottare \textit{alme
 
 Sebbene l'adozione di forme di autenticazione complesse possa essere controproducente sia dal punto di vista della sicurezza che della produttività, forme di autenticazione che comprendono 3 o più fattori sono molto efficaci nel proteggere gli account.
 
-\section{Ripristino con le immagini (snapshot) di sistema}
+\section{Ripristino con le istantanee (snapshot) di sistema}
 
 Come abbiamo avuto modo di notare, il malware è capace di compromettere in modo irreversibile i processi del sistema rendendo impossibile l'erogazione dei servizi bancari.
 
-Qualora si riconosca che i nostri sistemi sono stati compromessi da FASTCash, sebbene ad oggi la maggior parte dei software antivirus sono in grado di riconoscere FASTCash e contrastare la sua attività, arrestando tutti i processi ad esso associati, un modo per riottenere la piena operatività dei sistemi  corrotti in tempi rapidi, anche nel caso in cui i software di protezione risultino inefficaci, è ricorrere alle \textbf{snapshot di sistema} attraverso cui eseguire un ripristino completo da un backup precedente.
+Qualora si riconosca la presenza di FASTCash nel sistema attraverso le attività di monitoraggio, al fine di riottenere la piena operatività dei sistemi corrotti, qualora i sistemi antivirus non siano in grado di contrastare l'attività del malware, è sufficiente eseguire un'operazione di ripristino completo del sistema sfruttando una sua \textbf{snapshot} realizzata precedentemente. 
 
-Bisogna prestare attenzione al fatto che ripristinare un sistema con immagini di backup sono utili solo per riottenere l'operatività; il sistema, infatti, continua ad essere vulnerabile. In tal caso, dopo aver ripristinato il sistema, sarebbe auspicabile eseguire immediatamente operazioni di aggiornamento di tutto il parco software e delle politiche di sicurezza, per poi eseguire l'aggiornamento dello snapshot e solo alla fine avviare i servizi destinati all'utenza.
+E' importante sottolineare che ripristinare un sistema con immagini di backup è utile esclusivamente per ristabilirne l'operatività; il sistema, dopo l'operazione, continua ad essere vulnerabile.
 
-In generale è molto importarne eseguire una regolare attività di configurazione ed aggiornamento istantanee di sistema essendo queste molto utili in situazioni di emergenza per recuperare le attività dei sistemi compromessi.
+Per questo motivo, dopo ogni operazione di ripristino, è doveroso eseguire anche le opportune procedure di aggiornamento, ricordandosi di aggiornare anche le istantanee di sistema.
+
+In generale, solo una regolare attività di configurazione ed aggiornamento dei backup del sistema è in grado di garantire il recupero dell'operatività dei sistemi colpiti in tempi rapidi.
 
 \listoftables
 \lstlistoflistings
