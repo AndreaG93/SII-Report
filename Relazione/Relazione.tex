@@ -72,69 +72,13 @@ breaklines=true
 \tableofcontents
 \newpage
 
-\chapter{Descrizione dell'attacco}
+\chapter{Introduzione}
 
-Lo scopo della presente relazione è
+Lo scopo della presente relazione è quella di fornire un'analisi il più possibile dettagliata del malware denominato \textbf{FASTCash}\footnote{\texttt{https://www.symantec.com/security-center/writeup/2018-110615-2942-99}} la cui paternità, secondo le analisi forensi eseguite da varie aziende ed agenzie, tra cui la \textbf{Symantec}, \textbf{Kaspersky} e la \textbf{NCCIC}\footnote{Stiamo parlando della "\textit{National Cybersecurity and Communications Integration Center}" un'agenzia federale americana specializzata in sicurezza informatica facente parte della CISA (\textit{Cybersecurity and Infrastructure Security Agency}) \\ Per ulteriori informazioni in merito si veda: \texttt{https://www.us-cert.gov/about-us} }, è attribuita ad un gruppo di cyber-criminali conosciuto come \textit{Lazarus Group}\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} \footnote{\texttt{https://www.us-cert.gov/ncas/alerts/TA18-275A}}, di cui forniremo una descrizione più dettagliata nella sezione \ref{lazarausgrpo}.
 
-Il 2 ottobre 2018 fu emesso un avviso da US-CERT, il Dipartimento della Sicurezza Nazionale, il Dipartimento del Tesoro e l'FBI. Secondo tale avviso, Hidden Cobra (il nome in codice del governo degli Stati Uniti per il gruppo Lazarus) ha condotto attacchi "FASTCash", rubando denaro dai Bancomat (ATM) da banche in Asia e Africa almeno dal 2016. 
+La scoperta del malware risale precisamente al \textbf{2 ottobre 2018} giorno in cui, grazie al lavoro congiunto effettuato da varie agenzie ed istituzioni americane, tra cui \textbf{FBI}, \textbf{Dipartimento del Tesoro Americano} e la \textbf{DHS} (\textit{Department of Homeland Security})\footnote{\textit{Ibidem}}, venne pubblicato sul sito del CISA l'avviso \texttt{TA18-275A}, secondo la quale esponenti del gruppo Lazarus avevano condotto con successo una serie di attacchi, denominati dalla CISA come \textit{FASTCash}, per il\textbf{ prelievo fraudolento di denaro contante dagli ATM} (\textit{Automated Teller Machines}) di varie banche in oltre 30 paesi diversi sparsi fra Asia e Africa \footnote{\textit{Ibidem}}. E' importante sottolineare che, sebbene l'esistenza del malware sia stata resa di dominio pubblico solo allora, la CISA ha dichiarato che il gruppo Lazarus ha condotto attacchi di tipo FASTCash già a partire dal 2016.
 
-Seguendo il rapporto US-CERT, la ricerca di Symantec ha scoperto il componente chiave utilizzato nella recente ondata di attacchi finanziari del gruppo. L'operazione, nota come "FASTCash", ha permesso a Lazarus di svuotare fraudolentemente bancomat di denaro contante. Per effettuare prelievi fraudolenti, Lazarus per prima cosa ha violato le reti delle banche interessate e ha compromesso i server delle applicazioni switch che gestiscono le transazioni ATM. 
-
-Una volta che questi server sono stati compromessi, è stato distribuito un malware precedentemente sconosciuto (Trojan.Fastcash). Questo malware intercetta le richieste fraudolente di prelievo di denaro di Lazarus e invia risposte di approvazione falsa, consentendo agli aggressori di rubare denaro agli sportelli automatici. 
-Secondo la segnalazione del governo degli Stati Uniti, un incidente nel 2017 ha visto il prelievo di contanti simultaneamente da distributori automatici in oltre 30 paesi diversi. In un altro grave incidente del 2018, sono stati prelevati contanti dagli sportelli automatici in 23 paesi diversi. Ad oggi, si stima che l'operazione Lazarus FASTCash abbia rubato decine di milioni di dollari. 
-
-Inizialmente, gli hacker della HIDDEN COBRA hanno preso di mira i dipendenti della Banca utilizzando la campagna di spear phishing per compromettere la rete bancaria, ma un vettore di infezione esatto di questa campagna è ancora sconosciuto.  
-
-Al fine di consentire i prelievi fraudolenti dagli sportelli automatici, gli aggressori hanno iniettato un eseguibile malizioso Advanced Interactive eXecutive (AIX) in un processo legittimo e in esecuzione sul server delle applicazioni switch di una rete di transazioni finanziarie, in questo caso transazioni ATM di gestione della rete. L'eseguibile dannoso contiene la logica per costruire messaggi ISO 8583 fraudolenti. ISO 8583 è lo standard per la messaggistica delle transazioni finanziarie. Lo scopo di questo eseguibile non è stato documentato in precedenza. In passato si riteneva che gli aggressori usassero script per manipolare software legittimo sul server per abilitare l'attività fraudolenta. 
-Tuttavia, l'analisi di Symantec ha rilevato che questo eseguibile è in effetti un malware, che abbiamo chiamato Trojan.Fastcash.  
-Trojan.Fastcash ha due funzioni principali, la prima è quella di monitorare i messaggi in arrivo e intercettare le richieste di transazioni fraudolente generate dagli aggressori per impedire loro di raggiungere l'applicazione switch che elabora le transazioni. La seconda funzione è la logica che genera una delle tre risposte fraudolente alle richieste di transazioni fraudolente. 
-
-Una volta installato sul server, Trojan.Fastcash legge tutto il traffico di rete in entrata, scansionando i messaggi di richiesta ISO 8583 in arrivo. Legge il numero di conto primario (PAN) su tutti i messaggi e, se trova qualsiasi richiesta contenente un numero PAN usato dagli aggressori, il malware tenta di modificare questi messaggi. Come vengono modificati i messaggi dipende da ciascuna organizzazione della vittima. Trasmette quindi un falso messaggio di risposta che approva le richieste di prelievo fraudolente. Il risultato è che i tentativi di prelevare denaro tramite un bancomat dagli attaccanti di Lazarus saranno approvati. 
-Ecco un esempio della logica di risposta utilizzata da Trojan.Fastcash per generare risposte false. Questo particolare esempio ha la logica per costruire una delle tre risposte false in base alla richiesta di attacco in arrivo: 
- 
-Per l'indicatore del tipo di messaggio == 200 (Transazione ATM) e la modalità di accesso al punto di servizio inizia con 90 (solo striscia magnetica): 
-Se il codice di elaborazione inizia con 3 (richiesta di saldo): 
-Codice di risposta = 00 (approvato) 
-Altrimenti, se il numero di conto primario è nella lista nera degli autori di attacchi: 
-Codice di risposta = 55 (PIN non valido) 
-Tutti gli altri codici di elaborazione (con PAN non inseriti nella lista nera): 
-Codice di risposta = 00 (approvato) 
- 
-In questo caso, sembra che gli aggressori abbiano incorporato la capacità di negare selettivamente le transazioni in base alla loro lista nera dei numeri di conto. Tuttavia, la capacità non è stata implementata in questo esempio e il controllo per la lista nera restituisce sempre "False". 
- 
-Symantec ha trovato diverse varianti di Trojan.Fastcash, ognuna delle quali utilizza una logica di risposta diversa. Riteniamo che ogni variante sia adattata per una particolare rete di elaborazione delle transazioni e quindi abbia una logica di risposta personalizzata. 
- 
-I numeri PAN usati per eseguire gli attacchi FASTCash riguardano account reali. Secondo il rapporto US-CERT, la maggior parte degli account utilizzati per avviare le transazioni aveva un'attività minima dell'account o dei saldi pari a zero.  
-Il modo in cui gli aggressori acquisiscono il controllo di questi account non è chiaro. È possibile che gli aggressori stiano aprendo i conti da soli e facendo richieste di prelievo con carte emesse per tali account. Un'altra possibilità è che gli attaccanti stiano usando le carte rubate per eseguire gli attacchi. 
- 
-In tutti gli attacchi FASTCash segnalati fino ad oggi, gli aggressori hanno compromesso i server delle applicazioni bancarie che eseguono versioni non supportate del sistema operativo AIX, oltre la fine delle loro date di supporto del service pack. 
- 
-\section{Il Gruppo Lazarus}
- 
-Il \textit{Lazarus Group}, conosciuto anche come \textit{HIDDEN COBRA} o \textit{Guardians of Peace}, è un gruppo di cyber-criminali, composto da un numero imprecisato di individui, ritenuto responsabile di una serie di attacchi informatici perpetrati a danno di istituti bancari, software house e casino oltre ad una serie di attività legate al mining di cripto-valute.\footnote{\texttt{https://securelist.com/lazarus-under-the-hood/77908/}}
-
-La paternità degli attacchi effettuati dal gruppo è stata dimostrata da Kaspersky Lab, nota azienda attiva nel campo della sicurezza informatica, la quale, attraverso un'analisi forense molto dettagliata sulle attività del gruppo in cui è stato eseguito un confronto minuzioso dei codici assembly estratti dai malware utilizzati in diversi attacchi, ha dimostrato l'uso di uno stesso \textit{core base} attribuito al gruppo stesso.\footnote{\texttt{https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/07180244/Lazarus\_Under\_The\_Hood\_PDF\_final.pdf}}
-
-La NCCIC, Kaspersky Lab e la Symantec attribuiscono al gruppo Lazarus la responsabilità di attacchi molto famosi, tra cui spiccano per importanza ed entità il furto di dati a danno della Sony Pictures Entertainment, il furto di denaro dalla Banca Centrale del Bangladesh nonché dei danni provati dal ben noto ransomware WannaCry\footnote{\texttt{https://www.theguardian.com/technology/2017/may/15/wannacry-ransomware-north-korea-lazarus-group}}. Per essere precisi, la NCCIC la ritiene colpevole di ben 17 attacchi, tra cui ovviamente FASTCash, sebbene la certezza di tale numero possa essere messa in discussione dal fatto che il governo statunitense attribuisca alla HIDDEN COBRA la quasi totalità degli attacchi provenienti dalla nord-corea.\footnote{\texttt{https://www.us-cert.gov/HIDDEN-COBRA-North-Korean-Malicious-Cyber-Activity}}.
-
-La presunta origine nordcoreana del gruppo è stata dimostrata, ancora una volta, da Kaspersky; l'azienda, attraverso un'analisi di vari server C2\footnote{\textit{Command-and-control}, indicato a volte con la sigla C\&C o C2, server usati dagli attaccanti per mantenere le comunicazioni con i sistemi compromessi}, localizzati in Europa e usati dal gruppo per le loro attività criminali, ha rilevato l'uso di un piccolo intervallo di indirizzi IP di origine nordcoreana da cui si presuppone avessero origine tutte le richieste di connessione verso i server C2, sebbene queste avvenissero per mezzo di server proxy e connessioni VPN.\footnote{\texttt{https://securelist.com/lazarus-under-the-hood/77908/}}
-
-
-\chapter{Descrizione dell'attacco}
-
-
-Secondo il rapporto stilato dalla NCCIC\footnote{Cfr. \texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}, il malware denominato \textbf{FASTCash} è composto da una serie \textbf{12 file} i quali, attraverso tecniche di \textbf{code injection} tali da alterare il normale comportamento di uno o più processi legittimi, che hanno consentito l'ispezione e alterazione dei dati trasmessi durante transazioni basate su \textbf{protocollo ISO 8583}, hanno permesso agli attaccanti di eseguire operazioni di prelievo fraudolento di denaro dagli ATM.
-Tra questi file, di cui riportiamo una lista completa in \ref{tab:MalwareFileList}, spiccano per importanza:
-
-\begin{itemize}
-\item Tre file progettati per essere eseguibili su sistemi operativi AIX, uno dei quali responsabile dell'esecuzione della code injection contro i processi operanti sul server bersaglio. Due di essi sono stati analizzati nelle sezioni \ref{sec:2.so} e \ref{sec:InjectionAPIExecutableE}
-
-\item Due versioni di un malware capace di modificare le impostazioni del firewall.
-
-\item Un \textbf{trojan} capace di consentire \textbf{accesso remoto completo} al sistema bersaglio.
-\end{itemize}
-
-
+Per essere precisi, come si evince dal rapporto \texttt{AR18-275A} pubblicato dalla CISA\footnote{Cfr. \texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}, il malware FASTCash è in realtà composto da un'insieme di \textbf{12 file}, ognuno dei quali avente un ruolo e uno scopo specifico. Abbiamo riportato per comodità una lista completa dei file di FASTCash in \ref{tab:MalwareFileList}; tre di essi sono stati analizzati in dettaglio nel capitolo \ref{processoinjection}.
 
 \begin{table}[h!]
  
@@ -180,7 +124,25 @@ Tra questi file, di cui riportiamo una lista completa in \ref{tab:MalwareFileLis
   
 \end{table}
 
-\newpage
+\section{Descrizione generale dell'attacco}
+
+Per effettuare con successo un attacco FASTCash, i cyber-criminali violavano dapprima le reti delle banche bersaglio allo scopo di ottenere accesso completo ai cosiddetti \textbf{server di payment switch} (\textit{switch application servers}), i server responsabili della gestione delle transazioni finanziare tra gli ATM e il sistema informatico principale della banca.\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}}
+
+Si presuppone che gli attaccanti, al fine di ottenere accesso alle suddette reti, abbiano adottato tecniche di \textbf{spear-phishing}\footnote{\texttt{https://securityaffairs.co/wordpress/76798/hacking/fastcash-hidden-cobra-attacks.html}}, ossia una serie di attacchi di \textit{phishing} che, a differenza di quelli più comuni, hanno come bersaglio individui \textit{specifici}, vale a dire persone di cui gli attaccanti potevano conoscere diverse informazioni (nome, sesso, ruolo, abitudini, ecc.) al fine di aumentare le probabilità di successo \footnote{\texttt{https://www.kaspersky.it/resource-center/definitions/spear-phishing}}. 
+
+Il vero scopo dei suddetti attacchi di phishing riguardava l'installazione, nel computer della vittima, del malware denominato \texttt{5cfa1c2cb430bec721063e3e2d144feb} (la stringa \textbf{MD5} ad esso associata) il cui scopo, secondo le analisi condotte dalla NCCIC, era colpire i sistemi operativi Windows dei dipendenti della banca in modo tale da consentire agli attaccanti l'accesso in remoto al sistema bancario\footnote{\texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}.
+
+Per conseguire tale scopo, il suddetto malware eseguiva una serie di operazioni tra cui:
+
+\begin{itemize}
+\item Alterare le impostazioni di \textit{Windows Firewall} allo scopo di consentire l'instaurazione di connessioni TCP verso la macchina dall'esterno.\footnote{\textit{Ibidem}}
+\item Caricare in memoria uno speciale \textbf{modulo proxy} che, secondo la NCCIC, oltre ad essere stato progettato ad agire come una \textit{command-line utility}, forzava la macchina ad agire come se fosse un proxy server, consentendo agli attaccanti di interagire in remoto con il malware.\footnote{\textit{Ibidem}}
+\end{itemize}
+
+Le analisi condotte dalla NCCIC hanno dimostrato che gli attaccanti, per mezzo del suddetto malware, sono riusciti a trasferire un \textbf{injection tool} all'interno dei sistemi di payment switch al fine di introdurre codice malevolo all'interno di uno o più processi legittimi. 
+
+Il codice introdotto si è rivelato capace di interagire con i messaggi basati sul \textbf{protocollo ISO 8583} scambiati tra gli ATM e il sistema informatico bancario centrale, consentendo agli aggressori di prelevare denaro agli sportelli automatici.
+
 \section{Manipolazioni dei messaggi ISO 8583}
 
 L'ISO 8583 è uno standard internazionale di messaggio nell'ambito delle transazioni finanziarie, utilizzato da molte reti finanziarie, tra cui Visa e MasterCard e dalla quasi totalità degli enti finanziari mondiali.
@@ -206,7 +168,7 @@ Dal punto di vista strutturale, un messaggio ISO 8583 è composta da 3 campi:
 
 Durante l'attacco, il malware interagisce esclusivamente con i messaggi dove:
 \begin{enumerate}
-\item Il MTI del messaggio contiene il valore \texttt{0200}, ossia \textit{una richiesta di prelievo di denaro d parte dell'acquirente}.
+\item Il MTI del messaggio contiene il valore \texttt{0200}, ossia \textit{una richiesta di prelievo di denaro da parte dell'acquirente}.
 \item il valore del \textit{Point of service entry modes}, indicante le modalità di accesso al sistema bancario, sia pari a 90, valore che indica l'uso di una carta di credito.
 \end{enumerate}
 
@@ -218,8 +180,25 @@ Qualora la verifica abbia avuto esito positivo, ovvero il PAN estratto dal messa
 
 In tutti gli altri casi, i messaggi vengono rilasciati e inoltrati al sistema bancario seguendo il normale l'iter.
 
+\section{Gruppo Lazarus}\label{lazarausgrpo}
+ 
+Il \textit{Lazarus Group}, conosciuto anche come \textit{HIDDEN COBRA} o \textit{Guardians of Peace}, è un gruppo di cyber-criminali, composto da un numero imprecisato di individui, ritenuto responsabile di una serie di attacchi informatici perpetrati a danno di istituti bancari, software house e casino oltre ad una serie di attività legate al mining di cripto-valute.\footnote{\texttt{https://securelist.com/lazarus-under-the-hood/77908/}}
+
+La paternità degli attacchi effettuati dal gruppo è stata dimostrata da Kaspersky Lab, nota azienda attiva nel campo della sicurezza informatica, la quale, attraverso un'analisi forense molto dettagliata sulle attività del gruppo in cui è stato eseguito un confronto minuzioso dei codici assembly estratti dai malware utilizzati in diversi attacchi, ha dimostrato l'uso di uno stesso \textit{core base} attribuito al gruppo stesso.\footnote{\texttt{https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/07180244/Lazarus\_Under\_The\_Hood\_PDF\_final.pdf}}
+
+La NCCIC, Kaspersky Lab e la Symantec attribuiscono al gruppo Lazarus la responsabilità di attacchi molto famosi, tra cui spiccano per importanza ed entità il furto di dati a danno della Sony Pictures Entertainment, il furto di denaro dalla Banca Centrale del Bangladesh nonché dei danni provati dal ben noto ransomware WannaCry\footnote{\texttt{https://www.theguardian.com/technology/2017/may/15/wannacry-ransomware-north-korea-lazarus-group}}. 
+
+Per essere precisi, la NCCIC la ritiene colpevole di ben 17 attacchi, tra cui ovviamente FASTCash, sebbene la certezza di tale numero possa essere messa in discussione dal fatto che il governo statunitense attribuisca alla HIDDEN COBRA la quasi totalità degli attacchi provenienti dalla nord-corea.\footnote{\texttt{https://www.us-cert.gov/HIDDEN-COBRA-North-Korean-Malicious-Cyber-Activity}}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{./img-lazarus-world-attack.png} 
+\end{figure}
+
+La presunta origine nordcoreana del gruppo è stata dimostrata, ancora una volta, da Kaspersky; l'azienda, attraverso un'analisi di vari server C2\footnote{\textit{Command-and-control}, indicato a volte con la sigla C\&C o C2, server usati dagli attaccanti per mantenere le comunicazioni con i sistemi compromessi}, localizzati in Europa e usati dal gruppo per le loro attività criminali, ha rilevato l'uso di un piccolo intervallo di indirizzi IP di origine nordcoreana da cui si presuppone avessero origine tutte le richieste di connessione verso i server C2, sebbene queste avvenissero per mezzo di server proxy e connessioni VPN.\footnote{\texttt{https://securelist.com/lazarus-under-the-hood/77908/}}
+ 
 \newpage
-\chapter{Analisi dell'attacco di Process Injection}
+\chapter{Analisi dell'attacco di Process Injection}\label{processoinjection}
 
 \section{Introduzione}
 
@@ -1149,6 +1128,23 @@ E' importante sottolineare che ripristinare un sistema con immagini di backup è
 Per questo motivo, dopo ogni operazione di ripristino, è doveroso eseguire anche le opportune procedure di aggiornamento, ricordandosi di aggiornare anche le istantanee di sistema.
 
 In generale, solo una regolare attività di configurazione ed aggiornamento dei backup del sistema è in grado di garantire il recupero dell'operatività dei sistemi colpiti in tempi rapidi.
+
+\section{anti-phishingdsfdfsd}
+
+Esistono diverse tecniche per combattere il phishing, tra cui la legislazione e la tecnologia create appositamente per proteggere dal phishing. Queste tecniche includono le misure che possono essere adottate da singoli individui e dalle organizzazioni. Telefono, sito web ed e-mail di phishing possono ora essere segnalati alle autorità, come descritto di seguito.
+
+Formazione dell'utente
+
+Le persone possono essere addestrate a riconoscere i tentativi di phishing e ad affrontarli attraverso una varietà di approcci. Tale educazione può essere efficace, specialmente laddove la formazione enfatizza la conoscenza concettuale e fornisce un feedback diretto.
+
+Molte organizzazioni eseguono regolarmente campagne di phishing simulate indirizzate al proprio personale per misurare l'efficacia della propria formazione.
+
+Le persone possono adottare misure per evitare tentativi di phishing modificando leggermente le loro abitudini di navigazione. Quando viene contattato per un account che deve essere "verificato" (o qualsiasi altro argomento usato dai phisher), è una precauzione ragionevole contattare l'azienda da cui sembra provenire l'email per verificare che l'email sia legittima. In alternativa, l'indirizzo che l'utente conosce è il sito Web originale dell'azienda può essere digitato nella barra degli indirizzi del browser, invece di fidarsi di eventuali collegamenti ipertestuali nel messaggio di phishing sospetto.
+
+
+
+
+
 
 \listoftables
 \lstlistoflistings
