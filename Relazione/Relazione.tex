@@ -61,6 +61,59 @@ breaklines=true
 \author[1]{Ricardo Gamucci (0274716)}
 \affil[1]{Università degli Studi di Roma Tor Vergata}
 
+\usepackage{lipsum}
+\usepackage{suffix}
+
+\newcommand\chapterauthor[1]{\authortoc{#1}\printchapterauthor{#1}}
+\WithSuffix\newcommand\chapterauthor*[1]{\printchapterauthor{#1}}
+
+\newcommand\sectionauthor[1]{\authorsectiontoc{#1}\printsectionauthor{#1}}
+\WithSuffix\newcommand\sectionauthor*[1]{\printsectionauthor{#1}}
+
+\newcommand\sectionsecondauthor[1]{\authorssecondectiontoc{#1}\printsectionsecondauthor{#1}}
+\WithSuffix\newcommand\sectionsecondauthor*[1]{\printsectionsecondauthor{#1}}
+
+\makeatletter
+\newcommand{\printchapterauthor}[1]{%
+  {\parindent0pt\vspace*{-25pt}%
+  \linespread{1.1}\large\scshape#1%
+  \par\nobreak\vspace*{35pt}}
+  \@afterheading%
+}
+\newcommand{\printsectionauthor}[1]{%
+  {\parindent0pt\vspace*{-10pt}%
+  \linespread{1.1}\large\scshape#1%
+  \par\nobreak\vspace*{20pt}}
+  \@afterheading%
+}
+\newcommand{\printsectionsecondauthor}[1]{%
+  {\parindent0pt\vspace*{-20pt}%
+  \linespread{1.1}\large\scshape#1%
+  \par\nobreak\vspace*{20pt}}
+  \@afterheading%
+}
+\newcommand{\authortoc}[1]{%
+  \addtocontents{toc}{\vskip-10pt}%
+  \addtocontents{toc}{%
+    \protect\contentsline{chapter}%
+    {\hskip1.3em\mdseries\scshape\protect\scriptsize#1}{}{}}
+  \addtocontents{toc}{\vskip5pt}%
+}
+\newcommand{\authorsectiontoc}[1]{%
+  \addtocontents{toc}{\vskip-10pt}%
+  \addtocontents{toc}{%
+    \protect\contentsline{chapter}%
+    {\hskip1.3em\mdseries\scshape\protect\scriptsize#1}{}{}}
+  \addtocontents{toc}{\vskip5pt}%
+}
+\newcommand{\authorssecondectiontoc}[1]{%
+  \addtocontents{toc}{\vskip-14pt}%
+  \addtocontents{toc}{%
+    \protect\contentsline{chapter}%
+    {\hskip1.3em\mdseries\scshape\protect\scriptsize#1}{}{}}
+  \addtocontents{toc}{\vskip5pt}%
+}
+\makeatother
 
 \date{27 marzo 2019}
 
@@ -73,6 +126,7 @@ breaklines=true
 \newpage
 
 \chapter{Introduzione}
+\chapterauthor{\small{\textit{Autore:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
 Lo scopo della presente relazione è quella di fornire un'analisi il più possibile dettagliata del malware denominato \textbf{FASTCash}\footnote{\texttt{https://www.symantec.com/security-center/writeup/2018-110615-2942-99}} la cui paternità, secondo le analisi forensi eseguite da varie aziende ed agenzie, tra cui la \textbf{Symantec}, \textbf{Kaspersky} e la \textbf{NCCIC}\footnote{Stiamo parlando della "\textit{National Cybersecurity and Communications Integration Center}" un'agenzia federale americana specializzata in sicurezza informatica facente parte della CISA (\textit{Cybersecurity and Infrastructure Security Agency}) \\ Per ulteriori informazioni in merito si veda: \texttt{https://www.us-cert.gov/about-us} }, è attribuita ad un gruppo di cyber-criminali conosciuto come \textit{Lazarus Group}\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} \footnote{\texttt{https://www.us-cert.gov/ncas/alerts/TA18-275A}}, di cui forniremo una descrizione più dettagliata nella sezione \ref{lazarausgrpo}.
 
@@ -144,6 +198,8 @@ Le analisi condotte dalla NCCIC hanno dimostrato che gli attaccanti, per mezzo d
 Il codice introdotto si è rivelato capace di interagire con i messaggi basati sul \textbf{protocollo ISO 8583} scambiati tra gli ATM e il sistema informatico bancario centrale, consentendo agli aggressori di prelevare denaro agli sportelli automatici.
 
 \section{Manipolazioni dei messaggi ISO 8583}
+\sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Alessandro Boccini} (\textbf{0277414})}}
+\sectionsecondauthor{\quad\quad\quad \small{\textit{Editing:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
 L'ISO 8583 è uno standard internazionale di messaggio nell'ambito delle transazioni finanziarie, utilizzato da molte reti finanziarie, tra cui Visa e MasterCard e dalla quasi totalità degli enti finanziari mondiali.
 
@@ -181,7 +237,9 @@ Qualora la verifica abbia avuto esito positivo, ovvero il PAN estratto dal messa
 In tutti gli altri casi, i messaggi vengono rilasciati e inoltrati al sistema bancario seguendo il normale l'iter.
 
 \section{Gruppo Lazarus}\label{lazarausgrpo}
- 
+\sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
+\sectionsecondauthor{\quad\quad\quad \small{\textit{Editing:} \textbf{Andrea Graziani} (\textbf{0273395})}}
+
 Il \textit{Lazarus Group}, conosciuto anche come \textit{HIDDEN COBRA} o \textit{Guardians of Peace}, è un gruppo di cyber-criminali, composto da un numero imprecisato di individui, ritenuto responsabile di una serie di attacchi informatici perpetrati a danno di istituti bancari, software house e casino oltre ad una serie di attività legate al mining di cripto-valute.\footnote{\texttt{https://securelist.com/lazarus-under-the-hood/77908/}}
 
 La paternità degli attacchi effettuati dal gruppo è stata dimostrata da Kaspersky Lab, nota azienda attiva nel campo della sicurezza informatica, la quale, attraverso un'analisi forense molto dettagliata sulle attività del gruppo in cui è stato eseguito un confronto minuzioso dei codici assembly estratti dai malware utilizzati in diversi attacchi, ha dimostrato l'uso di uno stesso \textit{core base} attribuito al gruppo stesso.\footnote{\texttt{https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/07180244/Lazarus\_Under\_The\_Hood\_PDF\_final.pdf}}
@@ -199,6 +257,7 @@ La presunta origine nordcoreana del gruppo è stata dimostrata, ancora una volta
  
 \newpage
 \chapter{Analisi dell'attacco di Process Injection}\label{processoinjection}
+\chapterauthor{\small{\textit{Autore:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
 \section{Introduzione}
 
@@ -960,10 +1019,13 @@ bl      0x100007c0 <.localtime>
 
 \newpage
 \chapter{Analisi degli impatti subiti}
+\chapterauthor{\small{\textit{Autore:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
 L'attacco perpetrato dal gruppo Lazarus ha incontestabilmente causato una serie di danni diretti ed indiretti nei confronti dell'istituto bancario, comportando impatti considerevoli a livello economico-finanziario, politico-sociale e di reputazione, aggravati non appena la notizia dell'avvenuto attacco è divenuta di dominio pubblico.
 
 \section{Impatti socio-economici}
+\sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Alessandro Boccini} (\textbf{0277414})}}
+\sectionsecondauthor{\quad\quad\quad \small{\textit{Editing:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
 Essendo stati compromessi i processi governanti funzionalità critiche del sistema, l'attacco ha determinato innanzitutto un'\textbf{interruzione dei servizi} legittimi offerti dall'istituto bancario, come quelli aventi funzione di credito sulle quali si basano le transazioni finanziare, comportando conseguenze economico-sociali molto gravi tra cui:
 \begin{itemize}
@@ -1015,6 +1077,7 @@ A causa delle modalità di attacco intraprese dal malware, è facile rendersi co
 
 \newpage
 \chapter{Contromisure}
+\chapterauthor{\small{\textit{Autore:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
 In questo capitolo forniremo una analisi dettaglia delle possibili contromisure capaci di contrastare le attività del malware FASTCash sia modo pro-attivo che reattivo.
 
@@ -1129,7 +1192,8 @@ Per questo motivo, dopo ogni operazione di ripristino, è doveroso eseguire anch
 
 In generale, solo una regolare attività di configurazione ed aggiornamento dei backup del sistema è in grado di garantire il recupero dell'operatività dei sistemi colpiti in tempi rapidi.
 
-\section{anti-phishingdsfdfsd}
+\section{Contrasto agli attacchi di phishing}
+\sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
 
 Esistono diverse tecniche per combattere il phishing, tra cui la legislazione e la tecnologia create appositamente per proteggere dal phishing. Queste tecniche includono le misure che possono essere adottate da singoli individui e dalle organizzazioni. Telefono, sito web ed e-mail di phishing possono ora essere segnalati alle autorità, come descritto di seguito.
 
