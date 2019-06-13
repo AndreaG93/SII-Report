@@ -21,6 +21,7 @@
 \usepackage{footnote}
 \usepackage{authblk}
 \usepackage{titlesec}
+\usepackage{frontespizio} 
 
 
 \titleformat{\paragraph}
@@ -54,12 +55,12 @@ breaklines=true
 
 % Frontespizio...
 % ----------------------------------------------------------------------------------------- %
-\title{Progetto del corso di Sicurezza informatica e Internet A.A. 2017-2018}
+%\title{Progetto del corso di Sicurezza informatica e Internet A.A. 2017-2018}
 
-\author[1]{Andrea Graziani (0273395)}
-\author[1]{Alessandro Boccini (0277414)}
-\author[1]{Ricardo Gamucci (0274716)}
-\affil[1]{Università degli Studi di Roma Tor Vergata}
+%\author[1]{Andrea Graziani (0273395)}
+%\author[1]{Alessandro Boccini (0277414)}
+%\author[1]{Ricardo Gamucci (0274716)}
+%affil[1]{Università degli Studi di Roma Tor Vergata}
 
 \usepackage{lipsum}
 \usepackage{suffix}
@@ -121,7 +122,24 @@ breaklines=true
 % ----------------------------------------------------------------------------------------- %
 \begin{document}
 
-\maketitle
+% Frontespizio
+% ------------------------------------------------------
+\begin{frontespizio} 
+\Universita{Roma ``Tor Vergata'' } 
+\Logo[3cm]{logo}
+\Facolta{Ingegneria} 
+\Corso[Laurea Magistrale]{Ingegneria Informatica} 
+\Annoaccademico{2018--2019} 
+\Titolo{Il malware FASTCash \\ \small{Sicurezza informatica e Internet}}
+\NCandidato{Studente} 
+\Candidato[0273395]{Andrea Graziani} 
+\Candidato[0277414]{Alessandro Boccini} 
+\Candidato[0274716]{Ricardo Gamucci} 
+
+\NRelatore{Docente}{} 
+\Relatore{Maurizio Naldi} 
+\end{frontespizio} 
+
 \tableofcontents
 \newpage
 
@@ -183,6 +201,11 @@ Per essere precisi, come si evince dal rapporto \texttt{AR18-275A} pubblicato da
 Per effettuare con successo un attacco FASTCash, i cyber-criminali violavano dapprima le reti delle banche bersaglio allo scopo di ottenere accesso completo ai cosiddetti \textbf{server di payment switch} (\textit{switch application servers}), i server responsabili della gestione delle transazioni finanziare tra gli ATM e il sistema informatico principale della banca.\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}}
 
 Si presuppone che gli attaccanti, al fine di ottenere accesso alle suddette reti, abbiano adottato tecniche di \textbf{spear-phishing}\footnote{\texttt{https://securityaffairs.co/wordpress/76798/hacking/fastcash-hidden-cobra-attacks.html}}, ossia una serie di attacchi di \textit{phishing} che, a differenza di quelli più comuni, hanno come bersaglio individui \textit{specifici}, vale a dire persone di cui gli attaccanti potevano conoscere diverse informazioni (nome, sesso, ruolo, abitudini, ecc.) al fine di aumentare le probabilità di successo \footnote{\texttt{https://www.kaspersky.it/resource-center/definitions/spear-phishing}}. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{./FASTCash.png} 
+\end{figure}
 
 Il vero scopo dei suddetti attacchi di phishing riguardava l'installazione, nel computer della vittima, del malware denominato \texttt{5cfa1c2cb430bec721063e3e2d144feb} (la stringa \textbf{MD5} ad esso associata) il cui scopo, secondo le analisi condotte dalla NCCIC, era colpire i sistemi operativi Windows dei dipendenti della banca in modo tale da consentire agli attaccanti l'accesso in remoto al sistema bancario\footnote{\texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}.
 
@@ -1074,6 +1097,12 @@ A causa delle modalità di attacco intraprese dal malware, è facile rendersi co
 
 \newpage
 \chapter{I sistemi vulnerabili all'attacco}
+\chapterauthor{\small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
+
+Una volta eseguito, il Trojan inietta il codice nei processi in esecuzione su un sistema operativo proprietario Unix AIX sviluppato da IBM per comunicare con i sistemi finanziari che utilizzano lo standard ISO8583.
+Dall’epoca degli attacchi, sono stati rilasciati aggiornamenti per antivirus che permettono di individuare il trojan e scongiurare la minaccia.
+Tuttavia, ad oggi, in accordo con quanto riportato dal sito Web Virus Total, non tutti i principali software antivirus sul mercato sono in grado di riconoscere l’injector di  Trojan.FastCash (codice hash D465637518024262C063F4A82D799A4E40FF3381014972F24EA18BC23C3B27EE), di conseguenza tutti i sistemi che software non aggiornati sono a rischio.
+
 
 \newpage
 \chapter{Contromisure}
@@ -1195,15 +1224,15 @@ In generale, solo una regolare attività di configurazione ed aggiornamento dei 
 \section{Contrasto agli attacchi di phishing}
 \sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
 
-Esistono diverse tecniche per combattere il phishing, tra cui la legislazione e la tecnologia create appositamente per proteggere dal phishing. Queste tecniche includono le misure che possono essere adottate da singoli individui e dalle organizzazioni. Telefono, sito web ed e-mail di phishing possono ora essere segnalati alle autorità, come descritto di seguito.
+Dal momento che gli attaccanti hanno adottato tecniche di phishing per l'installazione del malware all'interno dei server bancari, è necessario adottare misure efficaci in proposito.
 
-Formazione dell'utente
+La forma di contrasto più efficace consiste, ancora un volta, in formazione e prevenzione attraverso le quali educare il personale a riconoscere gli attacchi di phishing attraverso vari approcci, come la verifica del mittente di un messaggio, la correttezza grammaticale e sintattica delle email ricevute o la presenza di allegati sospetti.
 
-Le persone possono essere addestrate a riconoscere i tentativi di phishing e ad affrontarli attraverso una varietà di approcci. Tale educazione può essere efficace, specialmente laddove la formazione enfatizza la conoscenza concettuale e fornisce un feedback diretto.
+Il personale viene educato, spesso attraverso \textbf{simulazioni}, a gestire questi attacchi attraverso la modifica di alcune sue abitudini p Quando viene contattato per un account che deve essere "verificato" (o qualsiasi altro argomento usato dai phisher), è una precauzione ragionevole contattare l'azienda da cui sembra provenire l'email per verificare che l'email sia legittima.
 
 Molte organizzazioni eseguono regolarmente campagne di phishing simulate indirizzate al proprio personale per misurare l'efficacia della propria formazione.
 
-Le persone possono adottare misure per evitare tentativi di phishing modificando leggermente le loro abitudini di navigazione. Quando viene contattato per un account che deve essere "verificato" (o qualsiasi altro argomento usato dai phisher), è una precauzione ragionevole contattare l'azienda da cui sembra provenire l'email per verificare che l'email sia legittima. In alternativa, l'indirizzo che l'utente conosce è il sito Web originale dell'azienda può essere digitato nella barra degli indirizzi del browser, invece di fidarsi di eventuali collegamenti ipertestuali nel messaggio di phishing sospetto.
+Filtri antispam specializzati possono ridurre il numero di e-mail di phishing che raggiungono le caselle di posta dei loro destinatari. Questi filtri utilizzano una serie di tecniche, tra cui l'apprendimento automatico e approcci di elaborazione del linguaggio naturale per classificare le e-mail di phishing, rifiutando le e-mail con indirizzi falsi.
 
 
 
