@@ -53,15 +53,6 @@ breaklines=true
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
 
-% Frontespizio...
-% ----------------------------------------------------------------------------------------- %
-%\title{Progetto del corso di Sicurezza informatica e Internet A.A. 2017-2018}
-
-%\author[1]{Andrea Graziani (0273395)}
-%\author[1]{Alessandro Boccini (0277414)}
-%\author[1]{Ricardo Gamucci (0274716)}
-%affil[1]{Università degli Studi di Roma Tor Vergata}
-
 \usepackage{lipsum}
 \usepackage{suffix}
 
@@ -196,7 +187,7 @@ Per essere precisi, come si evince dal rapporto \texttt{AR18-275A} pubblicato da
   
 \end{table}
 
-\section{Descrizione generale dell'attacco}
+\section{Descrizione generale dell'attacco}\label{descr}
 
 Per effettuare con successo un attacco FASTCash, i cyber-criminali violavano dapprima le reti delle banche bersaglio allo scopo di ottenere accesso completo ai cosiddetti \textbf{server di payment switch} (\textit{switch application servers}), i server responsabili della gestione delle transazioni finanziare tra gli ATM e il sistema informatico principale della banca.\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}}
 
@@ -1096,15 +1087,6 @@ A causa delle modalità di attacco intraprese dal malware, è facile rendersi co
 \end{itemize}
 
 \newpage
-\chapter{I sistemi vulnerabili all'attacco}
-\chapterauthor{\small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
-
-Una volta eseguito, il Trojan inietta il codice nei processi in esecuzione su un sistema operativo proprietario Unix AIX sviluppato da IBM per comunicare con i sistemi finanziari che utilizzano lo standard ISO8583.
-Dall’epoca degli attacchi, sono stati rilasciati aggiornamenti per antivirus che permettono di individuare il trojan e scongiurare la minaccia.
-Tuttavia, ad oggi, in accordo con quanto riportato dal sito Web Virus Total, non tutti i principali software antivirus sul mercato sono in grado di riconoscere l’injector di  Trojan.FastCash (codice hash D465637518024262C063F4A82D799A4E40FF3381014972F24EA18BC23C3B27EE), di conseguenza tutti i sistemi che software non aggiornati sono a rischio.
-
-
-\newpage
 \chapter{Contromisure}
 \chapterauthor{\small{\textit{Autore:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
@@ -1224,26 +1206,25 @@ In generale, solo una regolare attività di configurazione ed aggiornamento dei 
 \section{Contrasto agli attacchi di phishing}
 \sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
 
-Dal momento che gli attaccanti hanno adottato tecniche di phishing per l'installazione del malware all'interno dei server bancari, è necessario adottare misure efficaci in proposito.
+Come abbiamo avuto modo di constatare nella sezione \ref{descr}, gli attaccanti hanno adottato tecniche di spear-phishing per riuscire ad installare l'injection tool all'interno dei server bancari; pertanto adottare contromisure per contrastare questa forma di attacco è molto importante per ostacolare FASTCash, impedendo a monte di installare l'injection tool nei server bancari.
 
-La forma di contrasto più efficace consiste, ancora un volta, in formazione e prevenzione attraverso le quali educare il personale a riconoscere gli attacchi di phishing attraverso vari approcci, come la verifica del mittente di un messaggio, la correttezza grammaticale e sintattica delle email ricevute o la presenza di allegati sospetti.
+Oltre alle contromisure classiche, tra cui figurano, ad esempio, l'adozione di filtri anti-spam, l'installazione di toolbar Anti-Phishing all'interno dei browser e l'aggiornamento di quest'ultimi\footnote{\texttt{http://www.phishing.org/10-ways-to-avoid-phishing-scams}}, riteniamo che la forma più efficace di contrasto ai suddetti attacchi sia una efficace formazione ed educazione del personale; istruendo il personale a \textit{riconoscere} gli attacchi di phishing, attraverso appositi corsi o, meglio ancora, simulazioni, è possibile contrastare del tutto FASTCash e la maggior parte degli attacchi informatici odierni.
 
-Il personale viene educato, spesso attraverso \textbf{simulazioni}, a gestire questi attacchi attraverso la modifica di alcune sue abitudini p Quando viene contattato per un account che deve essere "verificato" (o qualsiasi altro argomento usato dai phisher), è una precauzione ragionevole contattare l'azienda da cui sembra provenire l'email per verificare che l'email sia legittima.
+\newpage
+\chapter{I sistemi vulnerabili all'attacco}
+\chapterauthor{\small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
 
-Molte organizzazioni eseguono regolarmente campagne di phishing simulate indirizzate al proprio personale per misurare l'efficacia della propria formazione.
+Dal momento che FASTCash non ha sfruttato una particolare vulnerabilità nota dei sistemi operativi coinvolti, usufruendo bensì dei i loro servizi, ottenendo gli opportuni privilegi di accesso usufruendo di tecniche di spear-phishing, non è possibile individuare un insieme specifico di sistemi particolarmente vulnerabili all'attacco. 
 
-Filtri antispam specializzati possono ridurre il numero di e-mail di phishing che raggiungono le caselle di posta dei loro destinatari. Questi filtri utilizzano una serie di tecniche, tra cui l'apprendimento automatico e approcci di elaborazione del linguaggio naturale per classificare le e-mail di phishing, rifiutando le e-mail con indirizzi falsi.
+Di conseguenza, possiamo in generale considerare come vulnerabili tutti i sistemi che, semplicemente, non adottano alcuna delle forme di sicurezza o di contromisura descritte nel capitolo precedente.
 
-
-
-
-
+Nonostante ciò, riteniamo maggiormente vulnerabili tutti i sistemi provvisti di software anti-virus che risulti: 
+\begin{itemize}
+\item Obsoleto o non aggiornato, non in grado quindi di rilevare e contrastare FASTCash.
+\item Aggiornato ma \textit{non} in grado di rilevare FASTCash; infatti, in base alle informazioni pubblicate da VirusTotal, esistono software anti-virus che non rileva l'injection tool di FASTCash, tra cui figurano Avast, Avira e AVG.\footnote{\texttt{https://www.virustotal.com/gui/file/d465637518024262c063f4a82d799a4e40ff3381014972f24ea18bc23c3b27ee/detection} \\ (visionato il 14/06/2019)}
+\end{itemize} 
 
 \listoftables
 \lstlistoflistings
 
 \end{document}
-
-
-
-
