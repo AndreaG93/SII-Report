@@ -22,6 +22,7 @@
 \usepackage{authblk}
 \usepackage{titlesec}
 \usepackage{frontespizio} 
+\usepackage[]{url}
 
 
 \titleformat{\paragraph}
@@ -138,11 +139,11 @@ breaklines=true
 \chapterauthor{\small{\textit{Autore:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
 
-Lo scopo della presente relazione è quella di fornire un'analisi il più possibile dettagliata del malware denominato \textbf{FASTCash}\footnote{\texttt{https://www.symantec.com/security-center/writeup/2018-110615-2942-99}} la cui paternità, secondo le analisi forensi eseguite da varie aziende ed agenzie, tra cui la \textbf{Symantec}, \textbf{Kaspersky} e la \textbf{NCCIC}\footnote{Stiamo parlando della "\textit{National Cybersecurity and Communications Integration Center}" un'agenzia federale americana specializzata in sicurezza informatica facente parte della CISA (\textit{Cybersecurity and Infrastructure Security Agency}) \\ Per ulteriori informazioni in merito si veda: \texttt{https://www.us-cert.gov/about-us} }, è attribuita ad un gruppo di cyber-criminali conosciuto come \textit{Lazarus Group}\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} \footnote{\texttt{https://www.us-cert.gov/ncas/alerts/TA18-275A}}, di cui forniremo una descrizione più dettagliata nella sezione \ref{lazarausgrpo}.
+Lo scopo della presente relazione è quella di fornire un'analisi il più possibile dettagliata del malware denominato \textbf{FASTCash}\footnote{\url{https://www.symantec.com/security-center/writeup/2018-110615-2942-99}} la cui paternità, secondo le analisi forensi eseguite da varie aziende ed agenzie, tra cui la \textbf{Symantec}, \textbf{Kaspersky} e la \textbf{NCCIC}\footnote{Stiamo parlando della "\textit{National Cybersecurity and Communications Integration Center}" un'agenzia federale americana specializzata in sicurezza informatica facente parte della CISA (\textit{Cybersecurity and Infrastructure Security Agency}) \\ Per ulteriori informazioni in merito si veda: \url{https://www.us-cert.gov/about-us} }, è attribuita ad un gruppo di cyber-criminali conosciuto come \textit{Lazarus Group}\footnote{\url{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} \footnote{\url{https://www.us-cert.gov/ncas/alerts/TA18-275A}}, di cui forniremo una descrizione più dettagliata nella sezione \ref{lazarausgrpo}.
 
 La scoperta del malware risale precisamente al \textbf{2 ottobre 2018} giorno in cui, grazie al lavoro congiunto effettuato da varie agenzie ed istituzioni americane, tra cui \textbf{FBI}, \textbf{Dipartimento del Tesoro Americano} e la \textbf{DHS} (\textit{Department of Homeland Security})\footnote{\textit{Ibidem}}, venne pubblicato sul sito del CISA l'avviso \texttt{TA18-275A}, secondo la quale esponenti del gruppo Lazarus avevano condotto con successo una serie di attacchi, denominati dalla CISA come \textit{FASTCash}, per il\textbf{ prelievo fraudolento di denaro contante dagli ATM} (\textit{Automated Teller Machines}) di varie banche in oltre 30 paesi diversi sparsi fra Asia e Africa \footnote{\textit{Ibidem}}. E' importante sottolineare che, sebbene l'esistenza del malware sia stata resa di dominio pubblico solo allora, la CISA ha dichiarato che il gruppo Lazarus ha condotto attacchi di tipo FASTCash già a partire dal 2016.
 
-Per essere precisi, come si evince dal rapporto \texttt{AR18-275A} pubblicato dalla CISA\footnote{Cfr. \texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}, il malware FASTCash è in realtà composto da un'insieme di \textbf{12 file}, ognuno dei quali avente un ruolo e uno scopo specifico. Abbiamo riportato per comodità una lista completa dei file di FASTCash in \ref{tab:MalwareFileList}; tre di essi sono stati analizzati in dettaglio nel capitolo \ref{processoinjection}.
+Per essere precisi, come si evince dal rapporto \texttt{AR18-275A} pubblicato dalla CISA\footnote{Cfr. \url{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}, il malware FASTCash è in realtà composto da un'insieme di \textbf{12 file}, ognuno dei quali avente un ruolo e uno scopo specifico. Abbiamo riportato per comodità una lista completa dei file di FASTCash in \ref{tab:MalwareFileList}; tre di essi sono stati analizzati in dettaglio nel capitolo \ref{processoinjection}.
 
 \begin{table}[h!]
  
@@ -192,18 +193,18 @@ Per essere precisi, come si evince dal rapporto \texttt{AR18-275A} pubblicato da
 \sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
 \sectionsecondauthor{\quad\quad\quad \small{\textit{Editing:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
-Per effettuare con successo un attacco FASTCash, i cyber-criminali violavano dapprima le reti delle banche bersaglio allo scopo di ottenere accesso completo ai cosiddetti \textbf{server di payment switch} (\textit{switch application servers}), i server responsabili della gestione delle transazioni finanziare tra gli ATM e il sistema informatico principale della banca.\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}}
+Per effettuare con successo un attacco FASTCash, i cyber-criminali violavano dapprima le reti delle banche bersaglio allo scopo di ottenere accesso completo ai cosiddetti \textbf{server di payment switch} (\textit{switch application servers}), i server responsabili della gestione delle transazioni finanziare tra gli ATM e il sistema informatico principale della banca.\footnote{\url{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}}
 
-Si presuppone che gli attaccanti, al fine di ottenere accesso alle suddette reti, abbiano adottato tecniche di \textbf{spear-phishing}\footnote{\texttt{https://securityaffairs.co/wordpress/76798/hacking/fastcash-hidden-cobra-attacks.html}}, ossia una serie di attacchi di \textit{phishing} che, a differenza di quelli più comuni, hanno come bersaglio individui \textit{specifici}, vale a dire persone di cui gli attaccanti potevano conoscere diverse informazioni (nome, sesso, ruolo, abitudini, ecc.) al fine di aumentare le probabilità di successo \footnote{\texttt{https://www.kaspersky.it/resource-center/definitions/spear-phishing}}. 
+Si presuppone che gli attaccanti, al fine di ottenere accesso alle suddette reti, abbiano adottato tecniche di \textbf{spear-phishing}\footnote{\url{https://securityaffairs.co/wordpress/76798/hacking/fastcash-hidden-cobra-attacks.html}}, ossia una serie di attacchi di \textit{phishing} che, a differenza di quelli più comuni, hanno come bersaglio individui \textit{specifici}, vale a dire persone di cui gli attaccanti potevano conoscere diverse informazioni (nome, sesso, ruolo, abitudini, ecc.) al fine di aumentare le probabilità di successo \footnote{\url{https://www.kaspersky.it/resource-center/definitions/spear-phishing}}. 
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{./FASTCash.png} 
 \end{figure}
 
-Il vero scopo dei suddetti attacchi di phishing riguardava l'installazione, nel computer della vittima, del malware denominato \texttt{5cfa1c2cb430bec721063e3e2d144feb} (la stringa \textbf{MD5} ad esso associata) il cui scopo, secondo le analisi condotte dalla NCCIC, era colpire i sistemi operativi Windows dei dipendenti della banca in modo tale da consentire agli attaccanti l'accesso in remoto al sistema bancario\footnote{\texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}.
+Il vero scopo dei suddetti attacchi di phishing riguardava l'installazione, nel computer della vittima di un apposito malware\footnote{In base al rapporto NCCIC \texttt{AR18-275A}, il nome del malware in questione è \texttt{5cfa1c2cb430bec721063e3e2d144feb}} che, secondo il report pubblicato dalla NCCIC, era in grado di colpire i sistemi operativi Windows dei dipendenti della banca al fine di consentire agli attaccanti l'accesso in remoto al sistema colpito\footnote{\url{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}}.
 
-Per conseguire tale scopo, il suddetto malware eseguiva una serie di operazioni tra cui:
+Per conseguire il suddetto scopo, il malware eseguiva una serie di operazioni tra cui:
 
 \begin{itemize}
 \item Alterare le impostazioni di \textit{Windows Firewall} allo scopo di consentire l'instaurazione di connessioni TCP verso la macchina dall'esterno.\footnote{\textit{Ibidem}}
@@ -212,7 +213,7 @@ Per conseguire tale scopo, il suddetto malware eseguiva una serie di operazioni 
 
 Le analisi condotte dalla NCCIC hanno dimostrato che gli attaccanti, per mezzo del suddetto malware, sono riusciti a trasferire un \textbf{injection tool} all'interno dei server di payment switch delle banche coinvolte dell'attacco; analizzeremo in dettaglio l'injection injection tool di FASTCash nella sezione \ref{processoinjection}.
 
-Il suddetto injection tool è stato utilizzato per introdurre, all'interno di uno o più processi legittimi in esecuzione sui payment switch server, codice malevolo capace di interagire ed alterare i messaggi basati sul \textbf{protocollo ISO 8583} scambiati tra gli ATM e il sistema informatico bancario centrale, consentendo agli aggressori di prelevare denaro agli sportelli automatici.
+Il suddetto injection tool è stato utilizzato per introdurre, all'interno di uno o più processi legittimi in esecuzione sui payment switch server, codice malevolo capace di interagire ed alterare i messaggi basati sul \textbf{protocollo ISO 8583} scambiati tra gli ATM e il sistema informatico bancario centrale, consentendo agli aggressori di prelevare denaro agli sportelli automatici. 
 
 \section{Manipolazioni dei messaggi ISO 8583}
 \sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Alessandro Boccini} (\textbf{0277414})}}
@@ -247,7 +248,7 @@ Durante l'attacco, il malware interagisce esclusivamente con i messaggi dove:
 
 Una volta intercettato un messaggio con tali caratteristiche, il malware estrae il valore corrispondete al campo PAN e lo confronta con un insieme di valori PAN posseduti dagli attaccanti. 
 
-Tale verifica avviene per mezzo di una funzione contenuta all'interno delle librerie introdotte nel sistema; la funzione \texttt{CheckPan()}\footnote{\texttt{https://security.arizona.edu/content/ta18-275a-hidden-cobra-–-fastcash-campaign}} \footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}}.
+Tale verifica avviene per mezzo di una funzione contenuta all'interno delle librerie introdotte nel sistema; la funzione \texttt{CheckPan()}\footnote{\url{https://security.arizona.edu/content/ta18-275a-hidden-cobra-–-fastcash-campaign}} \footnote{\url{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}}.
 
 Qualora la verifica abbia avuto esito positivo, ovvero il PAN estratto dal messaggio corrisponde ad uno dei PAN in possesso agli attaccanti, il messaggio viene manipolato invocando la funzione \texttt{GenerateResponseTransaction1}, la quale modifica il terzo valore del campo MIT del messaggio impostandolo ad 1. Infine, il messaggio, con valore MIT pari ad \texttt{0210}, viene inoltrato all'ATM che rilascerà i contanti ai criminali, completando così l'attacco.
 
@@ -257,20 +258,20 @@ In tutti gli altri casi, i messaggi vengono rilasciati e inoltrati al sistema ba
 \sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
 \sectionsecondauthor{\quad\quad\quad \small{\textit{Editing:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
-Il \textit{Lazarus Group}, conosciuto anche come \textit{HIDDEN COBRA} o \textit{Guardians of Peace}, è un gruppo di cyber-criminali, composto da un numero imprecisato di individui, ritenuto responsabile di una serie di attacchi informatici perpetrati a danno di istituti bancari, software house e casino oltre ad una serie di attività legate al mining di cripto-valute.\footnote{\texttt{https://securelist.com/lazarus-under-the-hood/77908/}}
+Il \textit{Lazarus Group}, conosciuto anche come \textit{HIDDEN COBRA} o \textit{Guardians of Peace}, è un gruppo di cyber-criminali, composto da un numero imprecisato di individui, ritenuto responsabile di una serie di attacchi informatici perpetrati a danno di istituti bancari, software house e casino oltre ad una serie di attività legate al mining di cripto-valute.\footnote{\url{https://securelist.com/lazarus-under-the-hood/77908/}}
 
-La paternità degli attacchi effettuati dal gruppo è stata dimostrata da Kaspersky Lab, nota azienda attiva nel campo della sicurezza informatica, la quale, attraverso un'analisi forense molto dettagliata sulle attività del gruppo in cui è stato eseguito un confronto minuzioso dei codici assembly estratti dai malware utilizzati in diversi attacchi, ha dimostrato l'uso di uno stesso \textit{core base} attribuito al gruppo stesso.\footnote{\texttt{https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/07180244/Lazarus\_Under\_The\_Hood\_PDF\_final.pdf}}
+La paternità degli attacchi effettuati dal gruppo è stata dimostrata da Kaspersky Lab, nota azienda attiva nel campo della sicurezza informatica, la quale, attraverso un'analisi forense molto dettagliata sulle attività del gruppo in cui è stato eseguito un confronto minuzioso dei codici assembly estratti dai malware utilizzati in diversi attacchi, ha dimostrato l'uso di uno stesso \textit{core base} attribuito al gruppo stesso.\footnote{\url{https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/07180244/Lazarus\_Under\_The\_Hood\_PDF\_final.pdf}}
 
-La NCCIC, Kaspersky Lab e la Symantec attribuiscono al gruppo Lazarus la responsabilità di attacchi molto famosi, tra cui spiccano per importanza ed entità il furto di dati a danno della Sony Pictures Entertainment, il furto di denaro dalla Banca Centrale del Bangladesh nonché dei danni provati dal ben noto ransomware WannaCry\footnote{\texttt{https://www.theguardian.com/technology/2017/may/15/wannacry-ransomware-north-korea-lazarus-group}}. 
+La NCCIC, Kaspersky Lab e la Symantec attribuiscono al gruppo Lazarus la responsabilità di attacchi molto famosi, tra cui spiccano per importanza ed entità il furto di dati a danno della Sony Pictures Entertainment, il furto di denaro dalla Banca Centrale del Bangladesh nonché dei danni provati dal ben noto ransomware WannaCry\footnote{\url{https://www.theguardian.com/technology/2017/may/15/wannacry-ransomware-north-korea-lazarus-group}}. 
 
-Per essere precisi, la NCCIC la ritiene colpevole di ben 17 attacchi, tra cui ovviamente FASTCash, sebbene la certezza di tale numero possa essere messa in discussione dal fatto che il governo statunitense attribuisca alla HIDDEN COBRA la quasi totalità degli attacchi provenienti dalla nord-corea.\footnote{\texttt{https://www.us-cert.gov/HIDDEN-COBRA-North-Korean-Malicious-Cyber-Activity}}.
+Per essere precisi, la NCCIC la ritiene colpevole di ben 17 attacchi, tra cui ovviamente FASTCash, sebbene la certezza di tale numero possa essere messa in discussione dal fatto che il governo statunitense attribuisca alla HIDDEN COBRA la quasi totalità degli attacchi provenienti dalla nord-corea.\footnote{\url{https://www.us-cert.gov/HIDDEN-COBRA-North-Korean-Malicious-Cyber-Activity}}.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{./img-lazarus-world-attack.png} 
 \end{figure}
 
-La presunta origine nordcoreana del gruppo è stata dimostrata, ancora una volta, da Kaspersky; l'azienda, attraverso un'analisi di vari server C2\footnote{\textit{Command-and-control}, indicato a volte con la sigla C\&C o C2, server usati dagli attaccanti per mantenere le comunicazioni con i sistemi compromessi}, localizzati in Europa e usati dal gruppo per le loro attività criminali, ha rilevato l'uso di un piccolo intervallo di indirizzi IP di origine nordcoreana da cui si presuppone avessero origine tutte le richieste di connessione verso i server C2, sebbene queste avvenissero per mezzo di server proxy e connessioni VPN.\footnote{\texttt{https://securelist.com/lazarus-under-the-hood/77908/}}
+La presunta origine nordcoreana del gruppo è stata dimostrata, ancora una volta, da Kaspersky; l'azienda, attraverso un'analisi di vari server C2\footnote{\textit{Command-and-control}, indicato a volte con la sigla C\&C o C2, server usati dagli attaccanti per mantenere le comunicazioni con i sistemi compromessi}, localizzati in Europa e usati dal gruppo per le loro attività criminali, ha rilevato l'uso di un piccolo intervallo di indirizzi IP di origine nordcoreana da cui si presuppone avessero origine tutte le richieste di connessione verso i server C2, sebbene queste avvenissero per mezzo di server proxy e connessioni VPN.\footnote{\url{https://securelist.com/lazarus-under-the-hood/77908/}}
  
 \newpage
 \chapter{Analisi dell'attacco di Process Injection}\label{processoinjection}
@@ -282,9 +283,9 @@ In questo capitolo analizzeremo dettagliatamente la tecnica di attacco usata dai
 
 \subsection{Definizione della forma di attacco}
 
-I rapporti pubblicati dalla NCCIC\footnote{\texttt{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}} \footnote{\texttt{https://www.us-cert.gov/ncas/alerts/TA18-275A}} e dalla Symantec\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} indicano che la forma di attacco adottata per compromettere i server dell'istituto bancario fosse stata una \textbf{process injection}.
+I rapporti pubblicati dalla NCCIC\footnote{\url{https://www.us-cert.gov/ncas/analysis-reports/AR18-275A}} \footnote{\url{https://www.us-cert.gov/ncas/alerts/TA18-275A}} e dalla Symantec\footnote{\url{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} indicano che la forma di attacco adottata per compromettere i server dell'istituto bancario fosse stata una \textbf{process injection}.
 
-Con la locuzione \textit{process injection} si intende una tecnica che rende possibile \textit{l'esecuzione di codice arbitrario precedentemente introdotto all'interno dello spazio d'indirizzamento di un processo distinto in esecuzione}.\footnote{\texttt{https://attack.mitre.org/techniques/T1055/}}
+Con la locuzione \textit{process injection} si intende una tecnica che rende possibile \textit{l'esecuzione di codice arbitrario precedentemente introdotto all'interno dello spazio d'indirizzamento di un processo distinto in esecuzione}.\footnote{\url{https://attack.mitre.org/techniques/T1055/}}
 
 L'esecuzione di codice maligno nel contesto di un processo legittimo, oltre a garantire ai cyber-criminali l'accesso a tutte le risorse assegnate al suddetto processo da parte del SO (memoria, risorse di rete, dati ecc.), non viene generalmente individuata dai prodotti commerciali per la sicurezza informatica, essendo l'esecuzione del malware \textit{nascosta}.\footnote{\textit{Ibid.}}
 
@@ -292,7 +293,7 @@ L'esecuzione di codice maligno nel contesto di un processo legittimo, oltre a ga
 
 Esistono molte varianti di attacco di process injection che, sfruttando diverse tipologie di vulnerabilità esposte dal sistema operativo, sono in grado di introdurre con successo codice arbitrario all'interno di un processo; la variante adottata dai cyber-criminali nel malware FASTCash è conosciuta come \textbf{SIR}, acronimo di \textbf{Suspend-Inject-Resume}.
 
-Come facilmente intuibile dal nome, tale tipologia di attacco prevede 3 fasi:\footnote{\texttt{https://www.endgame.com/blog/technical-blog/ten-process-injection-techniques-technical-survey-common-and-trending-process}}
+Come facilmente intuibile dal nome, tale tipologia di attacco prevede 3 fasi:\footnote{\url{https://www.endgame.com/blog/technical-blog/ten-process-injection-techniques-technical-survey-common-and-trending-process}}
 \begin{enumerate}
 \item La \textbf{sospensione del processo} bersaglio o, più specificatamente, di tutti i suoi thread. 
 \item \textbf{Alterazione dello stato del processo} attraverso la modifica del suo spazio di indirizzamento (\textit{Address Space}) o dei valori contenuti nel suo PCB, come il valore che detiene l'indirizzo della successiva istruzione (\textit{Program Counter}/\textit{Instruction Pointer}) o i dati contenuti nei registri.
@@ -304,10 +305,10 @@ Come facilmente intuibile dal nome, tale tipologia di attacco prevede 3 fasi:\fo
 Prima di procedere con la descrizione dettagliata dell'attacco perpetrato dal malware FASTCash, riportiamo di seguito i vari tool utilizzati durante le nostre analisi:
 
 \begin{description}
-\item[\texttt{strings}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/strings}} Usato per l'estrazione di tutte le stringhe stampabili contenuti in un file.
-\item[\texttt{stat}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/stat}} Utilizzato per ottenere alcune informazioni di base dei file tra cui nome, dimensione, data di ultima modifica, ecc.
-\item[\texttt{file}]\footnote{Cfr. \texttt{https://linux.die.net/man/1/file}} Usato per determinare la tipologia di appartenenza di uno specifico file.
-\item[\texttt{onlinedisassembler}]\footnote{Cfr. \texttt{https://onlinedisassembler.com/}} Il de-assemblaggio dei file è stato eseguito utilizzando il servizio cloud \textbf{onlinedisassembler} che ci ha permesso di ricavare facilmente i listati di codice assembly dei file scritti per le architetture PowerPC\texttrademark.
+\item[\texttt{strings}]\footnote{\url{https://linux.die.net/man/1/strings}} Usato per l'estrazione di tutte le stringhe stampabili contenuti in un file.
+\item[\texttt{stat}]\footnote{\url{https://linux.die.net/man/1/stat}} Utilizzato per ottenere alcune informazioni di base dei file tra cui nome, dimensione, data di ultima modifica, ecc.
+\item[\texttt{file}]\footnote{\url{https://linux.die.net/man/1/file}} Usato per determinare la tipologia di appartenenza di uno specifico file.
+\item[\texttt{onlinedisassembler}]\footnote{\url{https://onlinedisassembler.com/}} Il de-assemblaggio dei file è stato eseguito utilizzando il servizio cloud \textbf{onlinedisassembler} che ci ha permesso di ricavare facilmente i listati di codice assembly dei file scritti per le architetture PowerPC\texttrademark.
 \end{description}
 
 \newpage
@@ -315,7 +316,7 @@ Prima di procedere con la descrizione dettagliata dell'attacco perpetrato dal ma
 
 In questa sezione analizzeremo i file del malware FASTCash responsabili dell'attacco di process injection contro l'istituto bancario cercando di comprenderne il funzionamento. 
 
-Nel corso di questo capitolo analizzeremo nel dettaglio i seguenti file, i cui sample sono stati ottenuti mediante download dal database di \textit{Hybrid-Analysis}:\footnote{\texttt{https://www.hybrid-analysis.com/}}
+Nel corso di questo capitolo analizzeremo nel dettaglio i seguenti file, i cui sample sono stati ottenuti mediante download dal database di \textit{Hybrid-Analysis}:\footnote{\url{https://www.hybrid-analysis.com/}}
 
 \begin{description}
 \item[\texttt{Injection\_API\_executable\_e}] Tale file contiene l'\textit{injection tool}.
@@ -327,9 +328,9 @@ Nel corso di questo capitolo analizzeremo nel dettaglio i seguenti file, i cui s
 
 Cerchiamo ora di dimostrare come il file \texttt{Injection\_API\_executable\_e} sia quello responsabile dell'attacco di process injection attraverso gli strumenti citati nell'introduzione.
 
-L'output ottenuto dal tool \texttt{file} indica che il suddetto file, di cui abbiamo riportato alcuni dettagli nella tabella \ref{tab:FileDetails-1}, è un \textbf{eseguibile} di tipo \textbf{eXtended COFF} (\textbf{XCOFF}), ovvero una versione migliorata ed estesa del formato \textbf{Common Object File Format} (\textbf{COFF}), il formato standard per la definizione dei file a livello strutturale nei sistemi operativi UNIX\footnote{Cfr. \texttt{https://it.wikipedia.org/wiki/COFF}} fino al 1999\footnote{Cfr. \texttt{https://en.wikipedia.org/wiki/Executable\_and\_Linkable\_Format}}, anno della definitiva adozione dello standard \textbf{Executable and Linkable Format} o \textbf{ELF}.
+L'output ottenuto dal tool \texttt{file} indica che il suddetto file, di cui abbiamo riportato alcuni dettagli nella tabella \ref{tab:FileDetails-1}, è un \textbf{eseguibile} di tipo \textbf{eXtended COFF} (\textbf{XCOFF}), ovvero una versione migliorata ed estesa del formato \textbf{Common Object File Format} (\textbf{COFF}), il formato standard per la definizione dei file a livello strutturale nei sistemi operativi UNIX\footnote{Cfr. \url{https://it.wikipedia.org/wiki/COFF}} fino al 1999\footnote{Cfr. \url{https://en.wikipedia.org/wiki/Executable\_and\_Linkable\_Format}}, anno della definitiva adozione dello standard \textbf{Executable and Linkable Format} o \textbf{ELF}.
 
-Il formato XCOFF è uno standard proprietario sviluppato da IBM\footnote{Cfr. \texttt{https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.files/XCOFF.htm}} ed adottato nei sistemi operativi \textbf{Advanced Interactive eXecutive} o \textbf{AIX}, una famiglia di sistemi operativi proprietari basati su Unix sviluppati dalla stessa software house.\footnote{Cfr. \texttt{https://www.ibm.com/it-infrastructure/power/os/aix}}
+Il formato XCOFF è uno standard proprietario sviluppato da IBM\footnote{Cfr. \url{https://www.ibm.com/support/knowledgecenter/ssw\_aix\_72/com.ibm.aix.files/XCOFF.htm}} ed adottato nei sistemi operativi \textbf{Advanced Interactive eXecutive} o \textbf{AIX}, una famiglia di sistemi operativi proprietari basati su Unix sviluppati dalla stessa software house.\footnote{Cfr. \url{https://www.ibm.com/it-infrastructure/power/os/aix}}
 
 Come confermato anche dalla stampa internazionale, da queste informazioni possiamo affermare senza ombra di dubbio che il sistema operativo in esecuzione sui server bancari sia stato proprio un AIX; ma cosa possiamo dire della versione?
 
@@ -373,7 +374,7 @@ Come confermato anche dalla stampa internazionale, da queste informazioni possia
 
 Per rispondere alla precedente domanda dobbiamo analizzare il malware studiando alcune delle stringhe estratte ricorrendo al tool \texttt{strings}.
 
-Osservando innanzitutto il formato della directory di installazione predefinita delle librerie del compilatore \textbf{GCC} nei sistemi operativi AIX, riportato per comodità nel listato \ref{code:InjectionAPIExecutableE-1}\footnote{Cfr: \texttt{http://www.perzl.org/aix/index.php\%3Fn\%3DMain.GCCBinariesVersionNeutral}}, possiamo facilmente conoscere dalle stringhe estratte mostrate nel listato \ref{code:InjectionAPIExecutableE-1} sia la versione di GCC che quella del sistema operativo AIX utilizzati per eseguire la \textit{build} del malware, le quali risultano essere pari a 4.8.5\footnote{Ulteriori dettagli su: \texttt{https://gcc.gnu.org/gcc-4.8/}} e 7.1\footnote{Ulteriori dettagli su: \texttt{https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}} rispettivamente. Dallo stesso listato si può apprendere inoltre l'architettura del sistema: la PowerPC\texttrademark.
+Osservando innanzitutto il formato della directory di installazione predefinita delle librerie del compilatore \textbf{GCC} nei sistemi operativi AIX, riportato per comodità nel listato \ref{code:InjectionAPIExecutableE-1}\footnote{Cfr: \url{http://www.perzl.org/aix/index.php\%3Fn\%3DMain.GCCBinariesVersionNeutral}}, possiamo facilmente conoscere dalle stringhe estratte mostrate nel listato \ref{code:InjectionAPIExecutableE-1} sia la versione di GCC che quella del sistema operativo AIX utilizzati per eseguire la \textit{build} del malware, le quali risultano essere pari a 4.8.5\footnote{Ulteriori dettagli su: \url{https://gcc.gnu.org/gcc-4.8/}} e 7.1\footnote{Ulteriori dettagli su: \url{https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}} rispettivamente. Dallo stesso listato si può apprendere inoltre l'architettura del sistema: la PowerPC\texttrademark.
 
 \begin{lstlisting}[
 frame=lines, 
@@ -393,9 +394,9 @@ firstnumber=348]
 
 Benché non sono state trovate in rete dati ufficiali a riguardo, dal momento che il malware stesso è stato compilato per la versione 7.1 di AIX, possiamo presupporre che la versione del sistema operativo attaccato fosse \textit{almeno} pari a tale versione. 
 
-Sfortunatamente non è stato possibile risalire alla versione degli aggiornamenti, identificati dalla stessa IBM con il nome di \textit{Technology Levels} (TLs) \footnote{Cfr: \texttt{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/}}, installati sul sistema operativo bersaglio al momento dell'attacco, pertanto non possiamo escludere lo sfruttamento di una qualche vulnerabilità nota da parte degli attaccanti.
+Sfortunatamente non è stato possibile risalire alla versione degli aggiornamenti, identificati dalla stessa IBM con il nome di \textit{Technology Levels} (TLs) \footnote{Cfr: \url{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/}}, installati sul sistema operativo bersaglio al momento dell'attacco, pertanto non possiamo escludere lo sfruttamento di una qualche vulnerabilità nota da parte degli attaccanti.
 
-Ciò che è veramente importante ricordare è che il supporto ufficiale da parte di IBM nei confronti della versione 7.1 di AIX TL0, sostituita dalla ben più moderna versione 7.2 rilasciata nel dicembre 2015, è stato già terminato nel novembre 2013, benché la versione 7.1 TL5 riceverà ancora aggiornamenti fino ad aprile 2022.\footnote{Cfr: \texttt{https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}}
+Ciò che è veramente importante ricordare è che il supporto ufficiale da parte di IBM nei confronti della versione 7.1 di AIX TL0, sostituita dalla ben più moderna versione 7.2 rilasciata nel dicembre 2015, è stato già terminato nel novembre 2013, benché la versione 7.1 TL5 riceverà ancora aggiornamenti fino ad aprile 2022.\footnote{Cfr: \url{https://www-01.ibm.com/support/docview.wss?uid=isg3T1012517}}
 
 \begin{lstlisting}[
 frame=lines, 
@@ -405,13 +406,13 @@ firstnumber=945]
 IBM XL C for AIX, Version 11.1.0.1
 \end{lstlisting}
 
-Il particolare mostrato nel listato \ref{code:stringsInjectionAPIexecutablee2} dimostra l'uso da parte degli attaccanti del software \textbf{XL C/C++ for AIX} versione 11.1.0.1, un compilatore C/C++ appositamente ottimizzato dalla IBM per i propri sistemi operativi\footnote{Cfr. \texttt{https://www.ibm.com/it-it/marketplace/xl-cpp-aix-compiler-power}}, confermando, insieme ai numerosi riferimenti alle ben note librerie standard di C, come il C/C++ sia stato il linguaggio di programmazione scelto per implementare il malware.
+Il particolare mostrato nel listato \ref{code:stringsInjectionAPIexecutablee2} dimostra l'uso da parte degli attaccanti del software \textbf{XL C/C++ for AIX} versione 11.1.0.1, un compilatore C/C++ appositamente ottimizzato dalla IBM per i propri sistemi operativi\footnote{Cfr. \url{https://www.ibm.com/it-it/marketplace/xl-cpp-aix-compiler-power}}, confermando, insieme ai numerosi riferimenti alle ben note librerie standard di C, come il C/C++ sia stato il linguaggio di programmazione scelto per implementare il malware.
 
 \paragraph{Le attività di logging di FASTCash}
 
 Osservando ora il frammento mostrato nel listato \ref{code:stringsInjectionAPIexecutablee3}, è possibile notare un insieme di stringhe, aventi formato \texttt{[FUNCTION\_NAME] \textit{info}}, le quali, come avremo modo di notare anche durante l'analisi del codice assembly, fanno parte certamente di un \textbf{meccanismo di logging} sfruttato dagli attaccanti; tale aspetto è stato confermato dalla già citata analisi della NCCIC ed è noto anche il file di log stesso, di cui abbiamo riportato alcuni dettagli nella sezione \ref{sec:apilog}.
 
-Con ogni probabilità, le suddette stampe sono state realizzate per mezzo della funzione della libreria standard \texttt{snprintf}, come dimostrato dal codice assembly e dai numerosi riferimenti alla suddetta funzione presenti nel file. E' interessante notare come molte delle stampe coinvolgano numeri interi senza segno in forma esadecimale, come dimostrato dall'uso dei \textit{conversion specifier} (le speciali sequenze di caratteri usati abitualmente nella definizione del formato di output nelle funzioni \texttt{printf}) nella forma \texttt{\%llX}\footnote{Cfr. \texttt{http://man7.org/linux/man-pages/man3/printf.3.html}}.
+Con ogni probabilità, le suddette stampe sono state realizzate per mezzo della funzione della libreria standard \texttt{snprintf}, come dimostrato dal codice assembly e dai numerosi riferimenti alla suddetta funzione presenti nel file. E' interessante notare come molte delle stampe coinvolgano numeri interi senza segno in forma esadecimale, come dimostrato dall'uso dei \textit{conversion specifier} (le speciali sequenze di caratteri usati abitualmente nella definizione del formato di output nelle funzioni \texttt{printf}) nella forma \texttt{\%llX}\footnote{Cfr. \url{http://man7.org/linux/man-pages/man3/printf.3.html}}.
 
 Queste stampe di log coinvolgono gran parte delle funzioni implementate nel file e presumibilmente sono state utilizzate dagli attaccanti per motivi di debug e racconta di informazioni arricchite anche da indicazioni temporali, come dimostrano l'uso delle funzioni \texttt{gettimeofday} e \texttt{localtime}. 
 
@@ -561,7 +562,7 @@ firstnumber=299]
 ...
 \end{lstlisting}
 
-Come dimostrano i log mostrati nei listati \ref{code:stringsInjectionAPIexecutablee7} e \ref{code:stringsInjectionAPIexecutablee8}, il malware non si limita solo alla scrittura dei messaggi nei file di controllo dei processi ma raccoglie ed altera le informazioni presenti nei registri del processore, parte dei quali sono riportati nella tabella \ref{tab:PowerPCRegister}\footnote{Cfr. \textit{AIX Version 7.1: Assembler Language Reference} per una lista completa oppure visita \texttt{https://www.ibm.com/support/knowledgecenter/en/ssw\_aix\_71/com.ibm.aix.alangref/idalangref\_arch\_overview.htm} o \texttt{https://www.ibm.com/support/knowledgecenter/en/ssw\_aix\_71/com.ibm.aix.kdb/kdb\_registers.htm}}
+Come dimostrano i log mostrati nei listati \ref{code:stringsInjectionAPIexecutablee7} e \ref{code:stringsInjectionAPIexecutablee8}, il malware non si limita solo alla scrittura dei messaggi nei file di controllo dei processi ma raccoglie ed altera le informazioni presenti nei registri del processore, parte dei quali sono riportati nella tabella \ref{tab:PowerPCRegister}\footnote{Cfr. \textit{AIX Version 7.1: Assembler Language Reference} per una lista completa oppure visita \url{https://www.ibm.com/support/knowledgecenter/en/ssw\_aix\_71/com.ibm.aix.alangref/idalangref\_arch\_overview.htm} o \url{https://www.ibm.com/support/knowledgecenter/en/ssw\_aix\_71/com.ibm.aix.kdb/kdb\_registers.htm}}
 
 Sfortunatamente, non avendo la possibilità di eseguire il malware direttamente, ignoriamo quali dati siano stati prelevati e/o scritti attraverso i registri, benché è possibile fare una serie di supposizioni che riteniamo molto probabili.
 
@@ -949,7 +950,7 @@ Osserviamo ora l'insieme di stringhe riportate in \ref{code:2so-3}
 
 Analogamente al file \texttt{Injection\_API\_executable\_e}, la libreria esegue una notevole attività di log delle proprie attività; come avremmo modo di notare successivamente nella sezione \ref{subsubsection:outDumpLog}, i dati di log vengono scritti direttamente in memoria di massa attraverso la procedura \texttt{out\_dump\_log}.
 
-Dal listato possiamo osservare un'interessante riferimento al percorso \texttt{/tmp/.ICE-unix/}: in accordo alla documentazione relativa alla versione R6.8.2 di X11\footnote{Cfr. \texttt{https://www.x.org/releases/X11R6.8.2/doc/RELNOTES5.html}} (la famosa implementazione del X Window System\footnote{Cfr. \texttt{https://www.x.org/wiki/}}) il suddetto percorso viene usato per ospitare una serie di \texttt{socket} sfruttate dal protocollo \textbf{Inter-Client Exchange} (\textbf{ICE}), utilizzato per la risoluzione di varie problematiche come quelle legate all'autenticazione o al \textit{byte order negotiation}\footnote{Cfr. \texttt{https://www.x.org/releases/X11R7.7/doc/libICE/ICElib.html\#Overview\_of\_ICE}}. Pertanto, sebbene ne ignoriamo le motivazioni, abbiamo motivo di ritenere che gli attaccanti abbiano interagito con la GUI session manager di X11 attraverso il protocollo ICE per svolgere le loro attività.
+Dal listato possiamo osservare un'interessante riferimento al percorso \texttt{/tmp/.ICE-unix/}: in accordo alla documentazione relativa alla versione R6.8.2 di X11\footnote{Cfr. \url{https://www.x.org/releases/X11R6.8.2/doc/RELNOTES5.html}} (la famosa implementazione del X Window System\footnote{Cfr. \url{https://www.x.org/wiki/}}) il suddetto percorso viene usato per ospitare una serie di \texttt{socket} sfruttate dal protocollo \textbf{Inter-Client Exchange} (\textbf{ICE}), utilizzato per la risoluzione di varie problematiche come quelle legate all'autenticazione o al \textit{byte order negotiation}\footnote{Cfr. \url{https://www.x.org/releases/X11R7.7/doc/libICE/ICElib.html\#Overview\_of\_ICE}}. Pertanto, sebbene ne ignoriamo le motivazioni, abbiamo motivo di ritenere che gli attaccanti abbiano interagito con la GUI session manager di X11 attraverso il protocollo ICE per svolgere le loro attività.
 
 \subsubsection{Analisi del codice assembly}
 
@@ -1056,17 +1057,17 @@ L'introduzione di codice maligno all'interno dei sistema ha avuto molteplici con
 \item Danni economico-finanziari dovuti alle operazioni di ripristino del sistema, aggiornamento dei software e di tutti i meccanismi di sicurezza.
 \end{itemize}
 
-Forniamo ora alcune cifre; secondo la stampa internazionale, il gruppo Lazarus è riuscito ad impossessarsi di circa \textbf{200 milioni di dollari} a danno di vari istituti bancari in ben 23 diverse nazioni asiatiche ed africane.\footnote{\texttt{https://www.bankinfosecurity.com/lazarus-fastcash-bank-hackers-wield-aix-trojan-a-11694}}
+Forniamo ora alcune cifre; secondo la stampa internazionale, il gruppo Lazarus è riuscito ad impossessarsi di circa \textbf{200 milioni di dollari} a danno di vari istituti bancari in ben 23 diverse nazioni asiatiche ed africane.\footnote{\url{https://www.bankinfosecurity.com/lazarus-fastcash-bank-hackers-wield-aix-trojan-a-11694}}
 
 Valutare l'impatto economico e fornire una stima affidabile dei danni subiti è tuttavia impossibile in quanto non sono stati pubblicati report che valutassero la situazione economica degli istituti bancari successivamente all'attacco FASTCash. 
 
 Pertanto, al fine di elaborare una stima abbastanza affidabile degli oneri finanziari a carico delle banche colpite da FASTCash, abbiamo supposto che:
 
 \begin{itemize}
-\item Ogni banca possieda un proprio centro di calcolo composto da non meno di 25 rack capaci di ospitare almeno 25 server ciascuno. Inoltre ogni server è equipaggiato con non meno di 2 processori da 12 core ciascuno.\footnote{Dal momento che \textbf{non} è nota la configurazione hardware dei server bancari colpiti da FASTCash, queste assunzioni sono basate sulle caratteristiche tecniche dei prodotti IBM di fascia media per il mercato enterprice. I prodotti presi come riferimento sono lo \textbf{IBM Power System L922} (server) e lo \textbf{IBM S2 25U Standard Rack} (rack) \\ \texttt{ https://www-01.ibm.com/common/ssi/rep\_ca/5/872/ENUSAG10-0065/ENUSAG10-0065.PDF} \\ \texttt{https://www.ibm.com/downloads/cas/GLZO1XOY}}
-\item Ogni banca colpita da FASTCash provveda all'aggiornamento di tutti i sistemi equipaggiati con vecchie versioni di AIX. Per eseguire l'upgrade, abbiamo considerato il costo d'acquisto della licenza di \textbf{IBM AIX 7.2 Enterprise Edition} pari a circa 1000 dollari per core.\footnote{\texttt{https://www.theregister.co.uk/2010/04/15/ibm\_aix\_6\_1\_express/} (I prezzi riportati nella fonte sono relativi alla versione 6.1 di AIX. Abbiamo assunto che i costi d'acquisto delle varie versioni di AIZ siano grossomodo dello stesso ordine di grandezza.)}
+\item Ogni banca possieda un proprio centro di calcolo composto da non meno di 25 rack capaci di ospitare almeno 25 server ciascuno. Inoltre ogni server è equipaggiato con non meno di 2 processori da 12 core ciascuno.\footnote{Dal momento che \textbf{non} è nota la configurazione hardware dei server bancari colpiti da FASTCash, queste assunzioni sono basate sulle caratteristiche tecniche dei prodotti IBM di fascia media per il mercato enterprice. I prodotti presi come riferimento sono lo \textbf{IBM Power System L922} (server) e lo \textbf{IBM S2 25U Standard Rack} (rack) \\ \texttt{ https://www-01.ibm.com/common/ssi/rep\_ca/5/872/ENUSAG10-0065/ENUSAG10-0065.PDF} \\ \url{https://www.ibm.com/downloads/cas/GLZO1XOY}}
+\item Ogni banca colpita da FASTCash provveda all'aggiornamento di tutti i sistemi equipaggiati con vecchie versioni di AIX. Per eseguire l'upgrade, abbiamo considerato il costo d'acquisto della licenza di \textbf{IBM AIX 7.2 Enterprise Edition} pari a circa 1000 dollari per core.\footnote{\url{https://www.theregister.co.uk/2010/04/15/ibm\_aix\_6\_1\_express/} (I prezzi riportati nella fonte sono relativi alla versione 6.1 di AIX. Abbiamo assunto che i costi d'acquisto delle varie versioni di AIZ siano grossomodo dello stesso ordine di grandezza.)}
 \item Il costo da sostenere per il risarcimento di tutti i clienti colpiti da FASTCash sia equivalente all'ammontare prelevato dagli attaccanti.
-\item Il costo da sostenere per ogni tecnico informatico qualificato, indispensabili per l'esecuzione dei necessari interventi di manutenzione straordinaria per l'aggiornamento e configurazione dei sistemi colpiti, sia pari a circa 9500 dollari. Abbiamo supposto team da almeno 7 persone per banca (ossia un addetto ogni 3 rack).\footnote{\texttt{http://www.leverup.it/download/PRESENTAZIONI\%20LEVER\%20UP/03\_03\_2\_Listino\%20SGA\%20REV\%203.pdf}}
+\item Il costo da sostenere per ogni tecnico informatico qualificato, indispensabili per l'esecuzione dei necessari interventi di manutenzione straordinaria per l'aggiornamento e configurazione dei sistemi colpiti, sia pari a circa 9500 dollari. Abbiamo supposto team da almeno 7 persone per banca (ossia un addetto ogni 3 rack).\footnote{\url{http://www.leverup.it/download/PRESENTAZIONI\%20LEVER\%20UP/03\_03\_2\_Listino\%20SGA\%20REV\%203.pdf}}
 \end{itemize}
 
 In base a tali assunzioni, è possibile stimare che la somma totale dei danni subiti da una banca colpita dal malware FASTCash sia pari a circa \textbf{25.379.000 dollari}.
@@ -1099,7 +1100,7 @@ In questo capitolo forniremo una analisi dettaglia delle possibili contromisure 
 
 Come suggerito dalla totalità delle aziende di sicurezza informatica, al fine di contrastare in generale gli attacchi informatici, è indispensabile una \textbf{regolare attività di aggiornamento} di tutto il parco software.
 
-I ricercatori della Symantec hanno stabilito\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} che il mancato aggiornamento del sistema operativo AIX utilizzato dai payment switch server abbia compromesso la sicurezza del sistema poiché privata del supporto IBM relativamente alle patch di sicurezza, le quali avrebbero potuto contrastare o, nel migliore delle ipotesi, impedire l'attacco informatico. 
+I ricercatori della Symantec hanno stabilito\footnote{\url{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} che il mancato aggiornamento del sistema operativo AIX utilizzato dai payment switch server abbia compromesso la sicurezza del sistema poiché privata del supporto IBM relativamente alle patch di sicurezza, le quali avrebbero potuto contrastare o, nel migliore delle ipotesi, impedire l'attacco informatico. 
 
 \subsection{Analisi dell'efficacia degli aggiornamenti software}
 
@@ -1123,7 +1124,7 @@ Una possibile applicazione del principio del privilegio minimo si basa sull'uso 
 
 Poiché il file \texttt{Injection\_API\_executable\_e}, contenente l'\textit{injection tool} di FASTCash, richiede, per poter funzionare, l'accesso in lettura/scrittura al pseudo-file system \texttt{/proc}, l'introduzione di restrizioni sull'accesso a tale directory avrebbe potuto contrastare efficacemente FASTCash.
 
-Teoricamente, configurando opportunamente il sistema rendendo non eseguibili i file binari presenti nelle partizioni più vulnerabili, utilizzando i flag \texttt{noexec} o \texttt{nosetuid} all'interno delle stringhe per i mount delle partizioni presenti nel file \texttt{/etc/fstab}, sarebbe stato possibile impedire a priori l'attacco rendendo impossibile l'avvio del processo malware.\footnote{\texttt{https://debian-administration.org/article/57/Making\_/tmp\_non-executable}}
+Teoricamente, configurando opportunamente il sistema rendendo non eseguibili i file binari presenti nelle partizioni più vulnerabili, utilizzando i flag \texttt{noexec} o \texttt{nosetuid} all'interno delle stringhe per i mount delle partizioni presenti nel file \texttt{/etc/fstab}, sarebbe stato possibile impedire a priori l'attacco rendendo impossibile l'avvio del processo malware.\footnote{\url{https://debian-administration.org/article/57/Making\_/tmp\_non-executable}}
 
 Ovviamente tale forma di sicurezza è priva di utilità qualora gli attaccanti riescano ad ottenere privilegi amministrativi attraverso tecniche di \textit{privilege escalation} che è necessario contrastare attraverso regolari attività di aggiornamento e forme di autenticazione resistenti.
 
@@ -1137,7 +1138,7 @@ Nei sistemi basati su Unix, di cui fa parte anche il sistema operativo AIX, esis
 
 Riteniamo che l'uso di un qualsiasi strumento di whitelisting, opportunamente configurato e testato, avrebbe potuto con buone probabilità contrastare le attività del malware FASTCash impedendo al processo maligno responsabile della code injection di avviarsi o di accedere alle risorse del sistema.
 
-Tuttavia tale contromisura è lungi dall'essere una panacea; gli attaccanti avrebbero potuto, per mezzo di tecniche di \textit{priviledge escalation}, riuscire a ottenere le autorizzazioni necessarie per alterare il contenuto della whitelist stessa allo scopo di consentire la successiva esecuzione del malware. Per tale motivo è indispensabile, allo scopo di non compromettere l'efficacia di questi strumenti, provvedere ad una opportuna protezione degli account responsabili della gestione della whitelist mediante forme di autenticazione più sofisticate e sicure.\footnote{\textit{Cfr.} \texttt{https://www.sans.org/reading-room/whitepapers/application/application-whitelisting-panacea-propaganda-33599}}
+Tuttavia tale contromisura è lungi dall'essere una panacea; gli attaccanti avrebbero potuto, per mezzo di tecniche di \textit{priviledge escalation}, riuscire a ottenere le autorizzazioni necessarie per alterare il contenuto della whitelist stessa allo scopo di consentire la successiva esecuzione del malware. Per tale motivo è indispensabile, allo scopo di non compromettere l'efficacia di questi strumenti, provvedere ad una opportuna protezione degli account responsabili della gestione della whitelist mediante forme di autenticazione più sofisticate e sicure.\footnote{\textit{Cfr.} \url{https://www.sans.org/reading-room/whitepapers/application/application-whitelisting-panacea-propaganda-33599}}
 
 \section{Riduzione della superficie di attacco}
 
@@ -1158,7 +1159,7 @@ Fortunatamente esiste uno strumento molto potente per ridurre al massimo la supe
 Gli unikernel sono sistemi operativi specializzati con unico spazio d'indirizzamento la cui principale caratteristica risiede nel possedere un set minimale di librerie e servizi, ossia quelli indispensabili per  l'esecuzione delle applicazioni richieste. 
 
 Una descrizione dettagliata degli unikernel non ricade negli scopi della presente relazione, tuttavia basti ricordare che gli unikernel hanno una dimensione, in termini di linee di codice, pari al 4\% di un sistema operativo tradizionale. Ciò comporta notevolissimi vantaggi in termini di sicurezza poiché, oltre alla riduzione delle vulnerabilità esposte, data la minore quantità di codice è possibile scoprire e risolvere le vulnerabilità 
-con maggior velocità prima ancora di essere sfruttate da cyber-criminali.\footnote{\texttt{https://en.wikipedia.org/wiki/Unikernel}}
+con maggior velocità prima ancora di essere sfruttate da cyber-criminali.\footnote{\url{https://en.wikipedia.org/wiki/Unikernel}}
 
 \subsection{Ridondanza e virtualizzazione}
 
@@ -1184,7 +1185,7 @@ Sfortunatamente, le contromisure che abbiamo elencato finora sono vulnerabili a 
 
 La riduzione della superficie di attacco e una regolare attività di aggiornamento costituiscono il presupposto per un sistema resistente a queste forme di attacco; tuttavia è indispensabile adottare opportune forme di autenticazione, capaci di proteggere adeguatamente gli account con privilegi elevati.
 
-Come ricordato anche nei rapporti NCCIC, sarebbe opportuno adottare \textit{almeno} una \textbf{forma di autenticazione a due fattori} secondo la quale si devono combinare almeno due forme di autenticazione appartenenti a distinte classi, riportate di seguito:\footnote{\texttt{https://searchsecurity.techtarget.com/definition/four-factor-authentication-4FA}}
+Come ricordato anche nei rapporti NCCIC, sarebbe opportuno adottare \textit{almeno} una \textbf{forma di autenticazione a due fattori} secondo la quale si devono combinare almeno due forme di autenticazione appartenenti a distinte classi, riportate di seguito:\footnote{\url{https://searchsecurity.techtarget.com/definition/four-factor-authentication-4FA}}
 \begin{description}
 \item[\textit{Something an user knows}] Questa classe comprende tutte le forme di autenticazione che richiedono un "\textit{qualcosa}" che l'utente deve conoscere per eseguire il login in un sistema, come, ad esempio, \textbf{usernames}, \textbf{ID}, \textbf{password} e \textbf{personal identification numbers} (\textbf{PIN}).
 \item[\textit{Something an user has}] Fanno parte di questa categoria i cosiddetti \textbf{one-time password tokens} (\textbf{OTP tokens}), tessere magnetiche, carte SIM
@@ -1212,7 +1213,7 @@ In generale, solo una regolare attività di configurazione ed aggiornamento dei 
 
 Come abbiamo avuto modo di constatare nella sezione \ref{descr}, gli attaccanti hanno adottato tecniche di spear-phishing per riuscire ad installare l'injection tool all'interno dei server bancari; pertanto adottare contromisure per contrastare questa forma di attacco è molto importante per ostacolare FASTCash, impedendo a monte di installare l'injection tool nei server bancari.
 
-Oltre alle contromisure classiche, tra cui figurano, ad esempio, l'adozione di filtri anti-spam, l'installazione di toolbar Anti-Phishing all'interno dei browser e l'aggiornamento di quest'ultimi\footnote{\texttt{http://www.phishing.org/10-ways-to-avoid-phishing-scams}}, riteniamo che la forma più efficace di contrasto ai suddetti attacchi sia una efficace formazione ed educazione del personale; istruendo il personale a \textit{riconoscere} gli attacchi di phishing, attraverso appositi corsi o, meglio ancora, simulazioni, è possibile contrastare del tutto FASTCash e la maggior parte degli attacchi informatici odierni.
+Oltre alle contromisure classiche, tra cui figurano, ad esempio, l'adozione di filtri anti-spam, l'installazione di toolbar Anti-Phishing all'interno dei browser e l'aggiornamento di quest'ultimi\footnote{\url{http://www.phishing.org/10-ways-to-avoid-phishing-scams}}, riteniamo che la forma più efficace di contrasto ai suddetti attacchi sia una efficace formazione ed educazione del personale; istruendo il personale a \textit{riconoscere} gli attacchi di phishing, attraverso appositi corsi o, meglio ancora, simulazioni, è possibile contrastare del tutto FASTCash e la maggior parte degli attacchi informatici odierni.
 
 \newpage
 \chapter{I sistemi vulnerabili all'attacco}
@@ -1225,7 +1226,7 @@ Di conseguenza, possiamo in generale considerare come vulnerabili tutti i sistem
 Nonostante ciò, riteniamo maggiormente vulnerabili tutti i sistemi provvisti di software anti-virus che risulti: 
 \begin{itemize}
 \item Obsoleto o non aggiornato, non in grado quindi di rilevare e contrastare FASTCash.
-\item Aggiornato ma \textit{non} in grado di rilevare FASTCash; infatti, in base alle informazioni pubblicate da VirusTotal, esistono software anti-virus che non rileva l'injection tool di FASTCash, tra cui figurano Avast, Avira e AVG.\footnote{\texttt{https://www.virustotal.com/gui/file/d465637518024262c063f4a82d799a4e40ff3381014972f24ea18bc23c3b27ee/detection} \\ (visionato il 14/06/2019)}
+\item Aggiornato ma \textit{non} in grado di rilevare FASTCash; infatti, in base alle informazioni pubblicate da VirusTotal, esistono software anti-virus che non rileva l'injection tool di FASTCash, tra cui figurano Avast, Avira e AVG.\footnote{\url{https://www.virustotal.com/gui/file/d465637518024262c063f4a82d799a4e40ff3381014972f24ea18bc23c3b27ee/detection} \\ (visionato il 14/06/2019)}
 \end{itemize} 
 
 \listoftables
