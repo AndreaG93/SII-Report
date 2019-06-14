@@ -1163,13 +1163,19 @@ con maggior velocità prima ancora di essere sfruttate da cyber-criminali.\footn
 
 \subsection{Ridondanza e virtualizzazione}
 
-Una contromisura che riteniamo efficace per aumentare la sicurezza del sistema e ridurre la probabilità di successo degli attaccanti è rappresentato dall'adozione di un certo grado di \textbf{ridondanza dei sistemi critici}.
+Al fine di aumentare la sicurezza del sistema e ridurre la probabilità di successo degli attaccanti, una soluzione che riteniamo particolarmente efficace, benché costosa sia in termini economici che computazionali, è rappresentata dall'adozione di un certo grado di \textbf{ridondanza} dei sistemi.
 
-Riteniamo che, subordinando l'approvazione di una transazione finanziaria all'approvazione di più sistemi di payment switch \textbf{indipendenti}, opportunamente coordinati attraverso algoritmi di consenso (Raft, Paxos ecc.), sarebbe stato possibile contrastare in modo molto efficace l'attività dei cyber-criminali, costretti ad attaccare un numero maggiore di sistemi. 
+Come abbiamo visto nei capitoli precedenti, gli attaccanti colpivano \textit{un} payment switch server al fine di intercettare e manipolare i messaggi tra gli ATM e il sistema bancario centrale; gli ATM, una volta ricevuti i messaggi ISO 8583 manipolati dagli attaccanti, non effettua ulteriori controlli su quest'ultimi, permettendo così ai criminali di prelevare denaro contante.
 
-La ridondanza dei sistemi può essere raggiunta anche attraverso tecniche di virtualizzazione, con vantaggi ben noti dal punto di vista della sicurezza grazie all'isolamento fra sistemi.
+Cosa succederebbe invece se subordinassimo l'approvazione di una transazione finanziaria da parte di un ATM attraverso l'intermediazione di \textit{più} sistemi di payment switch \textbf{indipendenti}? 
 
-Se il sistema presenta un certo grado di replicazione, sarebbe possibile, una volta rilevati i sistemi compromessi, arrestare quest'ultimi e provvedere al loro ripristino, continuando ad offrire i servizi ai propri clienti.
+Detto in altri termini: cosa sarebbe accaduto qualora l'ATM fosse stato progettato per accettare un certo messaggio ISO 8583 ricevuto \textit{solo} qualora la \textit{maggioranza}, di un certo insieme di server, avesse inoltrato quello stesso messaggio?
+
+I cyber-criminali sarebbero stati costretti ad attaccare un maggior numero di sistemi riducendo così di molto la probabilità di successo dell'attacco e allungandone le tempistiche; infatti, non è affatto scontato che gli attacchi di phishing e di process injection vadano sempre a buon fine durante ogni singolo attacco. Inoltre, il maggior tempo richiesto per compiere un certo di attacchi indipendenti avrebbe potuto avvantaggiare gli addetti alla sicurezza che avrebbero potuto accorgersi dei processi estranei attraverso confronti fra i sistemi replicati.
+
+Inoltre un certo grado di replicazione può essere raggiunto anche attraverso tecniche di virtualizzazione, con vantaggi ben noti dal punto di vista della sicurezza grazie all'isolamento fra sistemi. Tra l'altro, se il sistema presenta un certo grado di ridondanza, sarebbe possibile, una volta rilevati i sistemi compromessi, arrestare quest'ultimi e provvedere al loro ripristino, continuando ad offrire i servizi ai propri clienti.
+
+Ovviamente tale soluzione è lungi da essere una panacea in quanto costosa e onerosa dal punto computazionale e, nonostante ciò, non garantisce completa immunità agli attacchi.
 
 \section{Monitoring}
 
