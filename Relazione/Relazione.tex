@@ -137,6 +137,7 @@ breaklines=true
 \chapter{Introduzione}
 \chapterauthor{\small{\textit{Autore:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
+
 Lo scopo della presente relazione è quella di fornire un'analisi il più possibile dettagliata del malware denominato \textbf{FASTCash}\footnote{\texttt{https://www.symantec.com/security-center/writeup/2018-110615-2942-99}} la cui paternità, secondo le analisi forensi eseguite da varie aziende ed agenzie, tra cui la \textbf{Symantec}, \textbf{Kaspersky} e la \textbf{NCCIC}\footnote{Stiamo parlando della "\textit{National Cybersecurity and Communications Integration Center}" un'agenzia federale americana specializzata in sicurezza informatica facente parte della CISA (\textit{Cybersecurity and Infrastructure Security Agency}) \\ Per ulteriori informazioni in merito si veda: \texttt{https://www.us-cert.gov/about-us} }, è attribuita ad un gruppo di cyber-criminali conosciuto come \textit{Lazarus Group}\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}} \footnote{\texttt{https://www.us-cert.gov/ncas/alerts/TA18-275A}}, di cui forniremo una descrizione più dettagliata nella sezione \ref{lazarausgrpo}.
 
 La scoperta del malware risale precisamente al \textbf{2 ottobre 2018} giorno in cui, grazie al lavoro congiunto effettuato da varie agenzie ed istituzioni americane, tra cui \textbf{FBI}, \textbf{Dipartimento del Tesoro Americano} e la \textbf{DHS} (\textit{Department of Homeland Security})\footnote{\textit{Ibidem}}, venne pubblicato sul sito del CISA l'avviso \texttt{TA18-275A}, secondo la quale esponenti del gruppo Lazarus avevano condotto con successo una serie di attacchi, denominati dalla CISA come \textit{FASTCash}, per il\textbf{ prelievo fraudolento di denaro contante dagli ATM} (\textit{Automated Teller Machines}) di varie banche in oltre 30 paesi diversi sparsi fra Asia e Africa \footnote{\textit{Ibidem}}. E' importante sottolineare che, sebbene l'esistenza del malware sia stata resa di dominio pubblico solo allora, la CISA ha dichiarato che il gruppo Lazarus ha condotto attacchi di tipo FASTCash già a partire dal 2016.
@@ -188,6 +189,8 @@ Per essere precisi, come si evince dal rapporto \texttt{AR18-275A} pubblicato da
 \end{table}
 
 \section{Descrizione generale dell'attacco}\label{descr}
+\sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
+\sectionsecondauthor{\quad\quad\quad \small{\textit{Editing:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
 Per effettuare con successo un attacco FASTCash, i cyber-criminali violavano dapprima le reti delle banche bersaglio allo scopo di ottenere accesso completo ai cosiddetti \textbf{server di payment switch} (\textit{switch application servers}), i server responsabili della gestione delle transazioni finanziare tra gli ATM e il sistema informatico principale della banca.\footnote{\texttt{https://www.symantec.com/blogs/threat-intelligence/fastcash-lazarus-atm-malware}}
 
@@ -207,9 +210,9 @@ Per conseguire tale scopo, il suddetto malware eseguiva una serie di operazioni 
 \item Caricare in memoria uno speciale \textbf{modulo proxy} che, secondo la NCCIC, oltre ad essere stato progettato ad agire come una \textit{command-line utility}, forzava la macchina ad agire come se fosse un proxy server, consentendo agli attaccanti di interagire in remoto con il malware.\footnote{\textit{Ibidem}}
 \end{itemize}
 
-Le analisi condotte dalla NCCIC hanno dimostrato che gli attaccanti, per mezzo del suddetto malware, sono riusciti a trasferire un \textbf{injection tool} all'interno dei sistemi di payment switch al fine di introdurre codice malevolo all'interno di uno o più processi legittimi. 
+Le analisi condotte dalla NCCIC hanno dimostrato che gli attaccanti, per mezzo del suddetto malware, sono riusciti a trasferire un \textbf{injection tool} all'interno dei server di payment switch delle banche coinvolte dell'attacco; analizzeremo in dettaglio l'injection injection tool di FASTCash nella sezione \ref{processoinjection}.
 
-Il codice introdotto si è rivelato capace di interagire con i messaggi basati sul \textbf{protocollo ISO 8583} scambiati tra gli ATM e il sistema informatico bancario centrale, consentendo agli aggressori di prelevare denaro agli sportelli automatici.
+Il suddetto injection tool è stato utilizzato per introdurre, all'interno di uno o più processi legittimi in esecuzione sui payment switch server, codice malevolo capace di interagire ed alterare i messaggi basati sul \textbf{protocollo ISO 8583} scambiati tra gli ATM e il sistema informatico bancario centrale, consentendo agli aggressori di prelevare denaro agli sportelli automatici.
 
 \section{Manipolazioni dei messaggi ISO 8583}
 \sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Alessandro Boccini} (\textbf{0277414})}}
@@ -1205,6 +1208,7 @@ In generale, solo una regolare attività di configurazione ed aggiornamento dei 
 
 \section{Contrasto agli attacchi di phishing}
 \sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
+\sectionsecondauthor{\quad\quad\quad \small{\textit{Editing:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
 Come abbiamo avuto modo di constatare nella sezione \ref{descr}, gli attaccanti hanno adottato tecniche di spear-phishing per riuscire ad installare l'injection tool all'interno dei server bancari; pertanto adottare contromisure per contrastare questa forma di attacco è molto importante per ostacolare FASTCash, impedendo a monte di installare l'injection tool nei server bancari.
 
