@@ -211,7 +211,7 @@ Per conseguire il suddetto scopo, il malware eseguiva una serie di operazioni tr
 \item Caricare in memoria uno speciale \textbf{modulo proxy} che, secondo la NCCIC, oltre ad essere stato progettato ad agire come una \textit{command-line utility}, forzava la macchina ad agire come se fosse un proxy server, consentendo agli attaccanti di interagire in remoto con il malware.\footnote{\textit{Ibidem}}
 \end{itemize}
 
-Le analisi condotte dalla NCCIC hanno dimostrato che gli attaccanti, per mezzo del suddetto malware, sono riusciti a trasferire un \textbf{injection tool} all'interno dei server di payment switch delle banche coinvolte dell'attacco; analizzeremo in dettaglio l'injection injection tool di FASTCash nella sezione \ref{processoinjection}.
+Le analisi condotte dalla NCCIC hanno dimostrato che gli attaccanti, per mezzo del suddetto malware, sono riusciti a trasferire un \textbf{injection tool} all'interno dei server di payment switch delle banche coinvolte dell'attacco; analizzeremo in dettaglio l'injection tool di FASTCash nella sezione \ref{processoinjection}.
 
 Il suddetto injection tool è stato utilizzato per introdurre, all'interno di uno o più processi legittimi in esecuzione sui payment switch server, codice malevolo capace di interagire ed alterare i messaggi basati sul \textbf{protocollo ISO 8583} scambiati tra gli ATM e il sistema informatico bancario centrale, consentendo agli aggressori di prelevare denaro agli sportelli automatici. 
 
@@ -221,7 +221,7 @@ Il suddetto injection tool è stato utilizzato per introdurre, all'interno di un
 
 L'ISO 8583 è uno standard internazionale di messaggio nell'ambito delle transazioni finanziarie, utilizzato da molte reti finanziarie, tra cui Visa e MasterCard e dalla quasi totalità degli enti finanziari mondiali.
 
-Dal punto di vista strutturale, un messaggio ISO 8583 è composta da 3 campi:
+Dal punto di vista strutturale, un messaggio ISO 8583 è composto da 3 campi:
 
 \begin{description}
 \item[Message Type Identifier (MTI)] Identifica la tipologia del messaggio ed è composto da un insieme di 4 valori dove:
@@ -252,7 +252,7 @@ Tale verifica avviene per mezzo di una funzione contenuta all'interno delle libr
 
 Qualora la verifica abbia avuto esito positivo, ovvero il PAN estratto dal messaggio corrisponde ad uno dei PAN in possesso agli attaccanti, il messaggio viene manipolato invocando la funzione \texttt{GenerateResponseTransaction1}, la quale modifica il terzo valore del campo MIT del messaggio impostandolo ad 1. Infine, il messaggio, con valore MIT pari ad \texttt{0210}, viene inoltrato all'ATM che rilascerà i contanti ai criminali, completando così l'attacco.
 
-In tutti gli altri casi, i messaggi vengono rilasciati e inoltrati al sistema bancario seguendo il normale l'iter.
+In tutti gli altri casi, i messaggi vengono rilasciati e inoltrati al sistema bancario seguendo il normale iter.
 
 \section{Gruppo Lazarus}\label{lazarausgrpo}
 \sectionauthor{\quad\quad\quad \small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
@@ -392,7 +392,7 @@ firstnumber=348]
 /opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5/ppc64:/opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5:/opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/4.8.5/../../..:/usr/lib:/lib
 \end{lstlisting}
 
-Benché non sono state trovate in rete dati ufficiali a riguardo, dal momento che il malware stesso è stato compilato per la versione 7.1 di AIX, possiamo presupporre che la versione del sistema operativo attaccato fosse \textit{almeno} pari a tale versione. 
+Benché non sono stati trovati dati ufficiali a riguardo, dal momento che il malware stesso è stato compilato per la versione 7.1 di AIX, possiamo presupporre che la versione del sistema operativo attaccato fosse \textit{almeno} pari a tale versione. 
 
 Sfortunatamente non è stato possibile risalire alla versione degli aggiornamenti, identificati dalla stessa IBM con il nome di \textit{Technology Levels} (TLs) \footnote{Cfr: \url{http://ibmsystemsmag.com/aix/tipstechniques/migration/oslevel\_versions/}}, installati sul sistema operativo bersaglio al momento dell'attacco, pertanto non possiamo escludere lo sfruttamento di una qualche vulnerabilità nota da parte degli attaccanti.
 
@@ -521,7 +521,7 @@ A questo punto è legittimo chiedersi cosa può essere effettivamente scritto al
 
 La documentazione ufficiale rilasciata dalla IBM riporta l'esistenza di un insieme di \textbf{messaggi strutturati}\footnote{La documentazione IBM usa in modo intercambiabile il termine \textit{messaggio} e quello di \textit{segnale}}, ognuno dei quali identificato da un codice operativo, rappresentato da un valore \texttt{int}, e da una serie di argomenti (se presenti)\footnote{\textit{Cfr. ivi} pag. 242}. Un aspetto importante che bisogna tenere in mente è che questi messaggi possono essere scritti direttamente nel file \texttt{ctl} di un dato processo al fine di alterare lo stato del processo.
 
-Osservando il listato \ref{code:stringsInjectionAPIexecutablee5}, notiamo una stampa del logger all'interno è presente la stringa in cui compare la parola \textbf{PCWSTOP}; PCWSTOP è il nome di un messaggio definito nei sistemi operativi AIX che viene usato per sospendere l'esecuzione di un processo il cui \texttt{pid} viene passato come argomento.\footnote{Cfr. \textit{Ibidem}}
+Osservando il listato \ref{code:stringsInjectionAPIexecutablee5}, è possibile notare una stringa in cui compare la parola \textbf{PCWSTOP}; PCWSTOP è il nome di un messaggio definito nei sistemi operativi AIX che viene usato per sospendere l'esecuzione di un processo il cui \texttt{pid} viene passato come argomento.\footnote{Cfr. \textit{Ibidem}}
 I risultati della NCCIC e le nostre analisi sul codice assembly indicano che il malware usi questo ed altri messaggi per interrompere dapprima il processo bersaglio, accedere al suo spazio di indirizzamento, effettuare la code injection per poi riavviare il processo affinché esegua effettivamente il codice malevolo.
 
 \begin{lstlisting}[
@@ -640,7 +640,7 @@ firstnumber=308]
 	\newpage
 \subsubsection{Analisi del codice assembly}
 	
-Segue ora una breve analisi di alcune linee codice assembler estratte dal malware allo scopo di confermare alcuni aspetti finora.
+Segue ora una breve analisi di alcune linee di codice assembler estratte dal malware per studiare alcuni aspetti peculiari del malware.
 	
 	\begin{table}[h!]
 	    \caption{Alcune istruzioni assembly disponibili nell'architettura PowerPC\texttrademark}
@@ -682,11 +682,11 @@ Segue ora una breve analisi di alcune linee codice assembler estratte dal malwar
 
 Essendo \texttt{Injection\_API\_executable\_e} un file eseguibile, è naturale cominciare dall'analisi della procedura \texttt{main}.
 
-Nelle primissime linee di codice della procedura sono state trovate varie istruzioni di salto incondizionato verso la funzione \texttt{atoi} (riga 7015 e 7041), probabilmente utilizzata, come confermato anche dalla NCCIC, per gestire gli input ricevuti da terminale, dimostrando così la natura interattiva del file malevolo.  
+Al suo interno sono state trovate diverse istruzioni di salto incondizionato usate per invocare la funzione \texttt{atoi}, che si ritiene essere stata utilizzata per la gestione degli input ricevuti da terminale; tale osservazione, come confermato anche dalla NCCIC, dimostra la natura interattiva del file malevolo.  
 
-Successivamente il malware intraprende varie azioni, di cui ignoriamo le finalità, per la manipolazione di stringhe, come dimostrano la serie di istruzioni di salto condizionato verso le funzioni \texttt{strlen} (riga 7028), \texttt{strncpy} (riga 7035) e \texttt{strtoull} (riga 6973, 6984 e 6995).
+Successivamente il malware intraprende varie azioni finalizzate alla manipolazione di stringhe, come dimostrano una lunga serie di istruzioni di salto condizionato verso le funzioni \texttt{strlen}, \texttt{strncpy} e \texttt{strtoull}; benché le finalità di queste operazioni appaiano poco chiare, è probabile che siano state intraprese per ricostruire le stringhe contenenti le directory per l'accesso ai file dei processi.
 
-Infine, dopo una serie di istruzioni di salto verso procedure che riteniamo avere scopo di inizializzazione (\texttt{load\_config}, \texttt{get\_func\_addr}), viene raggiunta la porzione di codice mostrata nel listato \ref{code:AssemblyFunction-main-1} in cui viene eseguita una istruzione di salto verso una procedura denominata \texttt{inject} che, come vedremo, contiene il codice operativo per l'esecuzione della process injection. 
+Dopo aver invocato un'altra serie di procedure, tra cui figurano (\texttt{load\_config} e \texttt{get\_func\_addr}), viene infine invocata una procedura denominata \texttt{inject} che, come vedremo, contiene il codice operativo per l'esecuzione della process injection. 
 
 \paragraph{La procedura \texttt{inject}}
 
@@ -948,7 +948,7 @@ DetourInitFunc(%s, %s) %s
 
 Osserviamo ora l'insieme di stringhe riportate in \ref{code:2so-3}
 
-Analogamente al file \texttt{Injection\_API\_executable\_e}, la libreria esegue una notevole attività di log delle proprie attività; come avremmo modo di notare successivamente nella sezione \ref{subsubsection:outDumpLog}, i dati di log vengono scritti direttamente in memoria di massa attraverso la procedura \texttt{out\_dump\_log}.
+Analogamente al file \texttt{Injection\_API\_executable\_e}, la libreria esegue una notevole attività di log delle proprie attività; come avremo modo di notare successivamente nella sezione \ref{subsubsection:outDumpLog}, i dati di log vengono scritti direttamente in memoria di massa attraverso la procedura \texttt{out\_dump\_log}.
 
 Dal listato possiamo osservare un'interessante riferimento al percorso \texttt{/tmp/.ICE-unix/}: in accordo alla documentazione relativa alla versione R6.8.2 di X11\footnote{Cfr. \url{https://www.x.org/releases/X11R6.8.2/doc/RELNOTES5.html}} (la famosa implementazione del X Window System\footnote{Cfr. \url{https://www.x.org/wiki/}}) il suddetto percorso viene usato per ospitare una serie di \texttt{socket} sfruttate dal protocollo \textbf{Inter-Client Exchange} (\textbf{ICE}), utilizzato per la risoluzione di varie problematiche come quelle legate all'autenticazione o al \textit{byte order negotiation}\footnote{Cfr. \url{https://www.x.org/releases/X11R7.7/doc/libICE/ICElib.html\#Overview\_of\_ICE}}. Pertanto, sebbene ne ignoriamo le motivazioni, abbiamo motivo di ritenere che gli attaccanti abbiano interagito con la GUI session manager di X11 attraverso il protocollo ICE per svolgere le loro attività.
 
@@ -960,7 +960,7 @@ Come già detto i metodi esportati dalla libreria sono molto numerosi e vari, co
 
 \paragraph{\texttt{DL\_ISO8583\_MSG\_SetField\_Bin}}
 
-La procedura denominata \texttt{DL\_ISO8583\_MSG\_SetField\_Bin} sia stata implementata dagli attaccanti poter alterare il contenuto di un particolare campo dei messaggi ISO 8583 scambiati fra i sistemi bancari.
+La procedura denominata \texttt{DL\_ISO8583\_MSG\_SetField\_Bin} è stata implementata dagli attaccanti per alterare il contenuto di un particolare campo dei messaggi ISO 8583 scambiati fra i sistemi bancari.
 
 Come mostrato nel frammento riportato nel listato \ref{code:2.so-1}, la manipolazione del messaggio incomincia con una fase di ispezione finalizzata alla ricerca dell'indirizzo di memoria corrispondente al campo del messaggio che s'intende modificare. 
 
@@ -1048,7 +1048,7 @@ L'attacco perpetrato dal gruppo Lazarus ha incontestabilmente causato una serie 
 Essendo stati compromessi i processi governanti funzionalità critiche del sistema, l'attacco ha determinato innanzitutto un'\textbf{interruzione dei servizi} legittimi offerti dall'istituto bancario, come quelli aventi funzione di credito sulle quali si basano le transazioni finanziare, comportando conseguenze economico-sociali molto gravi tra cui:
 \begin{itemize}
 \item Danni economici diretti a danno dell'istituto per mancati introiti.
-\item Danni economici indiretti, difficilmente quantificabili, a danno del tessuto economico sociale ed, in particolare, alle varie attività economiche che usufruiscono quotidianamente dei servizi offerti dall'istituto; si pensi, ad esempio, alle transizioni finanziare indispensabili  alle aziende per eseguire attività basilari come il pagamento delle forniture, degli stipendi dei dipendenti, le richieste di credito ecc. 
+\item Danni economici indiretti, difficilmente quantificabili, a danno del tessuto economico sociale ed, in particolare, alle varie attività economiche che usufruiscono quotidianamente dei servizi offerti dall'istituto; si pensi, ad esempio, alle transazioni finanziare indispensabili  alle aziende per eseguire attività basilari come il pagamento delle forniture, degli stipendi dei dipendenti, le richieste di credito ecc. 
 \end{itemize}
 
 L'introduzione di codice maligno all'interno dei sistema ha avuto molteplici conseguenze di notevole impatto economico quali:
@@ -1087,14 +1087,14 @@ A causa delle modalità di attacco intraprese dal malware, è facile rendersi co
 \item I processi critici sono stati compromessi in modo irreversibile.
 \item La compromissione dei processi ha determinato un mutamento del comportamento del sistema non conforme alle specifiche.
 \item Avendo avuto accesso privilegiato al sistema, come dichiarato anche dalla NCCIC, è possibile, benché non sia stato confermato ufficialmente, l'accesso e la manipolazione di dati sensibili sia dei clienti che dell'istituto bancario.
-\item La riservatezza di tutte le transazioni, e quindi di tutti dati ad essi associati, è stata compromessa poiché gli attaccanti sono riusciti ad accedere sia in lettura che in scrittura ai messaggi ISO 8583 scambiati tra i sistemi.
+\item La riservatezza di tutte le transazioni, e quindi di tutti i dati ad essi associati, è stata compromessa poiché gli attaccanti sono riusciti ad accedere sia in lettura che in scrittura ai messaggi ISO 8583 scambiati tra i sistemi.
 \end{itemize}
 
 \newpage
 \chapter{Contromisure}
 \chapterauthor{\small{\textit{Autore:} \textbf{Andrea Graziani} (\textbf{0273395})}}
 
-In questo capitolo forniremo una analisi dettaglia delle possibili contromisure capaci di contrastare le attività del malware FASTCash sia modo pro-attivo che reattivo.
+In questo capitolo forniremo una analisi dettagliata delle possibili contromisure capaci di contrastare le attività del malware FASTCash sia modo pro-attivo che reattivo.
 
 \section{Aggiornamenti software}
 
@@ -1114,9 +1114,9 @@ Benché si potrebbe pensare di rilasciare aggiornamenti di sicurezza che imponga
 
 \section{Principio del privilegio minimo}
 
-Per contrastare FASTCash, riteniamo molto efficace concentrare gli sforzi nell'impedire l'avvio dell'attacco ai fin dal principio. 
+Per contrastare FASTCash, riteniamo molto efficace concentrare gli sforzi nell'impedire l'avvio dell'attacco fin dal principio. 
 
-Le contromisure più efficaci devono innanzitutto basarsi sul cosiddetto \textbf{principle of least privilege} (\textbf{PoLP}), in italiano \textbf{principio del privilegio minimo}, in cui si stabilisce che \textit{un opportuno sistema di sicurezza deve fornire un meccanismo che assicuri che ogni processo in esecuzione sul sistema sia in grado di accedere solo ed esclusivamente alle informazioni di cui necessità per garantire il suo corretto e legittimo funzionamento.}
+Le contromisure più efficaci devono innanzitutto basarsi sul cosiddetto \textbf{principle of least privilege} (\textbf{PoLP}), in italiano \textbf{principio del privilegio minimo}, in cui si stabilisce che \textit{un opportuno sistema di sicurezza deve fornire un meccanismo che assicuri che ogni processo in esecuzione sul sistema sia in grado di accedere solo ed esclusivamente alle informazioni di cui necessita per garantire il suo corretto e legittimo funzionamento.}
 
 \subsection{Le liste di controllo degli accessi}
 
@@ -1142,7 +1142,7 @@ Tuttavia tale contromisura è lungi dall'essere una panacea; gli attaccanti avre
 
 \section{Riduzione della superficie di attacco}
 
-Dalle nostre analisi e da quelle pubblicate dalla NCCIC, risulta che il malware FASTCash sfrutti, per ragioni che purtroppo ignoriamo, la GUI session manager di X11 accedendo alla directory \texttt{/tmp/.ICE-unix/} all'interno della quale sono contenute tutti i dati riguardante la sessione corrente del gestore grafico.
+Dalle nostre analisi e da quelle pubblicate dalla NCCIC, risulta che il malware FASTCash sfrutti, per ragioni che purtroppo ignoriamo, la GUI session manager di X11 accedendo alla directory \texttt{/tmp/.ICE-unix/} all'interno della quale sono contenuti tutti i dati riguardante la sessione corrente del gestore grafico.
 
 Per quanto si possa controllare l'accesso non autorizzato alle risorse di X11 al fine di contrastare le attività di FASTCash, riteniamo che in generale l'utilizzo di un gestore grafico all'interno di sistemi critici, come i  payment switch server dell'istituto bancario, rappresenti un grave rischio per la sicurezza. 
 
@@ -1150,7 +1150,7 @@ Infatti l'uso del gestore grafico aumenta il numero di vulnerabilità sfruttabil
 
 E' indubbio che la rimozione del gestore grafico avrebbe impedito al malware di funzionare a dovere anche qualora avesse compiuto con successo la process injection.
 
-In base a quanto detto, riteniamo che all'interno di sistemi critici, al fine di aumentare la sicurezza del sistema, sia buona regola \textbf{installare ed eseguire solo ed esclusivamente le applicazioni indispensabili} per eseguire un certo servizio, disabilitando o rimuovendo ogni componente ridondate offerto dal sistema operativo. \textit{Così facendo si riducono il numero di vulnerabilità del sistema e si facilità le operazioni di monitoring del sistema essendo più piccola la quantità di processi in esecuzione nel sistema.}
+In base a quanto detto, riteniamo che all'interno di sistemi critici, al fine di aumentare la sicurezza del sistema, sia buona regola \textbf{installare ed eseguire solo ed esclusivamente le applicazioni indispensabili} per eseguire un certo servizio, disabilitando o rimuovendo ogni componente ridondate offerto dal sistema operativo. \textit{Così facendo si riducono il numero di vulnerabilità del sistema, facilitando le operazioni di monitoring del sistema essendo più piccola la quantità di processi in esecuzione nel sistema.}
 
 \subsection{Gli Unikernel}
 
@@ -1171,11 +1171,11 @@ Cosa succederebbe invece se subordinassimo l'approvazione di una transazione fin
 
 Detto in altri termini: cosa sarebbe accaduto qualora l'ATM fosse stato progettato per accettare un certo messaggio ISO 8583 ricevuto \textit{solo} qualora la \textit{maggioranza}, di un certo insieme di server, avesse inoltrato quello stesso messaggio?
 
-I cyber-criminali sarebbero stati costretti ad attaccare un maggior numero di sistemi riducendo così di molto la probabilità di successo dell'attacco e allungandone le tempistiche; infatti, non è affatto scontato che gli attacchi di phishing e di process injection vadano sempre a buon fine durante ogni singolo attacco. Inoltre, il maggior tempo richiesto per compiere un certo di attacchi indipendenti avrebbe potuto avvantaggiare gli addetti alla sicurezza che avrebbero potuto accorgersi dei processi estranei attraverso confronti fra i sistemi replicati.
+I cyber-criminali sarebbero stati costretti ad attaccare un maggior numero di sistemi riducendo così di molto la probabilità di successo dell'attacco e allungandone le tempistiche; infatti, non è affatto scontato che gli attacchi di phishing e di process injection vadano sempre a buon fine durante ogni singolo attacco. Inoltre, il maggior tempo richiesto per compiere un certo numero di attacchi indipendenti avrebbe potuto avvantaggiare gli addetti alla sicurezza che avrebbero potuto accorgersi dei processi estranei attraverso confronti fra i sistemi replicati.
 
 Inoltre un certo grado di replicazione può essere raggiunto anche attraverso tecniche di virtualizzazione, con vantaggi ben noti dal punto di vista della sicurezza grazie all'isolamento fra sistemi. Tra l'altro, se il sistema presenta un certo grado di ridondanza, sarebbe possibile, una volta rilevati i sistemi compromessi, arrestare quest'ultimi e provvedere al loro ripristino, continuando ad offrire i servizi ai propri clienti.
 
-Ovviamente tale soluzione è lungi da essere una panacea in quanto costosa e onerosa dal punto computazionale e, nonostante ciò, non garantisce completa immunità agli attacchi.
+Ovviamente tale soluzione è lungi da essere una panacea in quanto costosa e onerosa dal punto di vista computazionale e, nonostante ciò, non garantisce completa immunità agli attacchi.
 
 \section{Monitoring}
 
@@ -1183,7 +1183,7 @@ L'attività che più di tutte avrebbe contribuito a contrastare le azioni intrap
 
 Questi sofisticati software non si limitano semplicemente alla raccolta di dati ma sono in grado, previa un'opportuna configurazione, di poter reagire qualora rilevassero attività sospette attraverso l'esecuzione regolare di attività di audit sui log raccolti. 
 
-Qualora rilevassero attività insolite, questi software reagiscono emettendo i cosiddetti \textit{alert}, avvisi finalizzati ad informare il personale incaricato della sicurezza del sistema della presenza di attività insolite nel sistema, la quale potrà infine prende provvedimenti per contrastate le attività del malware.
+Qualora rilevassero attività insolite, questi software reagiscono emettendo i cosiddetti \textit{alert}, avvisi finalizzati ad informare il personale incaricato della sicurezza del sistema della presenza di attività insolite nel sistema, la quale potrà infine prendere provvedimenti per contrastate le attività del malware.
 
 \section{Autenticazione}
 
@@ -1225,7 +1225,7 @@ Oltre alle contromisure classiche, tra cui figurano, ad esempio, l'adozione di f
 \chapter{I sistemi vulnerabili all'attacco}
 \chapterauthor{\small{\textit{Autore:} \textbf{Ricardo Gamucci} (\textbf{0274716})}}
 
-Dal momento che FASTCash non ha sfruttato una particolare vulnerabilità nota dei sistemi operativi coinvolti, usufruendo bensì dei i loro servizi, ottenendo gli opportuni privilegi di accesso usufruendo di tecniche di spear-phishing, non è possibile individuare un insieme specifico di sistemi particolarmente vulnerabili all'attacco. 
+Dal momento che FASTCash non ha sfruttato una particolare vulnerabilità nota dei sistemi operativi coinvolti, usufruendo bensì dei loro servizi, ottenendo gli opportuni privilegi di accesso usufruendo di tecniche di spear-phishing, non è possibile individuare un insieme specifico di sistemi particolarmente vulnerabili all'attacco. 
 
 Di conseguenza, possiamo in generale considerare come vulnerabili tutti i sistemi che, semplicemente, non adottano alcuna delle forme di sicurezza o di contromisura descritte nel capitolo precedente.
 
